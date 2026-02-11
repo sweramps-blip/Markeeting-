@@ -13,7 +13,7 @@
         body { background-color: var(--bg); color: #fff; padding: 20px; }
 
         .nav-header { margin-bottom: 25px; display: flex; align-items: center; }
-        .btn-back { background: none; border: 1px solid #2d3548; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; text-decoration: none; }
+        .btn-back { background: none; border: 1px solid #2d3548; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #fff; letter-spacing: 1px; }
 
         .task-card {
@@ -52,14 +52,14 @@
             <div class="task-icon">🔥</div>
             <div class="task-info">
                 <h3>Marketing Engine</h3>
-                <span>Earn Rs. 100</span>
+                <span id="price-m">Loading Price...</span>
             </div>
-            <button class="btn-start" onclick="runEngine('m', 20)">Start</button>
+            <button class="btn-start" onclick="runEngine('m')">Start</button>
         </div>
         <div class="smart-bar-container"><div class="smart-bar-fill" id="bar-m"></div></div>
         <div class="task-footer">
-            <span id="text-m">Progress: 0/20 Tasks</span>
-            <span>Est: Rs. 5.00 / link</span>
+            <span id="text-m">Progress: 0/0 Tasks</span>
+            <span>Est: Sheet Rates</span>
         </div>
     </div>
 
@@ -68,14 +68,14 @@
             <div class="task-icon">💎</div>
             <div class="task-info">
                 <h3>Premium Engine</h3>
-                <span>Earn Rs. 200</span>
+                <span id="price-p">Loading Price...</span>
             </div>
-            <button class="btn-start" onclick="runEngine('p', 20)">Start</button>
+            <button class="btn-start" onclick="runEngine('p')">Start</button>
         </div>
         <div class="smart-bar-container"><div class="smart-bar-fill" id="bar-p"></div></div>
         <div class="task-footer">
-            <span id="text-p">Progress: 0/20 Tasks</span>
-            <span>Est: Rs. 10.00 / link</span>
+            <span id="text-p">Progress: 0/0 Tasks</span>
+            <span>Est: Premium Rates</span>
         </div>
     </div>
 
@@ -84,14 +84,14 @@
             <div class="task-icon">🚀</div>
             <div class="task-info">
                 <h3>Viral Engine</h3>
-                <span>Earn Rs. 300</span>
+                <span id="price-v">Loading Price...</span>
             </div>
-            <button class="btn-start" onclick="runEngine('v', 20)">Start</button>
+            <button class="btn-start" onclick="runEngine('v')">Start</button>
         </div>
         <div class="smart-bar-container"><div class="smart-bar-fill" id="bar-v"></div></div>
         <div class="task-footer">
-            <span id="text-v">Progress: 0/20 Tasks</span>
-            <span>Est: Rs. 15.00 / link</span>
+            <span id="text-v">Progress: 0/0 Tasks</span>
+            <span>Est: Viral Rates</span>
         </div>
     </div>
 
@@ -101,64 +101,101 @@
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
+
 <script>
     // 🔗 اپنا نیا SCRIPT URL یہاں ڈالیں
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6G5ydRZfWxRZ3E0arTzsO1pAcofROAeq2g90ssvyPedcVxU5TapMnI5mXVs4KRfaJ/exec";
+    const SCRIPT_URL = "آپ_کا_نیا_ڈپلائمنٹ_لنک_یہاں_پیسٹ_کریں";
 
     const user = JSON.parse(localStorage.getItem("ps_user"));
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
+    let serverTasks = { m: [], p: [], v: [] };
 
-    async function runEngine(type, total) {
-        if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
-        if (stats[type] >= total) return Swal.fire("Limit", "Daily limit complete!", "info");
-
-        let amount = type === 'm' ? 5 : type === 'p' ? 10 : 15;
-        let source = type === 'm' ? 'Marketing' : type === 'p' ? 'Premium' : 'Viral';
-        
-        // CPAGrip آفر کھولنا
-        let cpaLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
-        window.open(cpaLink, '_blank');
-        
-        // 🔥 بیلنس اپ ڈیٹ کا سگنل بھیجنا
-        // ہم نے SCRIPT_URL کے ساتھ پیرامیٹرز جوڑ دیے ہیں
-        let finalUrl = `${SCRIPT_URL}?uid=${user.user_id}&amount=${amount}&source=${source} Engine`;
-        fetch(finalUrl, { mode: 'no-cors' });
-
-        startLoadingBar(type, total);
+    // شیٹ سے ڈیٹا لوڈ کرنا
+    async function fetchTasks() {
+        try {
+            const res = await fetch(`${SCRIPT_URL}?action=loadTasks`);
+            serverTasks = await res.json();
+            ['m', 'p', 'v'].forEach(t => updateUI(t));
+        } catch (e) { 
+            console.log("Tasks Loading Error"); 
+            Swal.fire("Error", "Could not load tasks from sheet!", "error");
+        }
     }
 
-    function startLoadingBar(type, total) {
+    async function runEngine(type) {
+        if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
+        
+        let tasks = serverTasks[type] || [];
+        let index = stats[type];
+
+        if (tasks.length === 0) return Swal.fire("Wait", "No tasks available in sheet!", "info");
+        if (index >= tasks.length) return Swal.fire("Limit", "Daily tasks complete for this engine!", "warning");
+
+        let currentTask = tasks[index];
+        let linkToOpen = currentTask.link;
+
+        // CPA Grip Auto-ID Handle
+        if (linkToOpen.includes("cpagrip.com")) {
+            linkToOpen += (linkToOpen.includes("?") ? "&" : "?") + `aff_sub=${user.user_id}`;
+        }
+
+        // 💰 بیلنس اپ ڈیٹ اور ٹاسک لاگ کا سگنل
+        let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&amount=${currentTask.price}&source=${type.toUpperCase()}_Engine_Task_${index + 1}`;
+        fetch(rewardUrl, { mode: 'no-cors' });
+
+        // لنک کھولنا
+        window.open(linkToOpen, '_blank');
+        
+        startLoadingBar(type);
+    }
+
+    function startLoadingBar(type) {
         document.getElementById('loading-overlay').style.display = 'flex';
         let p = 0;
         let oBar = document.getElementById('overlayBar');
         let timer = setInterval(() => {
-            p += 2; // تھوڑا آرام سے بار چلے گی
+            p += 2;
             oBar.style.width = p + '%';
             if(p >= 100) {
                 clearInterval(timer);
-                finishTask(type, total);
+                finishTask(type);
             }
-        }, 100);
+        }, 200); // 10 سیکنڈ لوڈنگ ٹائم (آپ اسے کم یا زیادہ کر سکتے ہیں)
     }
 
-    function finishTask(type, total) {
+    function finishTask(type) {
         document.getElementById('loading-overlay').style.display = 'none';
         stats[type]++;
         localStorage.setItem("ps_task_stats", JSON.stringify(stats));
-        updateUI(type, total);
-        Swal.fire("Success", "Task Verified! Your balance is updated.", "success");
+        updateUI(type);
+        Swal.fire({
+            title: "Success!",
+            text: "Task Verified & Balance Updated!",
+            icon: "success",
+            confirmButtonColor: "#d4ff00",
+            confirmButtonText: "Great!"
+        });
     }
 
-    function updateUI(type, total) {
-        let percent = (stats[type] / total) * 100;
-        if(document.getElementById('bar-' + type)) {
-            document.getElementById('bar-' + type).style.width = percent + '%';
-            document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
-        }
+    function updateUI(type) {
+        let tasks = serverTasks[type] || [];
+        let total = tasks.length;
+        let done = stats[type];
+        
+        // ٹوٹل پرائس دکھانے کے لیے (اگر لنکس موجود ہوں)
+        let totalVal = tasks.reduce((sum, t) => sum + parseFloat(t.price), 0);
+        let priceSpan = document.getElementById('price-' + type);
+        if(priceSpan) priceSpan.innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks";
+
+        // پروگریس بار اور ٹیکسٹ
+        let bar = document.getElementById('bar-' + type);
+        let text = document.getElementById('text-' + type);
+        if(bar) bar.style.width = total > 0 ? (done / total * 100) + '%' : '0%';
+        if(text) text.innerText = `Progress: ${done}/${total} Tasks Available`;
     }
 
-    window.onload = () => { ['m', 'p', 'v'].forEach(t => updateUI(t, 20)); };
-                </script>
+    window.onload = fetchTasks;
+</script>
 
 </body>
 </html>
