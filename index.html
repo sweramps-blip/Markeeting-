@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    </head>
+<body>
+    <script>
+        const user = JSON.parse(localStorage.getItem("ps_user"));
+        
+        // --- آپ کا محفوظ کردہ ڈیٹا ---
+        const SHRINKME_TOKEN = "1e28b07efe7026244f4b9bc9c3139dcb70b41cf1"; 
+        const TASK_MASTER_URL = "آپ_کی_نئی_APPS_SCRIPT_کا_URL"; // یہاں نئی اسکرپٹ کا لنک لگائیں
+
+        let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
+
+        async function runEngine(type, total) {
+            if (!user) return Swal.fire("Error", "Login Required", "error");
+            if (stats[type] >= total) return Swal.fire("Done", "Limit reached!", "info");
+
+            let targetLink = "";
+            
+            if (type === 'p') {
+                // CPAGrip Offerwall
+                targetLink = `https://www.cpagrip.com/show.php?l=0&u=YOUR_USER_ID&id=YOUR_ID&aff_sub=${user.user_id}`;
+            } else {
+                // ShrinkMe Dynamic Link
+                // یہ یوزر کو ٹاسک کے بعد آپ کی اسکرپٹ پر بھیجے گا تاکہ پیسے ایڈ ہوں
+                let redirectUrl = `${TASK_MASTER_URL}?uid=${user.user_id}&source=ShrinkMe&amount=5`;
+                targetLink = `https://shrinkme.io/api?api=${SHRINKME_TOKEN}&url=${encodeURIComponent(redirectUrl)}`;
+            }
+
+            window.open(targetLink, '_blank');
+            startLoadingBar(type, total);
+        }
+
+        function startLoadingBar(type, total) {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            let p = 0;
+            let oBar = document.getElementById('overlayBar');
+            let timer = setInterval(() => {
+                p += 2;
+                oBar.style.width = p + '%';
+                if(p >= 100) {
+                    clearInterval(timer);
+                    finishTask(type, total);
+                }
+            }, 400); 
+        }
+
+        function finishTask(type, total) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            stats[type]++;
+            localStorage.setItem("ps_task_stats", JSON.stringify(stats));
+            updateUI(type, total);
+            Swal.fire({ title: 'Task Sent!', text: 'System is updating your wallet.', icon: 'success', timer: 2000 });
+        }
+
+        function updateUI(type, total) {
+            let percent = (stats[type] / total) * 100;
+            document.getElementById('bar-' + type).style.width = percent + '%';
+            document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+        }
+    </script>
+</body>
+</html> 
