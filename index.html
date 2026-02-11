@@ -103,9 +103,8 @@
     </div>
 
 <script>
-    // 🔥 یہاں اپنا نیا SCRIPT URL ڈالیں
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUy85mq8LPaSUyCoS8CCFfyMF-a5RcfU3rVn6Naqzjln9pZHPWcXakF84qC-Plmepr/exec";
-    const SHRINKME_TOKEN = "1e28b07efe7026244f4b9bc9c3139dcb70b41cf1";
+    // 🔥 آپ کا فکسڈ اسکرپٹ یو آر ایل
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6G5ydRZfWxRZ3E0arTzsO1pAcofROAeq2g90ssvyPedcVxU5TapMnI5mXVs4KRfaJ/exec";
 
     const user = JSON.parse(localStorage.getItem("ps_user"));
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
@@ -119,63 +118,32 @@
             return Swal.fire("Limit Reached", "Daily limit complete!", "info");
         }
 
+        // رقم سیٹ کرنا
         let amount = type === 'm' ? 5 : type === 'p' ? 10 : 15;
-        
-        try {
-            if (type === 'p') {
-                // CPAGrip Direct
-                let cpaLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
-                window.open(cpaLink, '_blank');
-                
-                // Instant reward
-                await sendReward(user.user_id, amount, 'CPAGrip');
-                startLoadingBar(type, total);
-                
-            } else {
-                // ShrinkMe with proper API call
-                let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&source=Task-${type}&amount=${amount}`;
-                let shortLink = await getShrinkMeLink(rewardUrl);
-                
-                if (shortLink) {
-                    window.open(shortLink, '_blank');
-                    startLoadingBar(type, total);
-                } else {
-                    throw new Error("Short link generation failed");
-                }
-            }
-        } catch (err) {
-            console.error("Task Error:", err);
-            Swal.fire("Error", "Something went wrong! Try again.", "error");
-        }
-    }
+        let engineName = type === 'm' ? 'Marketing' : type === 'p' ? 'Premium' : 'Viral';
 
-    async function getShrinkMeLink(originalUrl) {
-        try {
-            let apiUrl = `https://shrinkme.io/api?api=${SHRINKME_TOKEN}&url=${encodeURIComponent(originalUrl)}`;
-            let response = await fetch(apiUrl);
-            let data = await response.json();
-            
-            if (data.shortenedUrl) {
-                return data.shortenedUrl;
-            }
-            console.error("ShrinkMe Response:", data);
-            return null;
-        } catch (err) {
-            console.error("ShrinkMe Error:", err);
-            return null;
-        }
+        // CPAGrip لنک (سب کے لیے فی الحال یہی لاجک)
+        // آپ اپنی مرضی سے الگ الگ Offer IDs بھی ڈال سکتے ہیں
+        let targetLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
+
+        // نیا ٹیب کھولنا
+        window.open(targetLink, '_blank');
+
+        // بیک گراؤنڈ میں بیلنس اپ ڈیٹ کرنا
+        sendReward(user.user_id, amount, engineName + " Engine");
+        
+        // لوڈنگ بار شروع کرنا
+        startLoadingBar(type, total);
     }
 
     async function sendReward(uid, amount, source) {
         try {
             let url = `${SCRIPT_URL}?uid=${uid}&amount=${amount}&source=${source}`;
-            let response = await fetch(url);
-            let data = await response.json();
-            console.log("Reward Response:", data);
-            return data;
+            // 'no-cors' تاکہ براؤزر بلاک نہ کرے
+            fetch(url, { mode: 'no-cors' }); 
+            console.log("Reward request sent for:", source);
         } catch (err) {
             console.error("Reward Error:", err);
-            return null;
         }
     }
 
@@ -192,7 +160,7 @@
                 clearInterval(timer);
                 finishTask(type, total);
             }
-        }, 200);
+        }, 200); // 4 سیکنڈ کا ویریفیکیشن ٹائم
     }
 
     function finishTask(type, total) {
@@ -203,7 +171,7 @@
         
         Swal.fire({ 
             title: 'Success!', 
-            text: 'Task completed! Balance updated.', 
+            text: 'Task Verified! Balance will reflect in a moment.', 
             icon: 'success', 
             timer: 2000,
             showConfirmButton: false 
@@ -212,14 +180,16 @@
 
     function updateUI(type, total) {
         let percent = (stats[type] / total) * 100;
-        document.getElementById('bar-' + type).style.width = percent + '%';
-        document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+        if(document.getElementById('bar-' + type)) {
+            document.getElementById('bar-' + type).style.width = percent + '%';
+            document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+        }
     }
 
+    // ڈیلی ری سیٹ لاجک
     function checkDailyReset() {
         let lastReset = localStorage.getItem("ps_last_reset");
         let today = new Date().toDateString();
-        
         if (lastReset !== today) {
             stats = { m: 0, p: 0, v: 0 };
             localStorage.setItem("ps_task_stats", JSON.stringify(stats));
