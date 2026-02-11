@@ -12,13 +12,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
         body { background-color: var(--bg); color: #fff; padding: 20px; }
 
-        /* Back Button */
         .nav-header { margin-bottom: 25px; display: flex; align-items: center; }
         .btn-back { background: none; border: 1px solid #2d3548; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; text-decoration: none; }
-
         .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #fff; letter-spacing: 1px; }
 
-        /* Task Card Styling */
         .task-card {
             background: var(--card); border-radius: 20px; padding: 20px;
             margin-bottom: 20px; border: 1px solid #2d3548;
@@ -30,23 +27,20 @@
         .task-info { flex: 1; }
         .task-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
         .task-info span { font-size: 12px; color: var(--accent); font-weight: 700; }
-
         .btn-start { background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
 
-        /* Smart Progress Bar */
         .smart-bar-container { width: 100%; background: #0a0e1a; height: 4px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .smart-bar-fill { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 8px var(--accent); transition: width 0.5s ease; }
-        
         .task-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: #94a3b8; }
 
-        /* Overlay */
         #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 14, 26, 0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
+        .loading-text { color: var(--gold); font-size: 18px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div class="nav-header">
-        <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html" class="btn-back">
+        <a href="dashboard.html" class="btn-back">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
     </div>
@@ -102,38 +96,87 @@
     </div>
 
     <div id="loading-overlay">
-        <div style="color: var(--gold); font-size: 18px; margin-bottom: 10px;">Verifying Step...</div>
+        <div class="loading-text">Verifying Task...</div>
         <div class="smart-bar-container" style="width: 60%; height: 3px;">
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
 
 <script>
-    const user = JSON.parse(localStorage.getItem("ps_user"));
-    
-    // فکسڈ ڈیٹا - اب آپ کو کچھ بدلنے کی ضرورت نہیں
-    const SHRINKME_TOKEN = "1e28b07efe7026244f4b9bc9c3139dcb70b41cf1"; 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6G5ydRZfWxRZ3E0arTzsO1pAcofROAeq2g90ssvyPedcVxU5TapMnI5mXVs4KRfaJ/exec"; 
+    // 🔥 یہاں اپنا نیا SCRIPT URL ڈالیں
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6G5ydRZfWxRZ3E0arTzsO1pAcofROAeq2g90ssvyPedcVxU5TapMnI5mXVs4KRfaJ/exec";
+    const SHRINKME_TOKEN = "1e28b07efe7026244f4b9bc9c3139dcb70b41cf1";
 
+    const user = JSON.parse(localStorage.getItem("ps_user"));
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
 
     async function runEngine(type, total) {
-        if (!user) return Swal.fire("Error", "Pehle Login Karen!", "error");
-        if (stats[type] >= total) return Swal.fire("Done", "Daily limit reach!", "info");
-
-        let targetLink = "";
+        if (!user || !user.user_id) {
+            return Swal.fire("Error", "Pehle Login Karen!", "error");
+        }
         
-        if (type === 'p') {
-            // CPAGrip Logic: آپ کی IDs 2498658 اور 695503 سیٹ کر دی ہیں
-            targetLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
-        } else {
-            // ShrinkMe Logic: آٹو کریڈٹ لنک
-            let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&source=ShrinkMe&amount=5`;
-            targetLink = `https://shrinkme.io/api?api=${SHRINKME_TOKEN}&url=${encodeURIComponent(rewardUrl)}`;
+        if (stats[type] >= total) {
+            return Swal.fire("Limit Reached", "Daily limit complete!", "info");
         }
 
-        window.open(targetLink, '_blank');
-        startLoadingBar(type, total);
+        let amount = type === 'm' ? 5 : type === 'p' ? 10 : 15;
+        
+        try {
+            if (type === 'p') {
+                // CPAGrip Direct
+                let cpaLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
+                window.open(cpaLink, '_blank');
+                
+                // Instant reward
+                await sendReward(user.user_id, amount, 'CPAGrip');
+                startLoadingBar(type, total);
+                
+            } else {
+                // ShrinkMe with proper API call
+                let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&source=Task-${type}&amount=${amount}`;
+                let shortLink = await getShrinkMeLink(rewardUrl);
+                
+                if (shortLink) {
+                    window.open(shortLink, '_blank');
+                    startLoadingBar(type, total);
+                } else {
+                    throw new Error("Short link generation failed");
+                }
+            }
+        } catch (err) {
+            console.error("Task Error:", err);
+            Swal.fire("Error", "Something went wrong! Try again.", "error");
+        }
+    }
+
+    async function getShrinkMeLink(originalUrl) {
+        try {
+            let apiUrl = `https://shrinkme.io/api?api=${SHRINKME_TOKEN}&url=${encodeURIComponent(originalUrl)}`;
+            let response = await fetch(apiUrl);
+            let data = await response.json();
+            
+            if (data.shortenedUrl) {
+                return data.shortenedUrl;
+            }
+            console.error("ShrinkMe Response:", data);
+            return null;
+        } catch (err) {
+            console.error("ShrinkMe Error:", err);
+            return null;
+        }
+    }
+
+    async function sendReward(uid, amount, source) {
+        try {
+            let url = `${SCRIPT_URL}?uid=${uid}&amount=${amount}&source=${source}`;
+            let response = await fetch(url);
+            let data = await response.json();
+            console.log("Reward Response:", data);
+            return data;
+        } catch (err) {
+            console.error("Reward Error:", err);
+            return null;
+        }
     }
 
     function startLoadingBar(type, total) {
@@ -143,13 +186,13 @@
         oBar.style.width = '0%';
 
         let timer = setInterval(() => {
-            p += 2;
+            p += 5;
             oBar.style.width = p + '%';
             if(p >= 100) {
                 clearInterval(timer);
                 finishTask(type, total);
             }
-        }, 400); 
+        }, 200);
     }
 
     function finishTask(type, total) {
@@ -160,22 +203,32 @@
         
         Swal.fire({ 
             title: 'Success!', 
-            text: 'Task complete! Balance update ho raha hai.', 
+            text: 'Task completed! Balance updated.', 
             icon: 'success', 
-            timer: 3000,
+            timer: 2000,
             showConfirmButton: false 
         });
     }
 
     function updateUI(type, total) {
         let percent = (stats[type] / total) * 100;
-        if(document.getElementById('bar-' + type)) {
-            document.getElementById('bar-' + type).style.width = percent + '%';
-            document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+        document.getElementById('bar-' + type).style.width = percent + '%';
+        document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+    }
+
+    function checkDailyReset() {
+        let lastReset = localStorage.getItem("ps_last_reset");
+        let today = new Date().toDateString();
+        
+        if (lastReset !== today) {
+            stats = { m: 0, p: 0, v: 0 };
+            localStorage.setItem("ps_task_stats", JSON.stringify(stats));
+            localStorage.setItem("ps_last_reset", today);
         }
     }
 
     window.onload = () => {
+        checkDailyReset();
         ['m', 'p', 'v'].forEach(t => updateUI(t, 20));
     };
 </script>
