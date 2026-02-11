@@ -14,7 +14,7 @@
 
         /* Back Button */
         .nav-header { margin-bottom: 25px; display: flex; align-items: center; }
-        .btn-back { background: none; border: 1px solid #2d3548; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; }
+        .btn-back { background: none; border: 1px solid #2d3548; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; text-decoration: none; }
 
         .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #fff; letter-spacing: 1px; }
 
@@ -33,7 +33,7 @@
 
         .btn-start { background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
 
-        /* Smart & Slim Progress Bar */
+        /* Smart Progress Bar */
         .smart-bar-container { width: 100%; background: #0a0e1a; height: 4px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
         .smart-bar-fill { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 8px var(--accent); transition: width 0.5s ease; }
         
@@ -46,9 +46,9 @@
 <body>
 
     <div class="nav-header">
-        <button class="btn-back" onclick="window.location.href='https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html'">
+        <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html" class="btn-back">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </button>
+        </a>
     </div>
 
     <h2 class="section-title">Earning Engines</h2>
@@ -103,11 +103,15 @@
 
     <div id="loading-overlay">
         <div style="color: var(--gold); font-size: 18px; margin-bottom: 10px;">Verifying Step...</div>
-        <div class="smart-bar-container" style="width: 60%; height: 3px;"><div class="smart-bar-fill" id="overlayBar"></div></div>
+        <div class="smart-bar-container" style="width: 60%; height: 3px;">
+            <div class="smart-bar-fill" id="overlayBar"></div>
+        </div>
+    </div>
+
 <script>
     const user = JSON.parse(localStorage.getItem("ps_user"));
     
-    // آپ کا محفوظ ڈیٹا
+    // سیکیورٹی ڈیٹا
     const SHRINKME_TOKEN = "1e28b07efe7026244f4b9bc9c3139dcb70b41cf1"; 
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw99E8JJPEGnK9oRFSLlx7NlP6jcJUg2wJHLaF-rjint8zyq1WkxD9V9yNbR-1-qHax/exec"; 
 
@@ -115,17 +119,15 @@
 
     async function runEngine(type, total) {
         if (!user) return Swal.fire("Error", "Pehle Login Karen!", "error");
-        if (stats[type] >= total) return Swal.fire("Done", "Limit reach ho gayi!", "info");
+        if (stats[type] >= total) return Swal.fire("Done", "Daily limit reach!", "info");
 
         let targetLink = "";
         
-        // --- CPAGrip کے لیے لاجک (Premium Engine) ---
         if (type === 'p') {
-            // یہاں YOUR_USER_ID اور YOUR_ID کی جگہ اپنی CPAGrip والی آئی ڈی ڈالیں
+            // CPAGrip Logic: اپنی IDs یہاں ری پلیس کریں
             targetLink = `https://www.cpagrip.com/show.php?l=0&u=YOUR_USER_ID&id=YOUR_ID&aff_sub=${user.user_id}`;
-        } 
-        // --- ShrinkMe کے لیے لاجک (Marketing & Viral Engine) ---
-        else {
+        } else {
+            // ShrinkMe Logic: آٹو کریڈٹ لنک
             let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&source=ShrinkMe&amount=5`;
             targetLink = `https://shrinkme.io/api?api=${SHRINKME_TOKEN}&url=${encodeURIComponent(rewardUrl)}`;
         }
@@ -167,8 +169,10 @@
 
     function updateUI(type, total) {
         let percent = (stats[type] / total) * 100;
-        document.getElementById('bar-' + type).style.width = percent + '%';
-        document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+        if(document.getElementById('bar-' + type)) {
+            document.getElementById('bar-' + type).style.width = percent + '%';
+            document.getElementById('text-' + type).innerText = `Progress: ${stats[type]}/${total} Tasks`;
+        }
     }
 
     window.onload = () => {
@@ -177,4 +181,4 @@
 </script>
 
 </body>
-</html> 
+</html>
