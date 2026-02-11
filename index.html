@@ -111,7 +111,7 @@
 <script>
     const user = JSON.parse(localStorage.getItem("ps_user"));
     
-    // سیکیورٹی ڈیٹا
+    // فکسڈ ڈیٹا - اب آپ کو کچھ بدلنے کی ضرورت نہیں
     const SHRINKME_TOKEN = "1e28b07efe7026244f4b9bc9c3139dcb70b41cf1"; 
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw99E8JJPEGnK9oRFSLlx7NlP6jcJUg2wJHLaF-rjint8zyq1WkxD9V9yNbR-1-qHax/exec"; 
 
@@ -124,8 +124,8 @@
         let targetLink = "";
         
         if (type === 'p') {
-            // CPAGrip Logic: اپنی IDs یہاں ری پلیس کریں
-            targetLink = `https://www.cpagrip.com/show.php?l=0&u=YOUR_USER_ID&id=YOUR_ID&aff_sub=${user.user_id}`;
+            // CPAGrip Logic: آپ کی IDs 2498658 اور 695503 سیٹ کر دی ہیں
+            targetLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
         } else {
             // ShrinkMe Logic: آٹو کریڈٹ لنک
             let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&source=ShrinkMe&amount=5`;
