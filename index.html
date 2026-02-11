@@ -103,79 +103,44 @@
     </div>
 
 <script>
-    // 🔥 آپ کا فکسڈ اسکرپٹ یو آر ایل
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6G5ydRZfWxRZ3E0arTzsO1pAcofROAeq2g90ssvyPedcVxU5TapMnI5mXVs4KRfaJ/exec";
+    const SCRIPT_URL = "آپ_کا_نیا_ڈپلائمنٹ_لنک_یہاں_آئے_گا";
 
     const user = JSON.parse(localStorage.getItem("ps_user"));
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
 
     async function runEngine(type, total) {
-        if (!user || !user.user_id) {
-            return Swal.fire("Error", "Pehle Login Karen!", "error");
-        }
-        
-        if (stats[type] >= total) {
-            return Swal.fire("Limit Reached", "Daily limit complete!", "info");
-        }
+        if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
+        if (stats[type] >= total) return Swal.fire("Limit", "Daily limit complete!", "info");
 
-        // رقم سیٹ کرنا
         let amount = type === 'm' ? 5 : type === 'p' ? 10 : 15;
         let engineName = type === 'm' ? 'Marketing' : type === 'p' ? 'Premium' : 'Viral';
 
-        // CPAGrip لنک (سب کے لیے فی الحال یہی لاجک)
-        // آپ اپنی مرضی سے الگ الگ Offer IDs بھی ڈال سکتے ہیں
+        // CPAGrip Link
         let targetLink = `https://www.cpagrip.com/show.php?l=0&u=2498658&id=695503&aff_sub=${user.user_id}`;
-
-        // نیا ٹیب کھولنا
         window.open(targetLink, '_blank');
 
-        // بیک گراؤنڈ میں بیلنس اپ ڈیٹ کرنا
-        sendReward(user.user_id, amount, engineName + " Engine");
-        
-        // لوڈنگ بار شروع کرنا
-        startLoadingBar(type, total);
-    }
+        // شیٹ اپ ڈیٹ کے لیے سگنل بھیجنا
+        fetch(`${SCRIPT_URL}?uid=${user.user_id}&amount=${amount}&source=${engineName}`, { mode: 'no-cors' });
 
-    async function sendReward(uid, amount, source) {
-        try {
-            let url = `${SCRIPT_URL}?uid=${uid}&amount=${amount}&source=${source}`;
-            // 'no-cors' تاکہ براؤزر بلاک نہ کرے
-            fetch(url, { mode: 'no-cors' }); 
-            console.log("Reward request sent for:", source);
-        } catch (err) {
-            console.error("Reward Error:", err);
-        }
+        startLoadingBar(type, total);
     }
 
     function startLoadingBar(type, total) {
         document.getElementById('loading-overlay').style.display = 'flex';
         let p = 0;
         let oBar = document.getElementById('overlayBar');
-        oBar.style.width = '0%';
-
         let timer = setInterval(() => {
             p += 5;
             oBar.style.width = p + '%';
             if(p >= 100) {
                 clearInterval(timer);
-                finishTask(type, total);
+                document.getElementById('loading-overlay').style.display = 'none';
+                stats[type]++;
+                localStorage.setItem("ps_task_stats", JSON.stringify(stats));
+                updateUI(type, total);
+                Swal.fire("Success", "Task Verified!", "success");
             }
-        }, 200); // 4 سیکنڈ کا ویریفیکیشن ٹائم
-    }
-
-    function finishTask(type, total) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        stats[type]++;
-        localStorage.setItem("ps_task_stats", JSON.stringify(stats));
-        updateUI(type, total);
-        
-        Swal.fire({ 
-            title: 'Success!', 
-            text: 'Task Verified! Balance will reflect in a moment.', 
-            icon: 'success', 
-            timer: 2000,
-            showConfirmButton: false 
-        });
+        }, 300);
     }
 
     function updateUI(type, total) {
@@ -186,22 +151,8 @@
         }
     }
 
-    // ڈیلی ری سیٹ لاجک
-    function checkDailyReset() {
-        let lastReset = localStorage.getItem("ps_last_reset");
-        let today = new Date().toDateString();
-        if (lastReset !== today) {
-            stats = { m: 0, p: 0, v: 0 };
-            localStorage.setItem("ps_task_stats", JSON.stringify(stats));
-            localStorage.setItem("ps_last_reset", today);
-        }
-    }
-
-    window.onload = () => {
-        checkDailyReset();
-        ['m', 'p', 'v'].forEach(t => updateUI(t, 20));
-    };
-</script>
+    window.onload = () => { ['m', 'p', 'v'].forEach(t => updateUI(t, 20)); };
+                             </script>
 
 </body>
 </html>
