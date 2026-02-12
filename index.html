@@ -101,27 +101,32 @@
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
-
 <script>
-    // 🔗 اپنا نیا SCRIPT URL یہاں ڈالیں
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfnJAISWZhuOwGnIG4B8Ac29sqZHd1eMcAF0FILp55cmQS89BGEJW6o9IQ9lqfCKcn/exec";
 
     const user = JSON.parse(localStorage.getItem("ps_user"));
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
     let serverTasks = { m: [], p: [], v: [] };
 
-    // شیٹ سے ڈیٹا لوڈ کرنا
     async function fetchTasks() {
-    try {
-        // ہم لنک کے آخر میں ٹائم اسٹیمپ جوڑ رہے ہیں تاکہ ہر بار تازہ ڈیٹا آئے
-        const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
-        serverTasks = await res.json();
-        console.log("Tasks Loaded:", serverTasks); // یہ چیک کرنے کے لیے کہ ڈیٹا آیا یا نہیں
-        ['m', 'p', 'v'].forEach(t => updateUI(t));
-    } catch (e) { 
-        console.log("Tasks Loading Error:", e); 
+        try {
+            // ٹائم اسٹیمپ تاکہ ہر بار تازہ ڈیٹا شیٹ سے آئے
+            const urlWithCacheBuster = `${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`;
+            
+            const response = await fetch(urlWithCacheBuster);
+            const data = await response.json();
+            
+            if (data) {
+                serverTasks = data;
+                console.log("Success: Tasks loaded from Sheet", serverTasks);
+                ['m', 'p', 'v'].forEach(t => updateUI(t));
+            }
+        } catch (e) { 
+            console.error("Error fetching tasks:", e);
+            // اگر ڈیٹا لوڈ نہ ہو تو دوبارہ کوشش کریں
+            setTimeout(fetchTasks, 3000); 
+        }
     }
-}
 
     async function runEngine(type) {
         if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
@@ -129,24 +134,20 @@
         let tasks = serverTasks[type] || [];
         let index = stats[type];
 
-        if (tasks.length === 0) return Swal.fire("Wait", "No tasks available in sheet!", "info");
-        if (index >= tasks.length) return Swal.fire("Limit", "Daily tasks complete for this engine!", "warning");
+        if (tasks.length === 0) return Swal.fire("Wait", "Sheet me koi task nahi mila!", "info");
+        if (index >= tasks.length) return Swal.fire("Limit", "Saray tasks mukammal hain!", "warning");
 
         let currentTask = tasks[index];
         let linkToOpen = currentTask.link;
 
-        // CPA Grip Auto-ID Handle
         if (linkToOpen.includes("cpagrip.com")) {
             linkToOpen += (linkToOpen.includes("?") ? "&" : "?") + `aff_sub=${user.user_id}`;
         }
 
-        // 💰 بیلنس اپ ڈیٹ اور ٹاسک لاگ کا سگنل
-        let rewardUrl = `${SCRIPT_URL}?uid=${user.user_id}&amount=${currentTask.price}&source=${type.toUpperCase()}_Engine_Task_${index + 1}`;
-        fetch(rewardUrl, { mode: 'no-cors' });
+        // بیلنس اپ ڈیٹ سگنل
+        fetch(`${SCRIPT_URL}?uid=${user.user_id}&amount=${currentTask.price}&source=${type.toUpperCase()}_Task_${index + 1}`, { mode: 'no-cors' });
 
-        // لنک کھولنا
         window.open(linkToOpen, '_blank');
-        
         startLoadingBar(type);
     }
 
@@ -155,13 +156,13 @@
         let p = 0;
         let oBar = document.getElementById('overlayBar');
         let timer = setInterval(() => {
-            p += 2;
+            p += 1; // تھوڑی رفتار کم کی ہے تاکہ ویریفیکیشن اصلی لگے
             oBar.style.width = p + '%';
             if(p >= 100) {
                 clearInterval(timer);
                 finishTask(type);
             }
-        }, 200); // 10 سیکنڈ لوڈنگ ٹائم (آپ اسے کم یا زیادہ کر سکتے ہیں)
+        }, 100); 
     }
 
     function finishTask(type) {
@@ -169,13 +170,7 @@
         stats[type]++;
         localStorage.setItem("ps_task_stats", JSON.stringify(stats));
         updateUI(type);
-        Swal.fire({
-            title: "Success!",
-            text: "Task Verified & Balance Updated!",
-            icon: "success",
-            confirmButtonColor: "#d4ff00",
-            confirmButtonText: "Great!"
-        });
+        Swal.fire("Verified", "Earning Added to Balance!", "success");
     }
 
     function updateUI(type) {
@@ -183,20 +178,20 @@
         let total = tasks.length;
         let done = stats[type];
         
-        // ٹوٹل پرائس دکھانے کے لیے (اگر لنکس موجود ہوں)
-        let totalVal = tasks.reduce((sum, t) => sum + parseFloat(t.price), 0);
+        let totalVal = tasks.reduce((sum, t) => sum + parseFloat(t.price || 0), 0);
         let priceSpan = document.getElementById('price-' + type);
-        if(priceSpan) priceSpan.innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks";
+        if(priceSpan) priceSpan.innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks Available";
 
-        // پروگریس بار اور ٹیکسٹ
         let bar = document.getElementById('bar-' + type);
         let text = document.getElementById('text-' + type);
-        if(bar) bar.style.width = total > 0 ? (done / total * 100) + '%' : '0%';
-        if(text) text.innerText = `Progress: ${done}/${total} Tasks Available`;
+        if(bar) bar.style.width = total > 0 ? (Math.min(done / total * 100, 100)) + '%' : '0%';
+        if(text) text.innerText = `Progress: ${done}/${total} Tasks`;
     }
 
     window.onload = fetchTasks;
-</script>
+            </script>
+
+
 
 </body>
 </html>
