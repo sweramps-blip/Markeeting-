@@ -112,15 +112,16 @@
 
     // شیٹ سے ڈیٹا لوڈ کرنا
     async function fetchTasks() {
-        try {
-            const res = await fetch(`${SCRIPT_URL}?action=loadTasks`);
-            serverTasks = await res.json();
-            ['m', 'p', 'v'].forEach(t => updateUI(t));
-        } catch (e) { 
-            console.log("Tasks Loading Error"); 
-            Swal.fire("Error", "Could not load tasks from sheet!", "error");
-        }
+    try {
+        // ہم لنک کے آخر میں ٹائم اسٹیمپ جوڑ رہے ہیں تاکہ ہر بار تازہ ڈیٹا آئے
+        const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
+        serverTasks = await res.json();
+        console.log("Tasks Loaded:", serverTasks); // یہ چیک کرنے کے لیے کہ ڈیٹا آیا یا نہیں
+        ['m', 'p', 'v'].forEach(t => updateUI(t));
+    } catch (e) { 
+        console.log("Tasks Loading Error:", e); 
     }
+}
 
     async function runEngine(type) {
         if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
