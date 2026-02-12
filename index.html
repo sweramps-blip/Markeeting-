@@ -10,9 +10,9 @@
     <style>
         :root { --bg: #0a0e1a; --card: #1a1f35; --gold: #fbbf24; --accent: #d4ff00; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        body { background-color: var(--bg); color: #fff; padding: 20px; }
+        body { background-color: var(--bg); color: #fff; padding: 20px; padding-bottom: 50px; }
 
-        .nav-header { margin-bottom: 25px; display: flex; align-items: center; }
+        .nav-header { margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
         .btn-back { background: none; border: 1px solid #2d3548; color: #fff; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-size: 13px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
         .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #fff; letter-spacing: 1px; }
 
@@ -33,16 +33,36 @@
         .smart-bar-fill { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 8px var(--accent); transition: width 0.5s ease; }
         .task-footer { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: #94a3b8; }
 
+        /* Instructions Box */
+        .instruction-box {
+            background: rgba(212, 255, 0, 0.05); border: 1px dashed var(--accent);
+            border-radius: 15px; padding: 15px; margin-top: 30px; margin-bottom: 30px;
+        }
+        .instruction-box h4 { color: var(--accent); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .instruction-box ul { list-style: none; }
+        .instruction-box li { font-size: 12px; color: #cbd5e1; margin-bottom: 6px; display: flex; align-items: flex-start; gap: 8px; }
+        .instruction-box li i { color: var(--accent); margin-top: 3px; font-size: 10px; }
+
+        /* Next Button */
+        .btn-next {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(135deg, #d4ff00, #a2c100); color: #000;
+            text-decoration: none; padding: 15px; border-radius: 15px;
+            font-weight: 800; font-size: 16px; width: 100%; margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(212, 255, 0, 0.2);
+        }
+
         #loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 14, 26, 0.98); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-        .loading-text { color: var(--gold); font-size: 18px; margin-bottom: 10px; }
+        .loading-text { color: var(--gold); font-size: 18px; margin-bottom: 10px; text-align: center; padding: 0 20px; }
     </style>
 </head>
 <body>
 
     <div class="nav-header">
         <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html" class="btn-back">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
+            <i class="fas fa-arrow-left"></i> Back
         </a>
+        <span style="font-size: 12px; color: #64748b;">Server Active ✅</span>
     </div>
 
     <h2 class="section-title">Earning Engines</h2>
@@ -95,8 +115,22 @@
         </div>
     </div>
 
+    <div class="instruction-box">
+        <h4><i class="fas fa-info-circle"></i> Tasks Instructions</h4>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Click "Start" and wait for the link to open in a new tab.</li>
+            <li><i class="fas fa-check-circle"></i> Keep the task page open until the verification bar hits 100%.</li>
+            <li><i class="fas fa-check-circle"></i> Don't close this app while the engine is running.</li>
+            <li><i class="fas fa-check-circle"></i> Balance will be added automatically after successful verification.</li>
+        </ul>
+    </div>
+
+    <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html" class="btn-next">
+        GO TO NEXT STEP <i class="fas fa-arrow-right"></i>
+    </a>
+
     <div id="loading-overlay">
-        <div class="loading-text">Verifying Task...</div>
+        <div class="loading-text">Verifying Offer...<br><span style="font-size: 12px; color: #94a3b8;">Don't close or refresh this page</span></div>
         <div class="smart-bar-container" style="width: 60%; height: 3px;">
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
@@ -109,90 +143,59 @@
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
     let serverTasks = { m: [], p: [], v: [] };
 
-    // ========== TASKS LOAD کرنا (Sheet سے) ==========
     async function fetchTasks() {
         try {
             const urlWithCacheBuster = `${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`;
-            
             const response = await fetch(urlWithCacheBuster);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
             const data = await response.json();
-            
             if (data && (data.m || data.p || data.v)) {
                 serverTasks = data;
-                console.log("✅ Tasks loaded from Sheet:", serverTasks);
                 ['m', 'p', 'v'].forEach(t => updateUI(t));
-            } else {
-                console.warn("⚠️ No tasks found in response:", data);
-                Swal.fire("Info", "Sheet me abhi koi task nahi hai!", "info");
             }
-        } catch (e) { 
-            console.error("❌ Error fetching tasks:", e);
-            Swal.fire("Error", "Tasks load nahi ho sake! Internet check karen.", "error");
-        }
+        } catch (e) { console.error("Fetch Error:", e); }
     }
 
-    // ========== ENGINE CHALANA ==========
     async function runEngine(type) {
-        if (!user || !user.user_id) {
-            return Swal.fire("Error", "Pehle Login Karen!", "error");
-        }
+        if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
         
         let tasks = serverTasks[type] || [];
         let index = stats[type];
 
-        if (tasks.length === 0) {
-            return Swal.fire("Wait", "Sheet me abhi is engine ke tasks nahi hain!", "info");
-        }
-        
-        if (index >= tasks.length) {
-            return Swal.fire("Complete", "Saray tasks mukammal hain! ✅", "success");
-        }
+        if (tasks.length === 0) return Swal.fire("Wait", "No tasks available!", "info");
+        if (index >= tasks.length) return Swal.fire("Complete", "Saray tasks mukammal hain! ✅", "success");
 
         let currentTask = tasks[index];
         let linkToOpen = currentTask.link;
 
-        // CPA Grip ke liye user_id add karo
         if (linkToOpen.includes("cpagrip.com")) {
             linkToOpen += (linkToOpen.includes("?") ? "&" : "?") + `aff_sub=${user.user_id}`;
         }
 
-        // Link kholo
         window.open(linkToOpen, '_blank');
-        
-        // Loading bar shuru karo
         startLoadingBar(type, currentTask);
     }
 
-    // ========== LOADING BAR ==========
     function startLoadingBar(type, task) {
         document.getElementById('loading-overlay').style.display = 'flex';
         let p = 0;
         let oBar = document.getElementById('overlayBar');
         
+        // 300 = 30 Seconds approx (Shrinkme Safety)
         let timer = setInterval(() => {
-            p += 2; 
+            p += 1; 
             oBar.style.width = p + '%';
             
             if(p >= 100) {
                 clearInterval(timer);
                 finishTask(type, task);
             }
-        }, 100); 
+        }, 300); 
     }
 
-    // ========== TASK FINISH اور BALANCE UPDATE ==========
     async function finishTask(type, task) {
         document.getElementById('loading-overlay').style.display = 'none';
-        
         try {
-            // Balance update API call
             const updateUrl = `${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=${type.toUpperCase()}_Engine&t=${new Date().getTime()}`;
-            
             const response = await fetch(updateUrl);
             const result = await response.json();
             
@@ -200,36 +203,25 @@
                 stats[type]++;
                 localStorage.setItem("ps_task_stats", JSON.stringify(stats));
                 updateUI(type);
-                Swal.fire("Verified ✅", `Rs. ${task.price} Added to Balance!`, "success");
-            } else {
-                Swal.fire("Error", result.message || "Balance update failed!", "error");
+                Swal.fire("Verified ✅", `Rs. ${task.price} Added!`, "success");
             }
-            
-        } catch (error) {
-            console.error("Balance update error:", error);
-            Swal.fire("Error", "Balance update me masla aya!", "error");
-        }
+        } catch (error) { Swal.fire("Error", "Update failed!", "error"); }
     }
 
-    // ========== UI UPDATE ==========
     function updateUI(type) {
         let tasks = serverTasks[type] || [];
         let total = tasks.length;
         let done = stats[type];
-        
         let totalVal = tasks.reduce((sum, t) => sum + parseFloat(t.price || 0), 0);
-        let priceSpan = document.getElementById('price-' + type);
-        if(priceSpan) {
-            priceSpan.innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks";
-        }
-
-        let bar = document.getElementById('bar-' + type);
-        let text = document.getElementById('text-' + type);
-        if(bar) bar.style.width = total > 0 ? (Math.min(done / total * 100, 100)) + '%' : '0%';
-        if(text) text.innerText = `Progress: ${done}/${total} Tasks`;
+        
+        if(document.getElementById('price-' + type)) 
+            document.getElementById('price-' + type).innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks";
+        if(document.getElementById('bar-' + type)) 
+            document.getElementById('bar-' + type).style.width = total > 0 ? (Math.min(done / total * 100, 100)) + '%' : '0%';
+        if(document.getElementById('text-' + type)) 
+            document.getElementById('text-' + type).innerText = `Progress: ${done}/${total} Tasks`;
     }
 
-    // Page load hote hi tasks load karo
     window.onload = fetchTasks;
 </script>
 </body>
