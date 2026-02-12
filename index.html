@@ -101,6 +101,7 @@
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
+
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwINf193wH02Z__eASc61PyNyCe62geXXQYOBGDI85-xBBs40A77qsBcx_rka9zjk6W/exec";
 
@@ -108,71 +109,109 @@
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
     let serverTasks = { m: [], p: [], v: [] };
 
+    // ========== TASKS LOAD کرنا (Sheet سے) ==========
     async function fetchTasks() {
         try {
-            // ٹائم اسٹیمپ تاکہ ہر بار تازہ ڈیٹا شیٹ سے آئے
             const urlWithCacheBuster = `${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`;
             
             const response = await fetch(urlWithCacheBuster);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
             
-            if (data) {
+            if (data && (data.m || data.p || data.v)) {
                 serverTasks = data;
-                console.log("Success: Tasks loaded from Sheet", serverTasks);
+                console.log("✅ Tasks loaded from Sheet:", serverTasks);
                 ['m', 'p', 'v'].forEach(t => updateUI(t));
+            } else {
+                console.warn("⚠️ No tasks found in response:", data);
+                Swal.fire("Info", "Sheet me abhi koi task nahi hai!", "info");
             }
         } catch (e) { 
-            console.error("Error fetching tasks:", e);
-            // اگر ڈیٹا لوڈ نہ ہو تو دوبارہ کوشش کریں
-            setTimeout(fetchTasks, 3000); 
+            console.error("❌ Error fetching tasks:", e);
+            Swal.fire("Error", "Tasks load nahi ho sake! Internet check karen.", "error");
         }
     }
 
+    // ========== ENGINE CHALANA ==========
     async function runEngine(type) {
-        if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
+        if (!user || !user.user_id) {
+            return Swal.fire("Error", "Pehle Login Karen!", "error");
+        }
         
         let tasks = serverTasks[type] || [];
         let index = stats[type];
 
-        if (tasks.length === 0) return Swal.fire("Wait", "Sheet me koi task nahi mila!", "info");
-        if (index >= tasks.length) return Swal.fire("Limit", "Saray tasks mukammal hain!", "warning");
+        if (tasks.length === 0) {
+            return Swal.fire("Wait", "Sheet me abhi is engine ke tasks nahi hain!", "info");
+        }
+        
+        if (index >= tasks.length) {
+            return Swal.fire("Complete", "Saray tasks mukammal hain! ✅", "success");
+        }
 
         let currentTask = tasks[index];
         let linkToOpen = currentTask.link;
 
+        // CPA Grip ke liye user_id add karo
         if (linkToOpen.includes("cpagrip.com")) {
             linkToOpen += (linkToOpen.includes("?") ? "&" : "?") + `aff_sub=${user.user_id}`;
         }
 
-        // بیلنس اپ ڈیٹ سگنل
-        fetch(`${SCRIPT_URL}?uid=${user.user_id}&amount=${currentTask.price}&source=${type.toUpperCase()}_Task_${index + 1}`, { mode: 'no-cors' });
-
+        // Link kholo
         window.open(linkToOpen, '_blank');
-        startLoadingBar(type);
+        
+        // Loading bar shuru karo
+        startLoadingBar(type, currentTask);
     }
 
-    function startLoadingBar(type) {
+    // ========== LOADING BAR ==========
+    function startLoadingBar(type, task) {
         document.getElementById('loading-overlay').style.display = 'flex';
         let p = 0;
         let oBar = document.getElementById('overlayBar');
+        
         let timer = setInterval(() => {
-            p += 1; // تھوڑی رفتار کم کی ہے تاکہ ویریفیکیشن اصلی لگے
+            p += 2; 
             oBar.style.width = p + '%';
+            
             if(p >= 100) {
                 clearInterval(timer);
-                finishTask(type);
+                finishTask(type, task);
             }
         }, 100); 
     }
 
-    function finishTask(type) {
+    // ========== TASK FINISH اور BALANCE UPDATE ==========
+    async function finishTask(type, task) {
         document.getElementById('loading-overlay').style.display = 'none';
-        stats[type]++;
-        localStorage.setItem("ps_task_stats", JSON.stringify(stats));
-        updateUI(type);
-        Swal.fire("Verified", "Earning Added to Balance!", "success");
+        
+        try {
+            // Balance update API call
+            const updateUrl = `${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=${type.toUpperCase()}_Engine&t=${new Date().getTime()}`;
+            
+            const response = await fetch(updateUrl);
+            const result = await response.json();
+            
+            if (result.status === "Success") {
+                stats[type]++;
+                localStorage.setItem("ps_task_stats", JSON.stringify(stats));
+                updateUI(type);
+                Swal.fire("Verified ✅", `Rs. ${task.price} Added to Balance!`, "success");
+            } else {
+                Swal.fire("Error", result.message || "Balance update failed!", "error");
+            }
+            
+        } catch (error) {
+            console.error("Balance update error:", error);
+            Swal.fire("Error", "Balance update me masla aya!", "error");
+        }
     }
 
+    // ========== UI UPDATE ==========
     function updateUI(type) {
         let tasks = serverTasks[type] || [];
         let total = tasks.length;
@@ -180,7 +219,9 @@
         
         let totalVal = tasks.reduce((sum, t) => sum + parseFloat(t.price || 0), 0);
         let priceSpan = document.getElementById('price-' + type);
-        if(priceSpan) priceSpan.innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks Available";
+        if(priceSpan) {
+            priceSpan.innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks";
+        }
 
         let bar = document.getElementById('bar-' + type);
         let text = document.getElementById('text-' + type);
@@ -188,10 +229,8 @@
         if(text) text.innerText = `Progress: ${done}/${total} Tasks`;
     }
 
+    // Page load hote hi tasks load karo
     window.onload = fetchTasks;
-            </script>
-
-
-
+</script>
 </body>
 </html>
