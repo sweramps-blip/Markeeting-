@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Power Star | Video Stream</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           BASE STYLES (Power Star Theme)
+           ============================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0a0e1a; /* Dark Background from your context */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Glow Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1e3a8a 0%, transparent 70%);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        /* Main Container */
+        .main-container {
+            width: 90%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #58a6ff, #bc85ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Ad Section Style */
+        .ad-frame {
+            width: 100%;
+            min-height: 250px;
+            background: #000;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid #30363d;
+        }
+
+        /* Video Section Style */
+        .video-frame {
+            width: 100%;
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #58a6ff;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+        }
+
+        .video-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .footer-text {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #8b949e;
+        }
+
+        .footer-text i {
+            color: #58a6ff;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <h1><i class="fa-solid fa-bolt"></i> Power Star</h1>
+            <p style="font-size: 14px; color: #58a6ff;">Premium Content Access</p>
+        </div>
+
+        <div class="ad-frame">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '577f75aa7d65a7ccebfa35e124c256c4',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+            </div>
+
+        <div class="video-frame">
+            <iframe 
+                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1An4dvDvcJ%2F&show_text=0&width=400" 
+                scrolling="no" 
+                frameborder="0" 
+                allowfullscreen="true" 
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+            </iframe>
+        </div>
+
+        <div class="footer-text">
+            <p><i class="fa-solid fa-lock"></i> Secure Stream Connection</p>
+        </div>
+    </div>
+
+</body>
+</html>
