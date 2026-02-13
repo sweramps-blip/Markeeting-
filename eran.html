@@ -3,105 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | Pro Auth & Quiz</title>
+    <title>Power Star | Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --p: #007bff; --bg: #0a0e1a; --c: #151b2d; --accent: #d4ff00; --text: #94a3b8; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--c); padding: 20px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #2a344d; text-align: center; margin-bottom: 15px; }
+        :root { --p: #d4ff00; --bg: #0a0e1a; --c: #151b2d; --text: #94a3b8; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; align-items: center; }
         
-        /* New Professional Sections */
-        .info-card { background: linear-gradient(135deg, #1e263d, #151b2d); text-align: left; }
-        .price-tag { font-size: 24px; font-weight: 800; color: #fff; margin: 10px 0; }
-        .guide-list { list-style: none; font-size: 13px; color: var(--text); padding: 0; }
-        .guide-list li { margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
-        .guide-list i { color: var(--accent); margin-top: 3px; }
+        .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 20px; box-sizing: border-box; }
+        
+        /* Registration Professional Look */
+        .premium-label { color: var(--p); font-size: 22px; font-weight: 800; margin-bottom: 10px; display: block; }
+        .info-txt { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 15px; }
+        
+        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #2a344d; background: #0a0e1a; color: #fff; box-sizing: border-box; }
+        .file-box { border: 2px dashed #2a344d; padding: 15px; border-radius: 12px; text-align: center; cursor: pointer; margin: 10px 0; background: rgba(255,255,255,0.02); }
+        
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .main-btn:active { transform: scale(0.97); }
 
-        .payment-box { background: rgba(212, 255, 0, 0.05); border: 1px dashed var(--accent); border-radius: 15px; padding: 15px; margin: 15px 0; text-align: center; }
-        .payment-box b { color: var(--accent); font-size: 18px; }
-
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #3d4b6e; background: #1e263d; color: #fff; box-sizing: border-box; }
-        .file-label { display: block; padding: 15px; border: 2px dashed #3d4b6e; border-radius: 12px; cursor: pointer; color: var(--text); margin-top: 10px; }
+        /* Dashboard Items */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; max-width: 380px; margin-bottom: 15px; }
+        .stat-item { background: #151b2d; padding: 12px; border-radius: 15px; border: 1px solid #2a344d; text-align: center; }
+        .stat-item b { display: block; color: var(--p); font-size: 16px; margin-top: 5px; }
         
-        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; max-width: 360px; margin-bottom: 10px; }
-        .stat { background: var(--c); padding: 10px; border-radius: 12px; border: 1px solid #2a344d; font-size: 12px; text-align: center; }
-        .stat b { display: block; color: var(--p); font-size: 15px; }
-        
-        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn { background: #1e263d; border: 1px solid #3d4b6e; padding: 15px 5px; border-radius: 12px; color: #fff; cursor: pointer; }
+        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .opt-btn { background: #1e263d; border: 1px solid #3d4b6e; padding: 15px; border-radius: 12px; color: #fff; cursor: pointer; }
         .correct { background: #2ecc71 !important; border: none; }
         .wrong { background: #e74c3c !important; border: none; }
-        
-        .main-btn { width: 100%; padding: 18px; margin-top: 15px; border-radius: 15px; border: none; background: var(--p); color: #fff; font-weight: 800; cursor: pointer; }
-        .reg-btn { background: var(--accent); color: #000; }
-        
-        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
+
+        /* Ad Sections */
+        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
+        .sticky-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #000; display: flex; justify-content: center; z-index: 100; border-top: 1px solid #2a344d; }
     </style>
 </head>
 <body>
 
-<div id="regS" style="display:none; width:100%; max-width:360px;">
-    <div class="card info-card">
-        <h2 style="color: var(--accent); font-size: 20px;">Membership Plan</h2>
-        <div class="price-tag">Rs. 200 <span style="font-size: 14px; font-weight: 400; color: var(--text);">/ Life Time</span></div>
-        <ul class="guide-list">
-            <li><i class="fas fa-bolt"></i> Daily Earning: Rs. 200 - 3000+</li>
-            <li><i class="fas fa-share-nodes"></i> Referral Bonus: Extra 50 tasks per invite.</li>
-            <li><i class="fas fa-check-double"></i> Withdraw instantly to EasyPaisa.</li>
-        </ul>
-        <div class="payment-box">
-            <p style="font-size: 13px; margin:0;">EasyPaisa: <b>03412049729</b></p>
-            <span style="font-size: 12px;">Title: Muhammad Hussain</span>
-        </div>
+<div id="regS" style="display:none; width:100%; max-width:380px;">
+    <div class="card">
+        <span class="premium-label">Official Membership</span>
+        <p class="info-txt">Fees: <b>Rs. 200</b> (Life Time)<br>Earning: Rs. 200 - 3000 Daily<br>EasyPaisa: <b>03412049729</b> (M. Hussain)</p>
+        
         <input id="n" placeholder="Full Name">
-        <input id="i" placeholder="Desired User ID">
-        <input id="trx" placeholder="11 Digit Trx ID">
-        <label for="fileInput" class="file-label" id="fileLabel">
-            <i class="fas fa-cloud-upload-alt"></i> <span id="fileName">Upload Payment Proof</span>
+        <input id="i" placeholder="Username / ID">
+        <input id="trx" placeholder="Transaction ID (11 Digits)">
+        
+        <label for="fileInput" class="file-box" id="fileLabel">
+            <i class="fas fa-image"></i> <span id="fileName">Upload Payment Proof</span>
         </label>
         <input type="file" id="fileInput" style="display: none;" accept="image/*">
-        <button class="main-btn reg-btn" onclick="reg()">SUBMIT REGISTRATION</button>
+        
+        <button class="main-btn" onclick="reg()">ACTIVATE NOW</button>
     </div>
 </div>
 
-<div id="penS" class="card" style="display:none;">
-    <i class="fas fa-clock" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
-    <h3>Account Pending</h3>
-    <p style="color: var(--text); font-size: 14px;">Your payment is being verified. Please wait for admin approval.</p>
+<div id="penS" class="card" style="display:none; text-align: center; padding: 40px 20px;">
+    <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
+    <h3>Pending Approval</h3>
+    <p style="color: var(--text); font-size: 14px;">Your payment is under review. Dashboard will open automatically after admin approval (1-6 hours).</p>
 </div>
 
-<div id="quizS" style="display:none; width:100%; max-width:360px;">
-    <div class="stats">
-        <div class="stat">Balance<b id="bal">0.00</b></div>
-        <div class="stat">Level<b id="lvl">1</b></div>
-        <div class="stat">Limit<b id="lim">0/200</b></div>
+<div id="quizS" style="display:none; width:100%; max-width:380px;">
+    <div class="stats-grid">
+        <div class="stat-item">Balance<b id="bal">0.00</b></div>
+        <div class="stat-item">Level<b id="lvl">1</b></div>
+        <div class="stat-item">Limit<b id="lim">0/200</b></div>
     </div>
+    
     <div class="card">
-        <div id="qT" style="font-size: 18px; direction: rtl;">Loading...</div>
+        <div id="qT" style="font-size: 18px; direction: rtl; font-weight: 600;">Loading...</div>
         <div class="opt-grid" id="qG"></div>
+        <button class="main-btn" id="mB" style="margin-top: 25px;" onclick="h()">SUBMIT ANSWER</button>
     </div>
-    <button class="main-btn" id="mB" onclick="h()">SUBMIT ANSWER</button>
+
+    <div class="card" style="padding: 15px; border-style: dashed;">
+        <h4 style="margin:0 0 10px 0; color:var(--p); font-size:14px;">Earning Rules:</h4>
+        <div style="font-size: 12px; color: var(--text); line-height: 1.5;">
+            • Level 1: 0.40 Reward / 0.20 Penalty<br>
+            • Level 2: 0.50 Reward / 0.25 Penalty (5 Refs)<br>
+            • Level 3: 0.60 Reward / 0.30 Penalty (10 Refs)<br>
+            • Referral Bonus: +50 Daily Tasks
+        </div>
+    </div>
 </div>
 
 <div id="adBox">
-    <div id="aT" style="margin-bottom:20px; font-weight:bold;">Ad Closing in 20s...</div>
-    <div id="adContainer" style="width:300px; height:250px; background:#fff;">
-        <script type="text/javascript">atOptions={'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':250,'width':300,'params':{}};</script>
-        <script src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+    <div id="aT" style="margin-bottom:20px; font-weight:bold; color: var(--p);">Ad Closing in 20s...</div>
+    <div id="adContainer">
+        <script type="text/javascript">
+            atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
     </div>
-    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:#2ecc71; border:none; color:#fff; border-radius:20px;">CLOSE AD</button>
+    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; color:#000; border-radius:20px; font-weight:bold;">CLOSE AD</button>
+</div>
+
+<div class="sticky-ad">
+    <script type="text/javascript">
+        atOptions = { 'key' : '8e5d0a2f589886f4a8e80735048956e1', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/8e5d0a2f589886f4a8e80735048956e1/invoke.js"></script>
 </div>
 
 <script>
     const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
-    const IMBB_KEY = "14d35273fb4122ebb999baa08057f3f0"; // یہاں اپنی API کی لگائیں
+    const IMBB_KEY = "14d35273fb4122ebb999baa08057f3f0"; 
     
     let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
     let conf, limit, qs = [], cur, sel;
 
-    // File selection display
     document.getElementById('fileInput').onchange = function() {
         document.getElementById('fileName').innerText = this.files[0].name;
     };
@@ -112,36 +123,36 @@
             let r = await fetch(URL + "?checkID=" + u.id);
             let res = await r.json();
             if (res === "NotFound") show("regS");
-            else if (res.status === "Pending") show("penS");
+            else if (res.status === "Pending") show("penS"); // Properly locks the dashboard
             else { u.refs = res.referrals; setup(); }
         } catch(e) { show("regS"); }
     }
 
-    function show(id) { document.getElementById(id).style.display = "block"; }
+    function show(id) { 
+        ["regS", "penS", "quizS"].forEach(s => document.getElementById(s).style.display = "none");
+        document.getElementById(id).style.display = "block"; 
+    }
 
     async function reg() {
         let n = document.getElementById("n").value, id = document.getElementById("i").value, 
             trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
         
-        if (!n || !id || !trx || !file) return Swal.fire("Error", "Fill all fields & upload proof", "error");
+        if (!n || !id || !trx || !file) return Swal.fire("Required", "All fields + Proof image", "warning");
 
-        Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
+        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
 
         try {
-            // Upload to ImgBB
             let fd = new FormData(); fd.append("image", file);
             let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
             let imgD = await imgR.json();
-            let proofUrl = imgD.data.url;
-
-            // Send to Script
+            
             await fetch(URL, { method: "POST", body: JSON.stringify({ 
-                type: "reg", id: id, name: n, trx: trx, proof: proofUrl, refBy: "" 
+                type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url 
             }) });
 
             localStorage.setItem("psID", id);
-            Swal.fire("Success", "Registered! Waiting for approval.", "success").then(()=>location.reload());
-        } catch(e) { Swal.fire("Error", "Submission failed", "error"); }
+            Swal.fire("Done", "Waiting for Admin Approval", "success").then(()=>location.reload());
+        } catch(e) { Swal.fire("Error", "Check Connection", "error"); }
     }
 
     function setup() {
@@ -153,28 +164,31 @@
         load();
     }
 
-    async function load() {
-        let r = await fetch(URL); qs = await r.json(); next();
-    }
+    async function load() { let r = await fetch(URL); qs = await r.json(); next(); }
 
     function next() {
-        if (u.p >= limit) { Swal.fire("Task Completed!"); return report(); }
+        if (u.p >= limit) { Swal.fire("Limit Done!"); return report(); }
         sel = null; document.getElementById("mB").innerText = "SUBMIT ANSWER";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
-        let h = ""; cur.a.forEach((o, i) => { h += `<button class="btn" onclick="s(${i}, this)">${o}</button>`; });
+        let h = ""; cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h; updateUI();
     }
 
-    function s(i, b) { if(document.getElementById("mB").innerText==="NEXT QUESTION") return; sel={i, b}; document.querySelectorAll(".btn").forEach(x=>x.style.border="1px solid #3d4b6e"); b.style.border="2px solid var(--p)"; }
+    function s(i, b) { 
+        if(document.getElementById("mB").innerText==="NEXT") return; 
+        sel={i, b}; 
+        document.querySelectorAll(".opt-btn").forEach(x=>x.style.border="1px solid #3d4b6e"); 
+        b.style.border="2px solid var(--p)"; 
+    }
 
     function h() {
         let b = document.getElementById("mB");
-        if (b.innerText === "NEXT QUESTION") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
+        if (b.innerText === "NEXT") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
         if (!sel) return;
         if (sel.i == cur.c) { sel.b.classList.add("correct"); u.e += conf.r; }
-        else { sel.b.classList.add("wrong"); u.d += conf.p; document.querySelectorAll(".btn")[cur.c].classList.add("correct"); }
-        b.innerText = "NEXT QUESTION";
+        else { sel.b.classList.add("wrong"); u.d += conf.p; document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); }
+        b.innerText = "NEXT";
     }
 
     function triggerAd() {
@@ -193,9 +207,7 @@
         document.getElementById("lim").innerText = u.p + "/" + limit;
     }
 
-    async function report() {
-        await fetch(URL, { method: "POST", body: JSON.stringify({ id: u.id, earned: u.e, deducted: u.d }) });
-    }
+    async function report() { await fetch(URL, { method: "POST", body: JSON.stringify({ id: u.id, earned: u.e, deducted: u.d }) }); }
 
     init();
 </script>
