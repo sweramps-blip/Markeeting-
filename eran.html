@@ -417,207 +417,61 @@
     </div>
     <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; color:#000; border-radius:20px; font-weight:bold;">CLOSE AD</button>
 </div>
-
-<!-- ============ STICKY AD ============ -->
-<div class="sticky-ad">
-    <script type="text/javascript">
-        atOptions = { 'key' : '8e5d0a2f589886f4a8e80735048956e1', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/8e5d0a2f589886f4a8e80735048956e1/invoke.js"></script>
-</div>
 <script>
-    const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
-    const IMBB_KEY = "14d35273fb4122ebb999baa08057f3f0"; 
-    
-    // یوزر کا ڈیٹا اسٹیٹ
-    let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
-    let conf, limit, qs = [], cur, sel;
-
-    // 1. ایڈ بلاکر چیک کرنے کا ٹول
-    function checkAdBlock() {
-        let adTest = document.createElement('div');
-        adTest.innerHTML = '&nbsp;';
-        adTest.className = 'adsbox';
-        document.body.appendChild(adTest);
-        window.setTimeout(function() {
-            if (adTest.offsetHeight === 0) {
-                Swal.fire({
-                    title: 'AdBlock Detected!',
-                    text: 'براہ کرم اپنا ایڈ بلاکر بند کریں ورنہ آپ کی ارننگ کاؤنٹ نہیں ہوگی۔',
-                    icon: 'error',
-                    allowOutsideClick: false
-                }).then(() => location.reload());
-            }
-            adTest.remove();
-        }, 100);
+    // ٹیسٹنگ کے لیے سکرین پر میسج دکھانے والا فنکشن
+    function logStatus(msg, color = "white") {
+        let div = document.getElementById("debugLog");
+        if(!div) {
+            div = document.createElement("div");
+            div.id = "debugLog";
+            div.style = "position:fixed; top:0; left:0; width:100%; background:rgba(0,0,0,0.9); color:white; z-index:10000; font-size:12px; padding:10px; border-bottom:2px solid var(--p); word-break:break-all;";
+            document.body.appendChild(div);
+        }
+        div.innerHTML += `<div style="color:${color}">> ${msg}</div>`;
     }
 
-    // 2. سسٹم شروع کرنا (Login/Reg Logic)
     async function init() {
-        checkAdBlock(); // پہلے ایڈ بلاکر چیک کرو
-        if (!u.id) return show("regS");
+        logStatus("System Initializing...", "yellow");
+        
+        // 1. Check ID in LocalStorage
+        logStatus("Checking ID: " + u.id);
+        if (!u.id) {
+            logStatus("No ID found, showing Registration Form", "orange");
+            return show("regS");
+        }
 
         try {
-            // سرور سے اسٹیٹس چیک کرنا تاکہ کوئی دھوکہ نہ دے سکے
+            logStatus("Connecting to Google Script... Please wait.", "#d4ff00");
+            
+            // 2. Fetch from Apps Script
             let r = await fetch(URL + "?checkID=" + u.id);
+            logStatus("Response received from Server", "green");
+            
             let res = await r.json();
+            logStatus("Server Response: " + JSON.stringify(res), "cyan");
 
             if (res === "NotFound") {
+                logStatus("ID not found in Sheet", "red");
                 localStorage.removeItem("psID");
                 show("regS");
             } else if (res.status === "Pending") {
-                show("penS"); // ایک بار فیس دے دی تو پینڈنگ دکھاؤ
+                logStatus("Status is Pending. Showing Pending Screen", "orange");
+                show("penS");
             } else if (res.status === "Approved") {
+                logStatus("Status Approved! Loading Dashboard...", "green");
                 u.refs = res.referrals || 0;
-                setup(); // اپروو ہو گیا تو ڈیش بورڈ
+                setup();
             }
         } catch(e) { 
-            console.log("Sync Error");
+            logStatus("CRITICAL ERROR: " + e.message, "red");
+            logStatus("Check if your Apps Script URL is correct and deployed as 'Anyone'.", "white");
             show("regS"); 
         }
     }
 
-    function show(id) { 
-        ["regS", "penS", "quizS"].forEach(s => document.getElementById(s).style.display = "none");
-        document.getElementById(id).style.display = "block"; 
-    }
+    // باقی پرانا کوڈ نیچے رہنے دیں (setup, next, load وغیرہ)
+                      </script>
 
-    // 3. رجسٹریشن لاجک
-    async function reg() {
-        let n = document.getElementById("n").value, 
-            id = document.getElementById("i").value, 
-            trx = document.getElementById("trx").value, 
-            file = document.getElementById("fileInput").files[0];
-        
-        if (!n || !id || !trx || !file) return Swal.fire("Required", "تمام معلومات اور اسکرین شاٹ لازمی ہے", "warning");
-        if (trx.length < 11) return Swal.fire("Invalid Trx", "ٹرانزیکشن آئی ڈی 11 ہندسوں کی ہونی چاہیے", "error");
-
-        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading(), allowOutsideClick: false});
-
-        try {
-            let fd = new FormData(); fd.append("image", file);
-            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
-            let imgD = await imgR.json();
-            
-            let response = await fetch(URL, { method: "POST", body: JSON.stringify({ 
-                type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url 
-            }) });
-
-            if(response.ok) {
-                localStorage.setItem("psID", id);
-                Swal.fire("Success", "آپ کی درخواست موصول ہو گئی ہے۔ 6 سے 12 گھنٹوں میں اکاؤنٹ ایکٹیویٹ ہو جائے گا۔", "success")
-                .then(()=>location.reload());
-            }
-        } catch(e) { Swal.fire("Error", "سرور سے رابطہ نہیں ہو سکا", "error"); }
-    }
-
-    // 4. لیول اور سوالات کی لمٹ سیٹ کرنا
-    function setup() {
-        show("quizS");
-        // لیول لاجک آپ کی ہدایت کے مطابق
-        if (u.refs >= 10) conf = { l: 3, r: 0.60, p: 0.30 };
-        else if (u.refs >= 5) conf = { l: 2, r: 0.50, p: 0.25 };
-        else conf = { l: 1, r: 0.40, p: 0.20 };
-
-        // ریفرل بونس: 200 بیسک + (ہر ریفرل پر 50 سوال)
-        limit = 200 + (u.refs * 50);
-        
-        document.getElementById("reward").innerText = conf.r.toFixed(2);
-        load();
-    }
-
-    async function load() { 
-        try {
-            let r = await fetch(URL); 
-            qs = await r.json(); 
-            next(); 
-        } catch(e) { console.log("Quiz Load Error"); }
-    }
-
-    function next() {
-        if (u.p >= limit) { 
-            Swal.fire("Today's Limit Done!", "آپ کے آج کے سوالات مکمل ہو گئے۔ بیلنس شیٹ میں اپڈیٹ ہو رہا ہے۔", "info"); 
-            return report(); 
-        }
-        sel = null; 
-        document.getElementById("mB").innerHTML = '<i class="fas fa-paper-plane"></i> SUBMIT ANSWER';
-        cur = qs[Math.floor(Math.random() * qs.length)];
-        document.getElementById("qT").innerText = cur.q;
-        let h = ""; 
-        cur.a.forEach((o, i) => { 
-            h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; 
-        });
-        document.getElementById("qG").innerHTML = h; 
-        updateUI();
-    }
-
-    function s(i, b) { 
-        if(document.getElementById("mB").innerText.includes("NEXT")) return; 
-        sel={i, b}; 
-        document.querySelectorAll(".opt-btn").forEach(x=>x.style.border="2px solid #3d4b6e"); 
-        b.style.border="2px solid var(--p)"; 
-    }
-
-    function h() {
-        let b = document.getElementById("mB");
-        if (b.innerText.includes("NEXT")) { 
-            u.p++; 
-            u.ad++; 
-            // ہر 10 سوال بعد فل اسکرین ایڈ
-            if (u.ad >= 10) triggerAd(); 
-            else next(); 
-            return; 
-        }
-        if (!sel) return;
-        if (sel.i == cur.c) { 
-            sel.b.classList.add("correct"); 
-            u.e += conf.r; 
-        } else { 
-            sel.b.classList.add("wrong"); 
-            u.d += conf.p; 
-            document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); 
-        }
-        b.innerHTML = '<i class="fas fa-arrow-right"></i> NEXT';
-    }
-
-    // 5. ایڈسٹیرا فل اسکرین ایڈ لاجک (20 سیکنڈ ٹائمر)
-    function triggerAd() {
-        document.getElementById("adBox").style.display = "flex";
-        let sec = 20; 
-        let t = setInterval(() => {
-            sec--; 
-            document.getElementById("aT").innerText = `Ad Closing in ${sec}s...`;
-            if (sec <= 0) { 
-                clearInterval(t); 
-                document.getElementById("cB").style.display = "block"; 
-            }
-        }, 1000);
-    }
-
-    function cA() { 
-        document.getElementById("adBox").style.display="none"; 
-        document.getElementById("cB").style.display="none"; 
-        u.ad=0; 
-        next(); 
-    }
-
-    function updateUI() {
-        document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
-        document.getElementById("earned").innerText = u.e.toFixed(2);
-        document.getElementById("deducted").innerText = u.d.toFixed(2);
-        document.getElementById("lvl").innerText = conf.l;
-        document.getElementById("lim").innerText = u.p + "/" + limit;
-    }
-
-    // 6. ڈیٹا سرور پر بھیجنا
-    async function report() { 
-        await fetch(URL, { method: "POST", body: JSON.stringify({ 
-            id: u.id, earned: u.e, deducted: u.d 
-        }) }); 
-    }
-
-    init();
-</script>
 
 </body>
 </html>
