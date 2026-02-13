@@ -1,49 +1,88 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | Pro System</title>
+    <title>Power Star | Pro Auth & Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --p: #007bff; --bg: #0a0e1a; --c: #151b2d; }
+        :root { --p: #007bff; --bg: #0a0e1a; --c: #151b2d; --accent: #d4ff00; --text: #94a3b8; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--c); padding: 20px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #2a344d; text-align: center; }
+        .card { background: var(--c); padding: 20px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #2a344d; text-align: center; margin-bottom: 15px; }
+        
+        /* New Professional Sections */
+        .info-card { background: linear-gradient(135deg, #1e263d, #151b2d); text-align: left; }
+        .price-tag { font-size: 24px; font-weight: 800; color: #fff; margin: 10px 0; }
+        .guide-list { list-style: none; font-size: 13px; color: var(--text); padding: 0; }
+        .guide-list li { margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
+        .guide-list i { color: var(--accent); margin-top: 3px; }
+
+        .payment-box { background: rgba(212, 255, 0, 0.05); border: 1px dashed var(--accent); border-radius: 15px; padding: 15px; margin: 15px 0; text-align: center; }
+        .payment-box b { color: var(--accent); font-size: 18px; }
+
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #3d4b6e; background: #1e263d; color: #fff; box-sizing: border-box; }
+        .file-label { display: block; padding: 15px; border: 2px dashed #3d4b6e; border-radius: 12px; cursor: pointer; color: var(--text); margin-top: 10px; }
+        
         .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; max-width: 360px; margin-bottom: 10px; }
-        .stat { background: var(--c); padding: 10px; border-radius: 12px; border: 1px solid #2a344d; font-size: 12px; }
+        .stat { background: var(--c); padding: 10px; border-radius: 12px; border: 1px solid #2a344d; font-size: 12px; text-align: center; }
         .stat b { display: block; color: var(--p); font-size: 15px; }
+        
         .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn { background: #1e263d; border: 1px solid #3d4b6e; padding: 15px 5px; border-radius: 12px; color: #fff; cursor: pointer; }
         .correct { background: #2ecc71 !important; border: none; }
         .wrong { background: #e74c3c !important; border: none; }
+        
         .main-btn { width: 100%; padding: 18px; margin-top: 15px; border-radius: 15px; border: none; background: var(--p); color: #fff; font-weight: 800; cursor: pointer; }
+        .reg-btn { background: var(--accent); color: #000; }
+        
         #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
     </style>
 </head>
 <body>
 
-<div id="regS" class="card" style="display:none;">
-    <h3>رجسٹریشن (فیس: ₹200)</h3>
-    <input id="n" placeholder="نام"> <input id="i" placeholder="آئی ڈی"> <input id="r" placeholder="ریفرل آئی ڈی">
-    <button class="main-btn" onclick="reg()">رجسٹر کریں</button>
+<div id="regS" style="display:none; width:100%; max-width:360px;">
+    <div class="card info-card">
+        <h2 style="color: var(--accent); font-size: 20px;">Membership Plan</h2>
+        <div class="price-tag">Rs. 200 <span style="font-size: 14px; font-weight: 400; color: var(--text);">/ Life Time</span></div>
+        <ul class="guide-list">
+            <li><i class="fas fa-bolt"></i> Daily Earning: Rs. 200 - 3000+</li>
+            <li><i class="fas fa-share-nodes"></i> Referral Bonus: Extra 50 tasks per invite.</li>
+            <li><i class="fas fa-check-double"></i> Withdraw instantly to EasyPaisa.</li>
+        </ul>
+        <div class="payment-box">
+            <p style="font-size: 13px; margin:0;">EasyPaisa: <b>03412049729</b></p>
+            <span style="font-size: 12px;">Title: Muhammad Hussain</span>
+        </div>
+        <input id="n" placeholder="Full Name">
+        <input id="i" placeholder="Desired User ID">
+        <input id="trx" placeholder="11 Digit Trx ID">
+        <label for="fileInput" class="file-label" id="fileLabel">
+            <i class="fas fa-cloud-upload-alt"></i> <span id="fileName">Upload Payment Proof</span>
+        </label>
+        <input type="file" id="fileInput" style="display: none;" accept="image/*">
+        <button class="main-btn reg-btn" onclick="reg()">SUBMIT REGISTRATION</button>
+    </div>
 </div>
 
 <div id="penS" class="card" style="display:none;">
-    <h3>اکاؤنٹ پینڈنگ ہے</h3>
-    <p>فیس کی تصدیق کے بعد آپ کا اکاؤنٹ ایکٹیو کر دیا جائے گا۔</p>
+    <i class="fas fa-clock" style="font-size: 40px; color: var(--accent); margin-bottom: 15px;"></i>
+    <h3>Account Pending</h3>
+    <p style="color: var(--text); font-size: 14px;">Your payment is being verified. Please wait for admin approval.</p>
 </div>
 
 <div id="quizS" style="display:none; width:100%; max-width:360px;">
     <div class="stats">
-        <div class="stat">Net Balance<b id="bal">0.00</b></div>
+        <div class="stat">Balance<b id="bal">0.00</b></div>
         <div class="stat">Level<b id="lvl">1</b></div>
         <div class="stat">Limit<b id="lim">0/200</b></div>
     </div>
     <div class="card">
-        <div id="qT" style="font-size: 18px; direction: rtl;">لوڈنگ...</div>
+        <div id="qT" style="font-size: 18px; direction: rtl;">Loading...</div>
         <div class="opt-grid" id="qG"></div>
     </div>
-    <button class="main-btn" id="mB" onclick="h()">جمع کریں</button>
+    <button class="main-btn" id="mB" onclick="h()">SUBMIT ANSWER</button>
 </div>
 
 <div id="adBox">
@@ -52,30 +91,57 @@
         <script type="text/javascript">atOptions={'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':250,'width':300,'params':{}};</script>
         <script src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
     </div>
-    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:#2ecc71; border:none; color:#fff; border-radius:20px;">CLOSE</button>
+    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:#2ecc71; border:none; color:#fff; border-radius:20px;">CLOSE AD</button>
 </div>
 
 <script>
-    const URL = "YOUR_DEPLOYED_URL"; // اپنا اسکرپٹ یو آر ایل یہاں لگائیں
+    const URL = "https://script.google.com/macros/s/AKfycbw-EgUC0YUdCuEJpLaK5BcEkccU7aRY3DI_ZMHPR-T_3ajzYEci6x16r1lcdFQRD0wV/exec";
+    const IMBB_KEY = "YOUR_IMBB_API_KEY"; // یہاں اپنی API کی لگائیں
+    
     let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
     let conf, limit, qs = [], cur, sel;
 
+    // File selection display
+    document.getElementById('fileInput').onchange = function() {
+        document.getElementById('fileName').innerText = this.files[0].name;
+    };
+
     async function init() {
         if (!u.id) return show("regS");
-        let r = await fetch(URL + "?checkID=" + u.id);
-        let res = await r.json();
-        if (res === "NotFound") show("regS");
-        else if (res.status === "Pending") show("penS");
-        else { u.refs = res.referrals; setup(); }
+        try {
+            let r = await fetch(URL + "?checkID=" + u.id);
+            let res = await r.json();
+            if (res === "NotFound") show("regS");
+            else if (res.status === "Pending") show("penS");
+            else { u.refs = res.referrals; setup(); }
+        } catch(e) { show("regS"); }
     }
 
     function show(id) { document.getElementById(id).style.display = "block"; }
 
     async function reg() {
-        let name = document.getElementById("n").value, id = document.getElementById("i").value, ref = document.getElementById("r").value;
-        if (!name || !id) return alert("ڈیٹا بھریں!");
-        await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: name, refBy: ref }) });
-        localStorage.setItem("psID", id); location.reload();
+        let n = document.getElementById("n").value, id = document.getElementById("i").value, 
+            trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
+        
+        if (!n || !id || !trx || !file) return Swal.fire("Error", "Fill all fields & upload proof", "error");
+
+        Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
+
+        try {
+            // Upload to ImgBB
+            let fd = new FormData(); fd.append("image", file);
+            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
+            let imgD = await imgR.json();
+            let proofUrl = imgD.data.url;
+
+            // Send to Script
+            await fetch(URL, { method: "POST", body: JSON.stringify({ 
+                type: "reg", id: id, name: n, trx: trx, proof: proofUrl, refBy: "" 
+            }) });
+
+            localStorage.setItem("psID", id);
+            Swal.fire("Success", "Registered! Waiting for approval.", "success").then(()=>location.reload());
+        } catch(e) { Swal.fire("Error", "Submission failed", "error"); }
     }
 
     function setup() {
@@ -92,23 +158,23 @@
     }
 
     function next() {
-        if (u.p >= limit) { alert("ٹاسک مکمل!"); return report(); }
-        sel = null; document.getElementById("mB").innerText = "جمع کریں";
+        if (u.p >= limit) { Swal.fire("Task Completed!"); return report(); }
+        sel = null; document.getElementById("mB").innerText = "SUBMIT ANSWER";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
         let h = ""; cur.a.forEach((o, i) => { h += `<button class="btn" onclick="s(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h; updateUI();
     }
 
-    function s(i, b) { if(document.getElementById("mB").innerText==="اگلا سوال") return; sel={i, b}; document.querySelectorAll(".btn").forEach(x=>x.style.border="1px solid #3d4b6e"); b.style.border="2px solid #007bff"; }
+    function s(i, b) { if(document.getElementById("mB").innerText==="NEXT QUESTION") return; sel={i, b}; document.querySelectorAll(".btn").forEach(x=>x.style.border="1px solid #3d4b6e"); b.style.border="2px solid var(--p)"; }
 
     function h() {
         let b = document.getElementById("mB");
-        if (b.innerText === "اگلا سوال") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
+        if (b.innerText === "NEXT QUESTION") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
         if (!sel) return;
         if (sel.i == cur.c) { sel.b.classList.add("correct"); u.e += conf.r; }
         else { sel.b.classList.add("wrong"); u.d += conf.p; document.querySelectorAll(".btn")[cur.c].classList.add("correct"); }
-        b.innerText = "اگلا سوال";
+        b.innerText = "NEXT QUESTION";
     }
 
     function triggerAd() {
