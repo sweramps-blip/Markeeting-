@@ -3,149 +3,621 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | Earn</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Power Star | Official</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --blue: #007bff; --bg: #f4f7f6; --white: #ffffff; --text: #333; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        :root { --p: #d4ff00; --bg: #0a0e1a; --c: #151b2d; --text: #94a3b8; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; align-items: center; }
         
-        /* Blue Top Bar - As per your screenshot */
-        .header-bar { width: 100%; max-width: 400px; background: var(--blue); padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; font-weight: 700; border-radius: 0 0 15px 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-
-        .container { width: 100%; max-width: 400px; padding: 15px; box-sizing: border-box; }
+        .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 15px; box-sizing: border-box; }
         
-        /* White Card Design */
-        .white-card { background: var(--white); padding: 25px; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; margin-top: 10px; border: 1px solid #e0e0e0; }
-
-        .input-field { width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; background: #fff; font-size: 14px; box-sizing: border-box; }
-
-        .q-text { font-size: 20px; direction: rtl; margin: 25px 0; font-weight: 700; color: #000; line-height: 1.5; }
-        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .opt-btn { background: #f8f9fa; border: 1px solid #ddd; padding: 16px; border-radius: 12px; color: #333; cursor: pointer; font-weight: 600; font-size: 14px; }
+        /* ============ REGISTRATION SECTION (SIMPLE ONE CARD) ============ */
+        #regS { width: 100%; max-width: 380px; }
         
-        .correct { background: #28a745 !important; color: white !important; }
-        .wrong { background: #dc3545 !important; color: white !important; }
-
-        .submit-btn { width: 100%; background: var(--blue); color: white; padding: 18px; border: none; border-radius: 15px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
-
-        .ad-area { width: 100%; background: #fff; border-radius: 10px; margin: 20px 0; border: 1px dashed #bbb; display: flex; justify-content: center; align-items: center; min-height: 250px; }
+        .reg-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .reg-header h1 {
+            font-size: 26px;
+            color: var(--p);
+            margin: 0 0 8px 0;
+            font-weight: 800;
+        }
+        
+        .reg-header p {
+            color: var(--text);
+            font-size: 13px;
+            margin: 0;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .info-box p {
+            color: white;
+            font-size: 13px;
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+        
+        .info-box b {
+            color: var(--p);
+        }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 8px 0; 
+            border-radius: 12px; 
+            border: 1px solid #2a344d; 
+            background: #0a0e1a; 
+            color: #fff; 
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--p);
+        }
+        
+        /* File Upload Box with Button on Side */
+        .file-box { 
+            border: 2px dashed #2a344d; 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin: 10px 0; 
+            background: rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .file-box:hover {
+            border-color: var(--p);
+        }
+        
+        .file-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-info i {
+            font-size: 28px;
+            color: var(--p);
+        }
+        
+        #fileName {
+            color: var(--text);
+            font-size: 13px;
+        }
+        
+        .upload-btn {
+            background: var(--p);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            border: none;
+        }
+        
+        .upload-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .main-btn { 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 15px; 
+            border: none; 
+            background: var(--p); 
+            color: #000; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-size: 16px;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(212, 255, 0, 0.4);
+        }
+        
+        .main-btn:active { 
+            transform: scale(0.97); 
+        }
+        
+        /* ============ QUIZ SECTION (BETTER STRUCTURE) ============ */
+        #quizS { width: 100%; max-width: 380px; }
+        
+        /* Top Stats Cards (2 cards) */
+        .top-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .info-card h4 {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        
+        .info-card .value {
+            font-size: 22px;
+            color: white;
+            font-weight: 800;
+        }
+        
+        .info-card .sub {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 5px;
+        }
+        
+        /* Stats Mini Bar */
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-box {
+            background: #151b2d;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #2a344d;
+        }
+        
+        .stat-box small {
+            display: block;
+            font-size: 10px;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+        
+        .stat-box b {
+            display: block;
+            color: var(--p);
+            font-size: 16px;
+        }
+        
+        /* Question Card */
+        .question-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        /* Options Grid (4 buttons 2x2) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .opt-btn {
+            background: #1e263d;
+            border: 2px solid #3d4b6e;
+            padding: 18px 12px;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .opt-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .correct { 
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%) !important; 
+            border-color: #2ecc71 !important;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .wrong { 
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important; 
+            border-color: #e74c3c !important;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        /* Submit Button (Between options and banner) */
+        .submit-section {
+            margin-bottom: 15px;
+        }
+        
+        /* Banner Card (Beautiful) */
+        .banner-card {
+            background: linear-gradient(135deg, #FFD93D 0%, #FFC107 100%);
+            padding: 18px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.4);
+            border: 2px solid #FFA000;
+        }
+        
+        .banner-card h4 {
+            color: #f57c00;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        
+        .banner-info {
+            font-size: 12px;
+            color: #e65100;
+            line-height: 1.6;
+        }
+        
+        .banner-info b {
+            color: #bf360c;
+        }
+        
+        /* Ad Overlay */
+        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
+        .sticky-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #000; display: flex; justify-content: center; z-index: 100; border-top: 1px solid #2a344d; }
     </style>
 </head>
 <body>
 
-<div class="header-bar" id="topBar" style="display:none;">
-    <div>Rs. <span id="bal">0.00</span></div>
-    <div>Limit: <span id="taskDone">0</span>/200</div>
+<!-- ============ REGISTRATION SECTION (ONE SIMPLE CARD) ============ -->
+<div id="regS" style="display:none;">
+    <div class="card">
+        <div class="reg-header">
+            <h1>💎 OFFICIAL MEMBERSHIP</h1>
+            <p>Start Your Earning Journey Today</p>
+        </div>
+        
+        <div class="info-box">
+            <p>Fees: <b>Rs. 200</b> (Life Time)</p>
+            <p>Earning: <b>Rs. 5000 - 50000 Monthly</b></p>
+            <p>EasyPaisa: <b>03412049729</b> (Muhammad Hussain)</p>
+        </div>
+        
+        <input id="n" placeholder="Full Name">
+        <input id="i" placeholder="Username / ID">
+        <input id="trx" placeholder="Transaction ID (11 Digits)">
+        
+        <div class="file-box">
+            <div class="file-info">
+                <i class="fas fa-image"></i>
+                <span id="fileName">No file chosen</span>
+            </div>
+            <label for="fileInput">
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    CHOOSE FILE
+                </button>
+            </label>
+        </div>
+        <input type="file" id="fileInput" style="display: none;" accept="image/*">
+        
+        <button class="main-btn" onclick="reg()">
+            <i class="fas fa-bolt"></i> ACTIVATE NOW
+        </button>
+    </div>
 </div>
 
-<div class="container">
-    <div id="regS" class="white-card">
-        <h2 style="color:var(--blue); margin-bottom:10px;">Power Star</h2>
-        <input id="uName" class="input-field" placeholder="Full Name">
-        <input id="uId" class="input-field" placeholder="User ID">
-        <input id="uTrx" class="input-field" placeholder="11-Digit Trx ID">
-        <div style="text-align:left; font-size:12px; color:#888; margin-top:10px;">Upload Payment Screenshot:</div>
-        <input type="file" id="uFile" class="input-field" style="border:none;">
-        <button class="submit-btn" onclick="register()">ACTIVATE NOW</button>
-    </div>
-
-    <div id="penS" class="white-card" style="display:none;">
-        <div style="font-size:50px; color:var(--blue);">⏳</div>
-        <h3>Approval Pending</h3>
-        <p style="color:#666;">Admin is verifying your payment. Check back in 1-6 hours.</p>
-    </div>
-
-    <div id="quizS" style="display:none;">
-        <div class="white-card">
-            <div id="qT" class="q-text">سوال لوڈ ہو رہا ہے...</div>
-            <div id="qG" class="opt-grid"></div>
-        </div>
-
-        <div class="ad-area">
-            <script type="text/javascript">
-                atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
-        </div>
-
-        <button class="submit-btn" id="mB" onclick="handleBtn()">جواب جمع کریں</button>
-    </div>
+<!-- ============ PENDING APPROVAL ============ -->
+<div id="penS" class="card" style="display:none; text-align: center; padding: 40px 20px;">
+    <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
+    <h3>Pending Approval</h3>
+    <p style="color: var(--text); font-size: 14px;">Your payment is under review. Dashboard will open automatically after admin approval (1-6 hours).</p>
 </div>
 
+<!-- ============ QUIZ SECTION (BETTER STRUCTURE) ============ -->
+<div id="quizS" style="display:none;">
+    
+    <!-- Top 2 Cards -->
+    <div class="top-cards">
+        <div class="info-card">
+            <h4>Current Balance</h4>
+            <div class="value" id="bal">0.00</div>
+            <div class="sub">Level <span id="lvl">1</span></div>
+        </div>
+        <div class="info-card">
+            <h4>Today's Limit</h4>
+            <div class="value" id="lim">0/200</div>
+            <div class="sub">Questions</div>
+        </div>
+    </div>
+    
+    <!-- Mini Stats Bar -->
+    <div class="stats-mini">
+        <div class="stat-box">
+            <small>EARNED</small>
+            <b id="earned">0.00</b>
+        </div>
+        <div class="stat-box">
+            <small>DEDUCTED</small>
+            <b id="deducted">0.00</b>
+        </div>
+        <div class="stat-box">
+            <small>REWARD</small>
+            <b id="reward">0.40</b>
+        </div>
+    </div>
+    
+    <!-- Question Card -->
+    <div class="question-card">
+        <div class="question-text" id="qT">Loading...</div>
+    </div>
+    
+    <!-- Options Grid (4 buttons) -->
+    <div class="options-grid" id="qG"></div>
+    
+    <!-- Submit Button -->
+    <div class="submit-section">
+        <button class="main-btn" id="mB" onclick="h()">
+            <i class="fas fa-paper-plane"></i> SUBMIT ANSWER
+        </button>
+    </div>
+    
+    <!-- Banner Card (Beautiful) -->
+    <div class="banner-card">
+        <h4>📋 EARNING RULES</h4>
+        <div class="banner-info">
+            • Level 1: <b>0.40</b> Reward / <b>0.20</b> Penalty<br>
+            • Level 2: <b>0.50</b> Reward / <b>0.25</b> Penalty (5 Refs)<br>
+            • Level 3: <b>0.60</b> Reward / <b>0.30</b> Penalty (10 Refs)<br>
+            • Referral Bonus: <b>+50 Daily Tasks</b>
+        </div>
+    </div>
+    
+</div>
+
+<!-- ============ AD OVERLAY ============ -->
+<div id="adBox">
+    <div id="aT" style="margin-bottom:20px; font-weight:bold; color: var(--p);">Ad Closing in 20s...</div>
+    <div id="adContainer">
+        <script type="text/javascript">
+            atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+    </div>
+    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; color:#000; border-radius:20px; font-weight:bold;">CLOSE AD</button>
+</div>
+
+<!-- ============ STICKY AD ============ -->
+<div class="sticky-ad">
+    <script type="text/javascript">
+        atOptions = { 'key' : '8e5d0a2f589886f4a8e80735048956e1', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/8e5d0a2f589886f4a8e80735048956e1/invoke.js"></script>
+</div>
 <script>
-    const API = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
-    const IMBB = "14d35273fb4122ebb999baa08057f3f0";
-    let uId = localStorage.getItem("psID"), questions = [], cur, sel, score = 0, done = 0;
+    const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
+    const IMBB_KEY = "14d35273fb4122ebb999baa08057f3f0"; 
+    
+    // یوزر کا ڈیٹا اسٹیٹ
+    let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
+    let conf, limit, qs = [], cur, sel;
 
-    async function checkStatus() {
-        if (!uId) return show("regS");
+    // 1. ایڈ بلاکر چیک کرنے کا ٹول
+    function checkAdBlock() {
+        let adTest = document.createElement('div');
+        adTest.innerHTML = '&nbsp;';
+        adTest.className = 'adsbox';
+        document.body.appendChild(adTest);
+        window.setTimeout(function() {
+            if (adTest.offsetHeight === 0) {
+                Swal.fire({
+                    title: 'AdBlock Detected!',
+                    text: 'براہ کرم اپنا ایڈ بلاکر بند کریں ورنہ آپ کی ارننگ کاؤنٹ نہیں ہوگی۔',
+                    icon: 'error',
+                    allowOutsideClick: false
+                }).then(() => location.reload());
+            }
+            adTest.remove();
+        }, 100);
+    }
+
+    // 2. سسٹم شروع کرنا (Login/Reg Logic)
+    async function init() {
+        checkAdBlock(); // پہلے ایڈ بلاکر چیک کرو
+        if (!u.id) return show("regS");
+
         try {
-            let r = await fetch(API + "?checkID=" + uId);
+            // سرور سے اسٹیٹس چیک کرنا تاکہ کوئی دھوکہ نہ دے سکے
+            let r = await fetch(URL + "?checkID=" + u.id);
             let res = await r.json();
-            if (res.status === "Approved") setup();
-            else if (res.status === "Pending") show("penS");
-            else show("regS");
-        } catch(e) { show("regS"); }
+
+            if (res === "NotFound") {
+                localStorage.removeItem("psID");
+                show("regS");
+            } else if (res.status === "Pending") {
+                show("penS"); // ایک بار فیس دے دی تو پینڈنگ دکھاؤ
+            } else if (res.status === "Approved") {
+                u.refs = res.referrals || 0;
+                setup(); // اپروو ہو گیا تو ڈیش بورڈ
+            }
+        } catch(e) { 
+            console.log("Sync Error");
+            show("regS"); 
+        }
     }
 
-    function show(id) {
-        document.getElementById("regS").style.display = "none";
-        document.getElementById("penS").style.display = "none";
-        document.getElementById("quizS").style.display = "none";
-        document.getElementById(id).style.display = "block";
-        if(id === "quizS") document.getElementById("topBar").style.display = "flex";
+    function show(id) { 
+        ["regS", "penS", "quizS"].forEach(s => document.getElementById(s).style.display = "none");
+        document.getElementById(id).style.display = "block"; 
     }
 
-    async function register() {
-        let n = document.getElementById("uName").value, i = document.getElementById("uId").value,
-            t = document.getElementById("uTrx").value, f = document.getElementById("uFile").files[0];
-        if(!n || !i || !t || !f) return alert("All fields are required");
+    // 3. رجسٹریشن لاجک
+    async function reg() {
+        let n = document.getElementById("n").value, 
+            id = document.getElementById("i").value, 
+            trx = document.getElementById("trx").value, 
+            file = document.getElementById("fileInput").files[0];
+        
+        if (!n || !id || !trx || !file) return Swal.fire("Required", "تمام معلومات اور اسکرین شاٹ لازمی ہے", "warning");
+        if (trx.length < 11) return Swal.fire("Invalid Trx", "ٹرانزیکشن آئی ڈی 11 ہندسوں کی ہونی چاہیے", "error");
 
-        Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
-        let fd = new FormData(); fd.append("image", f);
-        let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB}`, {method:"POST", body:fd});
-        let imgD = await imgR.json();
+        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading(), allowOutsideClick: false});
 
-        await fetch(API, { method: "POST", body: JSON.stringify({ type: "reg", id: i, name: n, trx: t, proof: imgD.data.url })});
-        localStorage.setItem("psID", i);
-        location.reload();
+        try {
+            let fd = new FormData(); fd.append("image", file);
+            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
+            let imgD = await imgR.json();
+            
+            let response = await fetch(URL, { method: "POST", body: JSON.stringify({ 
+                type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url 
+            }) });
+
+            if(response.ok) {
+                localStorage.setItem("psID", id);
+                Swal.fire("Success", "آپ کی درخواست موصول ہو گئی ہے۔ 6 سے 12 گھنٹوں میں اکاؤنٹ ایکٹیویٹ ہو جائے گا۔", "success")
+                .then(()=>location.reload());
+            }
+        } catch(e) { Swal.fire("Error", "سرور سے رابطہ نہیں ہو سکا", "error"); }
     }
 
-    async function setup() {
+    // 4. لیول اور سوالات کی لمٹ سیٹ کرنا
+    function setup() {
         show("quizS");
-        let r = await fetch(API);
-        questions = await r.json();
-        nextQ();
+        // لیول لاجک آپ کی ہدایت کے مطابق
+        if (u.refs >= 10) conf = { l: 3, r: 0.60, p: 0.30 };
+        else if (u.refs >= 5) conf = { l: 2, r: 0.50, p: 0.25 };
+        else conf = { l: 1, r: 0.40, p: 0.20 };
+
+        // ریفرل بونس: 200 بیسک + (ہر ریفرل پر 50 سوال)
+        limit = 200 + (u.refs * 50);
+        
+        document.getElementById("reward").innerText = conf.r.toFixed(2);
+        load();
     }
 
-    function nextQ() {
-        sel = null; document.getElementById("mB").innerText = "جواب جمع کریں";
-        cur = questions[Math.floor(Math.random() * questions.length)];
+    async function load() { 
+        try {
+            let r = await fetch(URL); 
+            qs = await r.json(); 
+            next(); 
+        } catch(e) { console.log("Quiz Load Error"); }
+    }
+
+    function next() {
+        if (u.p >= limit) { 
+            Swal.fire("Today's Limit Done!", "آپ کے آج کے سوالات مکمل ہو گئے۔ بیلنس شیٹ میں اپڈیٹ ہو رہا ہے۔", "info"); 
+            return report(); 
+        }
+        sel = null; 
+        document.getElementById("mB").innerHTML = '<i class="fas fa-paper-plane"></i> SUBMIT ANSWER';
+        cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
-        let h = ""; cur.a.forEach((o, idx) => { h += `<button class="opt-btn" onclick="s(${idx}, this)">${o}</button>`; });
-        document.getElementById("qG").innerHTML = h;
-        document.getElementById("taskDone").innerText = done;
+        let h = ""; 
+        cur.a.forEach((o, i) => { 
+            h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; 
+        });
+        document.getElementById("qG").innerHTML = h; 
+        updateUI();
     }
 
-    function s(idx, b) { 
-        if(document.getElementById("mB").innerText === "اگلا سوال") return;
-        sel = {idx, b}; 
-        document.querySelectorAll(".opt-btn").forEach(x => { x.style.border = "1px solid #ddd"; x.style.background = "#f8f9fa"; });
-        b.style.border = "2px solid var(--blue)"; b.style.background = "#e7f1ff";
+    function s(i, b) { 
+        if(document.getElementById("mB").innerText.includes("NEXT")) return; 
+        sel={i, b}; 
+        document.querySelectorAll(".opt-btn").forEach(x=>x.style.border="2px solid #3d4b6e"); 
+        b.style.border="2px solid var(--p)"; 
     }
 
-    function handleBtn() {
+    function h() {
         let b = document.getElementById("mB");
-        if (b.innerText === "اگلا سوال") { done++; nextQ(); return; }
+        if (b.innerText.includes("NEXT")) { 
+            u.p++; 
+            u.ad++; 
+            // ہر 10 سوال بعد فل اسکرین ایڈ
+            if (u.ad >= 10) triggerAd(); 
+            else next(); 
+            return; 
+        }
         if (!sel) return;
-        if (sel.idx == cur.c) { sel.b.classList.add("correct"); score += 0.4; }
-        else { sel.b.classList.add("wrong"); document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); }
-        document.getElementById("bal").innerText = score.toFixed(2);
-        b.innerText = "اگلا سوال";
+        if (sel.i == cur.c) { 
+            sel.b.classList.add("correct"); 
+            u.e += conf.r; 
+        } else { 
+            sel.b.classList.add("wrong"); 
+            u.d += conf.p; 
+            document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); 
+        }
+        b.innerHTML = '<i class="fas fa-arrow-right"></i> NEXT';
     }
 
-    checkStatus();
+    // 5. ایڈسٹیرا فل اسکرین ایڈ لاجک (20 سیکنڈ ٹائمر)
+    function triggerAd() {
+        document.getElementById("adBox").style.display = "flex";
+        let sec = 20; 
+        let t = setInterval(() => {
+            sec--; 
+            document.getElementById("aT").innerText = `Ad Closing in ${sec}s...`;
+            if (sec <= 0) { 
+                clearInterval(t); 
+                document.getElementById("cB").style.display = "block"; 
+            }
+        }, 1000);
+    }
+
+    function cA() { 
+        document.getElementById("adBox").style.display="none"; 
+        document.getElementById("cB").style.display="none"; 
+        u.ad=0; 
+        next(); 
+    }
+
+    function updateUI() {
+        document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
+        document.getElementById("earned").innerText = u.e.toFixed(2);
+        document.getElementById("deducted").innerText = u.d.toFixed(2);
+        document.getElementById("lvl").innerText = conf.l;
+        document.getElementById("lim").innerText = u.p + "/" + limit;
+    }
+
+    // 6. ڈیٹا سرور پر بھیجنا
+    async function report() { 
+        await fetch(URL, { method: "POST", body: JSON.stringify({ 
+            id: u.id, earned: u.e, deducted: u.d 
+        }) }); 
+    }
+
+    init();
 </script>
+
 </body>
 </html>
