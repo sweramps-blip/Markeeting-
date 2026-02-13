@@ -9,469 +9,210 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --p: #d4ff00; --bg: #0a0e1a; --c: #151b2d; --text: #94a3b8; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
         .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 15px; box-sizing: border-box; }
         
-        /* ============ REGISTRATION SECTION (SIMPLE ONE CARD) ============ */
-        #regS { width: 100%; max-width: 380px; }
+        #regS { width: 100%; max-width: 380px; display: block; } /* Default block to prevent black screen */
+        #penS, #quizS { display: none; width: 100%; max-width: 380px; }
+
+        .reg-header { text-align: center; margin-bottom: 20px; }
+        .reg-header h1 { font-size: 26px; color: var(--p); margin: 0 0 8px 0; font-weight: 800; }
+        .reg-header p { color: var(--text); font-size: 13px; margin: 0; }
         
-        .reg-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        .info-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 18px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
+        .info-box p { color: white; font-size: 13px; margin: 5px 0; line-height: 1.6; }
+        .info-box b { color: var(--p); }
         
-        .reg-header h1 {
-            font-size: 26px;
-            color: var(--p);
-            margin: 0 0 8px 0;
-            font-weight: 800;
-        }
+        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #2a344d; background: #0a0e1a; color: #fff; box-sizing: border-box; font-size: 14px; }
+        input:focus { outline: none; border-color: var(--p); }
         
-        .reg-header p {
-            color: var(--text);
-            font-size: 13px;
-            margin: 0;
-        }
+        .file-box { border: 2px dashed #2a344d; padding: 15px; border-radius: 12px; margin: 10px 0; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .file-info { flex: 1; display: flex; align-items: center; gap: 10px; }
+        .file-info i { font-size: 28px; color: var(--p); }
+        #fileName { color: var(--text); font-size: 13px; }
+        .upload-btn { background: var(--p); color: #000; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; }
         
-        .info-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 18px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px rgba(212, 255, 0, 0.4); }
         
-        .info-box p {
-            color: white;
-            font-size: 13px;
-            margin: 5px 0;
-            line-height: 1.6;
-        }
+        /* Quiz Styles */
+        .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .info-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; }
+        .info-card h4 { font-size: 12px; color: rgba(255,255,255,0.8); margin: 0 0 8px 0; }
+        .info-card .value { font-size: 22px; color: white; font-weight: 800; }
+        .stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+        .stat-box { background: #151b2d; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #2a344d; }
+        .stat-box small { font-size: 10px; color: var(--text); }
+        .stat-box b { color: var(--p); font-size: 14px; }
         
-        .info-box b {
-            color: var(--p);
-        }
+        .question-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; text-align: center; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        .question-text { font-size: 18px; font-weight: 700; color: white; }
         
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            margin: 8px 0; 
-            border-radius: 12px; 
-            border: 1px solid #2a344d; 
-            background: #0a0e1a; 
-            color: #fff; 
-            box-sizing: border-box;
-            font-size: 14px;
-        }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; width: 100%; }
+        .opt-btn { background: #1e263d; border: 2px solid #3d4b6e; padding: 18px 12px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; }
+        .correct { background: #27ae60 !important; border-color: #2ecc71 !important; }
+        .wrong { background: #c0392b !important; border-color: #e74c3c !important; }
+
+        .banner-card { background: linear-gradient(135deg, #FFD93D 0%, #FFC107 100%); padding: 15px; border-radius: 15px; text-align: center; color: #000; }
         
-        input:focus {
-            outline: none;
-            border-color: var(--p);
-        }
-        
-        /* File Upload Box with Button on Side */
-        .file-box { 
-            border: 2px dashed #2a344d; 
-            padding: 15px; 
-            border-radius: 12px; 
-            margin: 10px 0; 
-            background: rgba(255,255,255,0.02);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-        
-        .file-box:hover {
-            border-color: var(--p);
-        }
-        
-        .file-info {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .file-info i {
-            font-size: 28px;
-            color: var(--p);
-        }
-        
-        #fileName {
-            color: var(--text);
-            font-size: 13px;
-        }
-        
-        .upload-btn {
-            background: var(--p);
-            color: #000;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-            border: none;
-        }
-        
-        .upload-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .main-btn { 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 15px; 
-            border: none; 
-            background: var(--p); 
-            color: #000; 
-            font-weight: 800; 
-            cursor: pointer; 
-            font-size: 16px;
-            letter-spacing: 1px;
-            box-shadow: 0 8px 25px rgba(212, 255, 0, 0.4);
-        }
-        
-        .main-btn:active { 
-            transform: scale(0.97); 
-        }
-        
-        /* ============ QUIZ SECTION (BETTER STRUCTURE) ============ */
-        #quizS { width: 100%; max-width: 380px; }
-        
-        /* Top Stats Cards (2 cards) */
-        .top-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .info-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .info-card h4 {
-            font-size: 12px;
-            color: rgba(255,255,255,0.8);
-            margin: 0 0 8px 0;
-            font-weight: 600;
-        }
-        
-        .info-card .value {
-            font-size: 22px;
-            color: white;
-            font-weight: 800;
-        }
-        
-        .info-card .sub {
-            font-size: 11px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 5px;
-        }
-        
-        /* Stats Mini Bar */
-        .stats-mini {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .stat-box {
-            background: #151b2d;
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #2a344d;
-        }
-        
-        .stat-box small {
-            display: block;
-            font-size: 10px;
-            color: var(--text);
-            margin-bottom: 5px;
-        }
-        
-        .stat-box b {
-            display: block;
-            color: var(--p);
-            font-size: 16px;
-        }
-        
-        /* Question Card */
-        .question-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .question-text {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            text-align: center;
-            line-height: 1.5;
-        }
-        
-        /* Options Grid (4 buttons 2x2) */
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .opt-btn {
-            background: #1e263d;
-            border: 2px solid #3d4b6e;
-            padding: 18px 12px;
-            border-radius: 12px;
-            color: #fff;
-            cursor: pointer;
-            text-align: center;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .opt-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .correct { 
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%) !important; 
-            border-color: #2ecc71 !important;
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
-        }
-        
-        .wrong { 
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important; 
-            border-color: #e74c3c !important;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-        }
-        
-        /* Submit Button (Between options and banner) */
-        .submit-section {
-            margin-bottom: 15px;
-        }
-        
-        /* Banner Card (Beautiful) */
-        .banner-card {
-            background: linear-gradient(135deg, #FFD93D 0%, #FFC107 100%);
-            padding: 18px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.4);
-            border: 2px solid #FFA000;
-        }
-        
-        .banner-card h4 {
-            color: #f57c00;
-            margin: 0 0 10px 0;
-            font-size: 14px;
-            font-weight: 700;
-        }
-        
-        .banner-info {
-            font-size: 12px;
-            color: #e65100;
-            line-height: 1.6;
-        }
-        
-        .banner-info b {
-            color: #bf360c;
-        }
-        
-        /* Ad Overlay */
         #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
         .sticky-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #000; display: flex; justify-content: center; z-index: 100; border-top: 1px solid #2a344d; }
     </style>
 </head>
 <body>
 
-<!-- ============ REGISTRATION SECTION (ONE SIMPLE CARD) ============ -->
-<div id="regS" style="display:none;">
+<div id="regS">
     <div class="card">
         <div class="reg-header">
             <h1>💎 OFFICIAL MEMBERSHIP</h1>
             <p>Start Your Earning Journey Today</p>
         </div>
-        
         <div class="info-box">
             <p>Fees: <b>Rs. 200</b> (Life Time)</p>
-            <p>Earning: <b>Rs. 5000 - 50000 Monthly</b></p>
             <p>EasyPaisa: <b>03412049729</b> (Muhammad Hussain)</p>
         </div>
-        
         <input id="n" placeholder="Full Name">
         <input id="i" placeholder="Username / ID">
         <input id="trx" placeholder="Transaction ID (11 Digits)">
-        
         <div class="file-box">
-            <div class="file-info">
-                <i class="fas fa-image"></i>
-                <span id="fileName">No file chosen</span>
-            </div>
-            <label for="fileInput">
-                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                    CHOOSE FILE
-                </button>
-            </label>
+            <div class="file-info"><i class="fas fa-image"></i> <span id="fileName">No file chosen</span></div>
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">CHOOSE</button>
         </div>
-        <input type="file" id="fileInput" style="display: none;" accept="image/*">
-        
-        <button class="main-btn" onclick="reg()">
-            <i class="fas fa-bolt"></i> ACTIVATE NOW
-        </button>
+        <input type="file" id="fileInput" style="display: none;" onchange="document.getElementById('fileName').innerText=this.files[0].name">
+        <button class="main-btn" onclick="reg()">ACTIVATE NOW</button>
     </div>
 </div>
 
-<!-- ============ PENDING APPROVAL ============ -->
-<div id="penS" class="card" style="display:none; text-align: center; padding: 40px 20px;">
+<div id="penS" class="card" style="text-align: center;">
     <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
     <h3>Pending Approval</h3>
-    <p style="color: var(--text); font-size: 14px;">Your payment is under review. Dashboard will open automatically after admin approval (1-6 hours).</p>
+    <p>Your payment is under review (1-6 hours).</p>
 </div>
 
-<!-- ============ QUIZ SECTION (BETTER STRUCTURE) ============ -->
-<div id="quizS" style="display:none;">
-    
-    <!-- Top 2 Cards -->
+<div id="quizS">
     <div class="top-cards">
-        <div class="info-card">
-            <h4>Current Balance</h4>
-            <div class="value" id="bal">0.00</div>
-            <div class="sub">Level <span id="lvl">1</span></div>
-        </div>
-        <div class="info-card">
-            <h4>Today's Limit</h4>
-            <div class="value" id="lim">0/200</div>
-            <div class="sub">Questions</div>
-        </div>
+        <div class="info-card"><h4>Balance</h4><div class="value" id="bal">0.00</div><div class="sub">Level <span id="lvl">1</span></div></div>
+        <div class="info-card"><h4>Limit</h4><div class="value" id="lim">0/200</div><div class="sub">Questions</div></div>
     </div>
-    
-    <!-- Mini Stats Bar -->
     <div class="stats-mini">
-        <div class="stat-box">
-            <small>EARNED</small>
-            <b id="earned">0.00</b>
-        </div>
-        <div class="stat-box">
-            <small>DEDUCTED</small>
-            <b id="deducted">0.00</b>
-        </div>
-        <div class="stat-box">
-            <small>REWARD</small>
-            <b id="reward">0.40</b>
-        </div>
+        <div class="stat-box"><small>EARNED</small><b id="earned">0.00</b></div>
+        <div class="stat-box"><small>DED.</small><b id="deducted">0.00</b></div>
+        <div class="stat-box"><small>REWARD</small><b id="reward">0.40</b></div>
     </div>
-    
-    <!-- Question Card -->
-    <div class="question-card">
-        <div class="question-text" id="qT">Loading...</div>
-    </div>
-    
-    <!-- Options Grid (4 buttons) -->
+    <div class="question-card"><div class="question-text" id="qT">Loading...</div></div>
     <div class="options-grid" id="qG"></div>
-    
-    <!-- Submit Button -->
-    <div class="submit-section">
-        <button class="main-btn" id="mB" onclick="h()">
-            <i class="fas fa-paper-plane"></i> SUBMIT ANSWER
-        </button>
+    <button class="main-btn" id="mB" onclick="h()">SUBMIT ANSWER</button>
+    <div class="banner-card" style="margin-top:15px;">
+        <small>Level 2: 5 Refs | Level 3: 10 Refs</small>
     </div>
-    
-    <!-- Banner Card (Beautiful) -->
-    <div class="banner-card">
-        <h4>📋 EARNING RULES</h4>
-        <div class="banner-info">
-            • Level 1: <b>0.40</b> Reward / <b>0.20</b> Penalty<br>
-            • Level 2: <b>0.50</b> Reward / <b>0.25</b> Penalty (5 Refs)<br>
-            • Level 3: <b>0.60</b> Reward / <b>0.30</b> Penalty (10 Refs)<br>
-            • Referral Bonus: <b>+50 Daily Tasks</b>
-        </div>
-    </div>
-    
 </div>
 
-<!-- ============ AD OVERLAY ============ -->
 <div id="adBox">
-    <div id="aT" style="margin-bottom:20px; font-weight:bold; color: var(--p);">Ad Closing in 20s...</div>
-    <div id="adContainer">
-        <script type="text/javascript">
-            atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-        </script>
-        <script type="text/javascript" src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
-    </div>
-    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; color:#000; border-radius:20px; font-weight:bold;">CLOSE AD</button>
+    <div id="aT" style="color: var(--p); font-weight:bold;">Ad Closing in 20s...</div>
+    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; border-radius:20px;">CLOSE AD</button>
 </div>
+
+<div class="sticky-ad" id="stickAd"></div>
+
 <script>
-    // ٹیسٹنگ کے لیے سکرین پر میسج دکھانے والا فنکشن
-    function logStatus(msg, color = "white") {
-        let div = document.getElementById("debugLog");
-        if(!div) {
-            div = document.createElement("div");
-            div.id = "debugLog";
-            div.style = "position:fixed; top:0; left:0; width:100%; background:rgba(0,0,0,0.9); color:white; z-index:10000; font-size:12px; padding:10px; border-bottom:2px solid var(--p); word-break:break-all;";
-            document.body.appendChild(div);
-        }
-        div.innerHTML += `<div style="color:${color}">> ${msg}</div>`;
-    }
+    const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
+    const IMBB_KEY = "14d35273fb4122ebb999baa08057f3f0"; 
+    
+    let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
+    let conf = {l:1, r:0.40, p:0.20}, limit = 200, qs = [], cur, sel;
+
+    window.onload = () => { init(); };
 
     async function init() {
-        logStatus("System Initializing...", "yellow");
-        
-        // 1. Check ID in LocalStorage
-        logStatus("Checking ID: " + u.id);
-        if (!u.id) {
-            logStatus("No ID found, showing Registration Form", "orange");
-            return show("regS");
-        }
-
+        if (!u.id) return show("regS");
         try {
-            logStatus("Connecting to Google Script... Please wait.", "#d4ff00");
-            
-            // 2. Fetch from Apps Script
             let r = await fetch(URL + "?checkID=" + u.id);
-            logStatus("Response received from Server", "green");
-            
             let res = await r.json();
-            logStatus("Server Response: " + JSON.stringify(res), "cyan");
-
-            if (res === "NotFound") {
-                logStatus("ID not found in Sheet", "red");
-                localStorage.removeItem("psID");
-                show("regS");
-            } else if (res.status === "Pending") {
-                logStatus("Status is Pending. Showing Pending Screen", "orange");
-                show("penS");
-            } else if (res.status === "Approved") {
-                logStatus("Status Approved! Loading Dashboard...", "green");
-                u.refs = res.referrals || 0;
-                setup();
-            }
-        } catch(e) { 
-            logStatus("CRITICAL ERROR: " + e.message, "red");
-            logStatus("Check if your Apps Script URL is correct and deployed as 'Anyone'.", "white");
-            show("regS"); 
-        }
+            if (res === "NotFound") { localStorage.removeItem("psID"); show("regS"); }
+            else if (res.status === "Pending") show("penS");
+            else if (res.status === "Approved") { u.refs = res.referrals || 0; setup(); }
+        } catch(e) { show("regS"); }
     }
 
-    // باقی پرانا کوڈ نیچے رہنے دیں (setup, next, load وغیرہ)
-                      </script>
+    function show(id) {
+        ["regS", "penS", "quizS"].forEach(s => document.getElementById(s).style.display = "none");
+        document.getElementById(id).style.display = "block";
+    }
 
+    async function reg() {
+        let n = document.getElementById("n").value, id = document.getElementById("i").value, trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
+        if (!n || !id || !trx || !file) return Swal.fire("Error", "Fill all fields", "error");
+        
+        Swal.fire({title: 'Uploading...', didOpen: () => Swal.showLoading()});
+        try {
+            let fd = new FormData(); fd.append("image", file);
+            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
+            let imgD = await imgR.json();
+            await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
+            localStorage.setItem("psID", id);
+            Swal.fire("Success", "Request Sent!", "success").then(()=>location.reload());
+        } catch(e) { Swal.fire("Error", "Server Error", "error"); }
+    }
 
+    function setup() {
+        show("quizS");
+        if (u.refs >= 10) conf = { l: 3, r: 0.60, p: 0.30 };
+        else if (u.refs >= 5) conf = { l: 2, r: 0.50, p: 0.25 };
+        limit = 200 + (u.refs * 50);
+        document.getElementById("reward").innerText = conf.r.toFixed(2);
+        load();
+    }
+
+    async function load() {
+        try { let r = await fetch(URL); qs = await r.json(); next(); } catch(e) { console.log("Error loading quiz"); }
+    }
+
+    function next() {
+        if (u.p >= limit) return Swal.fire("Done", "Daily limit reached", "info");
+        sel = null;
+        document.getElementById("mB").innerText = "SUBMIT ANSWER";
+        cur = qs[Math.floor(Math.random() * qs.length)];
+        document.getElementById("qT").innerText = cur.q;
+        let h = "";
+        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; });
+        document.getElementById("qG").innerHTML = h;
+        updateUI();
+    }
+
+    function s(i, b) {
+        if(document.getElementById("mB").innerText === "NEXT") return;
+        sel = {i, b};
+        document.querySelectorAll(".opt-btn").forEach(x=>x.style.borderColor="#3d4b6e");
+        b.style.borderColor="var(--p)";
+    }
+
+    function h() {
+        let b = document.getElementById("mB");
+        if (b.innerText === "NEXT") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
+        if (!sel) return;
+        if (sel.i == cur.c) { sel.b.classList.add("correct"); u.e += conf.r; }
+        else { sel.b.classList.add("wrong"); u.d += conf.p; document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); }
+        b.innerText = "NEXT";
+    }
+
+    function triggerAd() {
+        document.getElementById("adBox").style.display = "flex";
+        let sec = 20;
+        let t = setInterval(() => {
+            sec--; document.getElementById("aT").innerText = `Ad Closing in ${sec}s...`;
+            if (sec <= 0) { clearInterval(t); document.getElementById("cB").style.display = "block"; }
+        }, 1000);
+    }
+
+    function cA() { document.getElementById("adBox").style.display="none"; document.getElementById("cB").style.display="none"; u.ad=0; next(); }
+
+    function updateUI() {
+        document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
+        document.getElementById("earned").innerText = u.e.toFixed(2);
+        document.getElementById("deducted").innerText = u.d.toFixed(2);
+        document.getElementById("lvl").innerText = conf.l;
+        document.getElementById("lim").innerText = u.p + "/" + limit;
+    }
+</script>
 </body>
 </html>
