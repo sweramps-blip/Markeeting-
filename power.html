@@ -135,16 +135,25 @@
             </script>
             <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
             </div>
+<div class="video-frame">
+    <iframe 
+        src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/10153231339611729/&show_text=0&width=400" 
+        id="fb-video"
+        scrolling="no" 
+        frameborder="0" 
+        allowfullscreen="true" 
+        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+    </iframe>
+</div>
 
-        <div class="video-frame">
-            <iframe 
-                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1An4dvDvcJ%2F&show_text=0&width=400" 
-                scrolling="no" 
-                frameborder="0" 
-                allowfullscreen="true" 
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-            </iframe>
-        </div>
+<script>
+    // اگر آپ کے پاس اصل ویڈیو کا ID ہے تو اسے یہاں ڈالیں
+    // فی الحال میں نے ایک ٹیسٹ لنک ڈالا ہے تاکہ آپ دیکھ سکیں کہ فریم کام کر رہا ہے یا نہیں
+    var videoUrl = "https://www.facebook.com/share/v/1An4dvDvcJ/";
+    var embedUrl = "https://www.facebook.com/plugins/video.php?href=" + encodeURIComponent(videoUrl) + "&show_text=0&width=400";
+    document.getElementById('fb-video').src = embedUrl;
+</script>
+        
 
         <div class="footer-text">
             <p><i class="fa-solid fa-lock"></i> Secure Stream Connection</p>
