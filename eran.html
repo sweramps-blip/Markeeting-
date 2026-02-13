@@ -9,93 +9,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --p: #d4ff00; --bg: #0a0e1a; --c: #151b2d; --text: #94a3b8; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        /* بلیک اسکرین سے بچنے کے لیے باڈی کو پہلے سے رنگ دیں */
+        body { font-family: 'Outfit', sans-serif; background: #0a0e1a !important; color: #fff; margin: 0; padding: 10px; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 15px; box-sizing: border-box; }
-        
+        /* Containers */
         #regS, #penS, #quizS { display: none; width: 100%; max-width: 380px; }
-
+        .card { background: #151b2d; padding: 25px; border-radius: 20px; border: 1px solid #2a344d; box-sizing: border-box; width: 100%; }
+        
+        /* UI Elements */
         .reg-header { text-align: center; margin-bottom: 20px; }
-        .reg-header h1 { font-size: 26px; color: var(--p); margin: 0 0 8px 0; font-weight: 800; }
-        .reg-header p { color: var(--text); font-size: 13px; margin: 0; }
-        
-        .info-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 18px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        .info-box p { color: white; font-size: 13px; margin: 5px 0; line-height: 1.6; }
-        .info-box b { color: var(--p); }
-        
-        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #2a344d; background: #0a0e1a; color: #fff; box-sizing: border-box; font-size: 14px; }
-        input:focus { outline: none; border-color: var(--p); }
-        
-        .file-box { border: 2px dashed #2a344d; padding: 15px; border-radius: 12px; margin: 10px 0; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .file-info { flex: 1; display: flex; align-items: center; gap: 10px; }
-        .file-info i { font-size: 28px; color: var(--p); }
-        #fileName { color: var(--text); font-size: 13px; }
-        .upload-btn { background: var(--p); color: #000; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; }
-        
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px rgba(212, 255, 0, 0.4); }
-        
-        .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .info-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; }
-        .info-card h4 { font-size: 12px; color: rgba(255,255,255,0.8); margin: 0 0 8px 0; }
-        .info-card .value { font-size: 22px; color: white; font-weight: 800; }
-        .stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .stat-box { background: #151b2d; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #2a344d; }
-        .stat-box small { font-size: 10px; color: var(--text); }
-        .stat-box b { color: var(--p); font-size: 14px; }
-        
-        .question-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; text-align: center; min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .question-text { font-size: 18px; font-weight: 700; color: white; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; width: 100%; }
-        .opt-btn { background: #1e263d; border: 2px solid #3d4b6e; padding: 18px 12px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; outline: none; transition: 0.2s; }
-        .correct { background: #27ae60 !important; border-color: #2ecc71 !important; }
-        .wrong { background: #c0392b !important; border-color: #e74c3c !important; }
+        .reg-header h1 { font-size: 26px; color: var(--p); margin: 0 0 8px 0; }
+        .info-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 18px; border-radius: 12px; margin-bottom: 15px; text-align: center; font-size: 13px; }
+        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #2a344d; background: #0a0e1a; color: #fff; box-sizing: border-box; }
+        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 10px; }
 
-        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:9999; flex-direction:column; align-items:center; justify-content:center; }
-        
-        /* Fixed Sticky Ad Container */
-        .sticky-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: center; align-items: center; z-index: 1000; border-top: 1px solid #2a344d; }
+        /* Quiz UI */
+        .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; width: 100%; }
+        .info-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; }
+        .stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; width: 100%; }
+        .stat-box { background: #151b2d; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #2a344d; }
+        .question-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; text-align: center; width: 100%; box-sizing: border-box; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; width: 100%; }
+        .opt-btn { background: #1e263d; border: 2px solid #3d4b6e; padding: 18px 12px; border-radius: 12px; color: #fff; font-weight: 600; }
+        .correct { background: #27ae60 !important; } .wrong { background: #c0392b !important; }
+
+        /* Sticky Ad Area */
+        .sticky-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; border-top: 1px solid #2a344d; }
+        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:10000; flex-direction:column; align-items:center; justify-content:center; }
     </style>
 </head>
 <body>
 
 <div id="regS">
     <div class="card">
-        <div class="reg-header"><h1>💎 OFFICIAL MEMBERSHIP</h1><p>Start Your Earning Journey Today</p></div>
-        <div class="info-box">
-            <p>Fees: <b>Rs. 200</b> (Life Time)</p>
-            <p>EasyPaisa: <b>03412049729</b> (Muhammad Hussain)</p>
-        </div>
+        <div class="reg-header"><h1>💎 MEMBERSHIP</h1><p>Start Earning Today</p></div>
+        <div class="info-box"><p>EasyPaisa: <b>03412049729</b></p></div>
         <input id="n" placeholder="Full Name">
         <input id="i" placeholder="Username / ID">
-        <input id="trx" placeholder="Transaction ID (11 Digits)">
-        <div class="file-box">
-            <div class="file-info"><i class="fas fa-image"></i> <span id="fileName">No file chosen</span></div>
-            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">CHOOSE</button>
-        </div>
-        <input type="file" id="fileInput" style="display: none;" onchange="document.getElementById('fileName').innerText=this.files[0].name">
+        <input id="trx" placeholder="Transaction ID">
         <button class="main-btn" onclick="reg()">ACTIVATE NOW</button>
     </div>
 </div>
 
-<div id="penS" class="card" style="text-align: center;">
-    <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
-    <h3>Pending Approval</h3>
-    <p>Your payment is under review. Dashboard will open once admin approves.</p>
+<div id="penS">
+    <div class="card" style="text-align: center;">
+        <i class="fas fa-clock" style="font-size: 40px; color: var(--p);"></i>
+        <h3>Pending Approval</h3>
+        <p>Admin is checking your payment...</p>
+    </div>
 </div>
 
 <div id="quizS">
     <div class="top-cards">
-        <div class="info-card"><h4>Balance</h4><div class="value" id="bal">0.00</div><div class="sub">Level <span id="lvl">1</span></div></div>
-        <div class="info-card"><h4>Limit</h4><div class="value" id="lim">0/200</div><div class="sub">Questions</div></div>
+        <div class="info-card"><h4>Balance</h4><div class="value" id="bal">0.00</div></div>
+        <div class="info-card"><h4>Limit</h4><div class="value" id="lim">0/200</div></div>
     </div>
     <div class="stats-mini">
-        <div class="stat-box"><small>EARNED</small><b id="earned">0.00</b></div>
-        <div class="stat-box"><small>DED.</small><b id="deducted">0.00</b></div>
-        <div class="stat-box"><small>REWARD</small><b id="reward">0.40</b></div>
+        <div class="stat-box"><small>EARNED</small><br><b id="earned">0.00</b></div>
+        <div class="stat-box"><small>DED.</small><br><b id="deducted">0.00</b></div>
+        <div class="stat-box"><small>REWARD</small><br><b id="reward">0.40</b></div>
     </div>
     <div class="question-card"><div class="question-text" id="qT">Loading...</div></div>
-    <div class="options-grid" id="qG"></div>
+    <div id="qG" class="options-grid"></div>
     <button class="main-btn" id="mB" onclick="h()">SUBMIT ANSWER</button>
 </div>
 
@@ -104,18 +79,8 @@
     <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; border-radius:20px;">CLOSE AD</button>
 </div>
 
-<div class="sticky-ad">
-    <script type="text/javascript">
-        atOptions = {
-            'key' : '8e5d0a2f589886f4a8e80735048956e1',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-        };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/8e5d0a2f589886f4a8e80735048956e1/invoke.js"></script>
-</div>
+<div class="sticky-ad" id="stAd">
+    </div>
 
 <script>
     const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
@@ -124,7 +89,16 @@
     let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
     let conf = {l:1, r:0.40, p:0.20}, limit = 200, qs = [], cur, sel;
 
-    window.onload = () => { if (!u.id) { show("regS"); } else { init(); } };
+    // بلیک اسکرین کو روکنے کے لیے فوری چیک
+    document.addEventListener("DOMContentLoaded", () => {
+        if (!u.id) {
+            show("regS");
+        } else {
+            init();
+        }
+        // ایڈ کو تھوڑی دیر بعد لوڈ کریں
+        setTimeout(loadStickyAd, 2000);
+    });
 
     async function init() {
         try {
@@ -142,17 +116,14 @@
     }
 
     async function reg() {
-        let n = document.getElementById("n").value, id = document.getElementById("i").value, trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
-        if (!n || !id || !trx || !file) return Swal.fire("Error", "All fields required", "error");
+        let n = document.getElementById("n").value, id = document.getElementById("i").value, trx = document.getElementById("trx").value;
+        if (!n || !id || !trx) return Swal.fire("Error", "Fill all fields", "error");
         Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
         try {
-            let fd = new FormData(); fd.append("image", file);
-            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
-            let imgD = await imgR.json();
-            await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
+            await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx }) });
             localStorage.setItem("psID", id);
             u.id = id;
-            Swal.fire("Success", "Account Sent for Approval!", "success").then(() => init());
+            Swal.fire("Success", "Request Sent!", "success").then(() => init());
         } catch(e) { Swal.fire("Error", "Server Error", "error"); }
     }
 
@@ -166,13 +137,12 @@
     }
 
     async function load() {
-        try { let r = await fetch(URL); qs = await r.json(); next(); } catch(e) { console.log("Quiz load error"); }
+        try { let r = await fetch(URL); qs = await r.json(); next(); } catch(e) { console.log("Error"); }
     }
 
     function next() {
         if (u.p >= limit) return Swal.fire("Done", "Daily limit reached", "info");
-        sel = null;
-        document.getElementById("mB").innerText = "SUBMIT ANSWER";
+        sel = null; document.getElementById("mB").innerText = "SUBMIT ANSWER";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
         let h = "";
@@ -212,8 +182,20 @@
         document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
         document.getElementById("earned").innerText = u.e.toFixed(2);
         document.getElementById("deducted").innerText = u.d.toFixed(2);
-        document.getElementById("lvl").innerText = conf.l;
         document.getElementById("lim").innerText = u.p + "/" + limit;
+    }
+
+    // ایڈ کو اسکرین لوڈ ہونے کے بعد ڈالنے کا فنکشن
+    function loadStickyAd() {
+        const adCont = document.getElementById("stAd");
+        const script1 = document.createElement("script");
+        script1.type = "text/javascript";
+        script1.text = `atOptions = { 'key' : '8e5d0a2f589886f4a8e80735048956e1', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };`;
+        const script2 = document.createElement("script");
+        script2.type = "text/javascript";
+        script2.src = "//www.highperformanceformat.com/8e5d0a2f589886f4a8e80735048956e1/invoke.js";
+        adCont.appendChild(script1);
+        adCont.appendChild(script2);
     }
 </script>
 </body>
