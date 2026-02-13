@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Power Star | Pro System</title>
+    <style>
+        :root { --p: #007bff; --bg: #0a0e1a; --c: #151b2d; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: var(--c); padding: 20px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #2a344d; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #3d4b6e; background: #1e263d; color: #fff; box-sizing: border-box; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; width: 100%; max-width: 360px; margin-bottom: 10px; }
+        .stat { background: var(--c); padding: 10px; border-radius: 12px; border: 1px solid #2a344d; font-size: 12px; }
+        .stat b { display: block; color: var(--p); font-size: 15px; }
+        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn { background: #1e263d; border: 1px solid #3d4b6e; padding: 15px 5px; border-radius: 12px; color: #fff; cursor: pointer; }
+        .correct { background: #2ecc71 !important; border: none; }
+        .wrong { background: #e74c3c !important; border: none; }
+        .main-btn { width: 100%; padding: 18px; margin-top: 15px; border-radius: 15px; border: none; background: var(--p); color: #fff; font-weight: 800; cursor: pointer; }
+        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
+    </style>
+</head>
+<body>
+
+<div id="regS" class="card" style="display:none;">
+    <h3>رجسٹریشن (فیس: ₹200)</h3>
+    <input id="n" placeholder="نام"> <input id="i" placeholder="آئی ڈی"> <input id="r" placeholder="ریفرل آئی ڈی">
+    <button class="main-btn" onclick="reg()">رجسٹر کریں</button>
+</div>
+
+<div id="penS" class="card" style="display:none;">
+    <h3>اکاؤنٹ پینڈنگ ہے</h3>
+    <p>فیس کی تصدیق کے بعد آپ کا اکاؤنٹ ایکٹیو کر دیا جائے گا۔</p>
+</div>
+
+<div id="quizS" style="display:none; width:100%; max-width:360px;">
+    <div class="stats">
+        <div class="stat">Net Balance<b id="bal">0.00</b></div>
+        <div class="stat">Level<b id="lvl">1</b></div>
+        <div class="stat">Limit<b id="lim">0/200</b></div>
+    </div>
+    <div class="card">
+        <div id="qT" style="font-size: 18px; direction: rtl;">لوڈنگ...</div>
+        <div class="opt-grid" id="qG"></div>
+    </div>
+    <button class="main-btn" id="mB" onclick="h()">جمع کریں</button>
+</div>
+
+<div id="adBox">
+    <div id="aT" style="margin-bottom:20px; font-weight:bold;">Ad Closing in 20s...</div>
+    <div id="adContainer" style="width:300px; height:250px; background:#fff;">
+        <script type="text/javascript">atOptions={'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':250,'width':300,'params':{}};</script>
+        <script src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+    </div>
+    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:#2ecc71; border:none; color:#fff; border-radius:20px;">CLOSE</button>
+</div>
+
+<script>
+    const URL = "YOUR_DEPLOYED_URL"; // اپنا اسکرپٹ یو آر ایل یہاں لگائیں
+    let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
+    let conf, limit, qs = [], cur, sel;
+
+    async function init() {
+        if (!u.id) return show("regS");
+        let r = await fetch(URL + "?checkID=" + u.id);
+        let res = await r.json();
+        if (res === "NotFound") show("regS");
+        else if (res.status === "Pending") show("penS");
+        else { u.refs = res.referrals; setup(); }
+    }
+
+    function show(id) { document.getElementById(id).style.display = "block"; }
+
+    async function reg() {
+        let name = document.getElementById("n").value, id = document.getElementById("i").value, ref = document.getElementById("r").value;
+        if (!name || !id) return alert("ڈیٹا بھریں!");
+        await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: name, refBy: ref }) });
+        localStorage.setItem("psID", id); location.reload();
+    }
+
+    function setup() {
+        show("quizS");
+        if (u.refs >= 10) conf = { l: 3, r: 0.6, p: 0.3 };
+        else if (u.refs >= 5) conf = { l: 2, r: 0.5, p: 0.25 };
+        else conf = { l: 1, r: 0.4, p: 0.2 };
+        limit = 200 + (u.refs * 50);
+        load();
+    }
+
+    async function load() {
+        let r = await fetch(URL); qs = await r.json(); next();
+    }
+
+    function next() {
+        if (u.p >= limit) { alert("ٹاسک مکمل!"); return report(); }
+        sel = null; document.getElementById("mB").innerText = "جمع کریں";
+        cur = qs[Math.floor(Math.random() * qs.length)];
+        document.getElementById("qT").innerText = cur.q;
+        let h = ""; cur.a.forEach((o, i) => { h += `<button class="btn" onclick="s(${i}, this)">${o}</button>`; });
+        document.getElementById("qG").innerHTML = h; updateUI();
+    }
+
+    function s(i, b) { if(document.getElementById("mB").innerText==="اگلا سوال") return; sel={i, b}; document.querySelectorAll(".btn").forEach(x=>x.style.border="1px solid #3d4b6e"); b.style.border="2px solid #007bff"; }
+
+    function h() {
+        let b = document.getElementById("mB");
+        if (b.innerText === "اگلا سوال") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
+        if (!sel) return;
+        if (sel.i == cur.c) { sel.b.classList.add("correct"); u.e += conf.r; }
+        else { sel.b.classList.add("wrong"); u.d += conf.p; document.querySelectorAll(".btn")[cur.c].classList.add("correct"); }
+        b.innerText = "اگلا سوال";
+    }
+
+    function triggerAd() {
+        document.getElementById("adBox").style.display = "flex";
+        let sec = 20; let t = setInterval(() => {
+            sec--; document.getElementById("aT").innerText = `Ad Closing in ${sec}s...`;
+            if (sec <= 0) { clearInterval(t); document.getElementById("cB").style.display = "block"; }
+        }, 1000);
+    }
+
+    function cA() { document.getElementById("adBox").style.display="none"; document.getElementById("cB").style.display="none"; u.ad=0; next(); }
+
+    function updateUI() {
+        document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
+        document.getElementById("lvl").innerText = conf.l;
+        document.getElementById("lim").innerText = u.p + "/" + limit;
+    }
+
+    async function report() {
+        await fetch(URL, { method: "POST", body: JSON.stringify({ id: u.id, earned: u.e, deducted: u.d }) });
+    }
+
+    init();
+</script>
+</body>
+</html>
