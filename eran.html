@@ -13,8 +13,8 @@
         
         .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 15px; box-sizing: border-box; }
         
-        #regS { width: 100%; max-width: 380px; display: block; } /* Default block to prevent black screen */
-        #penS, #quizS { display: none; width: 100%; max-width: 380px; }
+        /* سب کو شروع میں چھپا کر رکھیں */
+        #regS, #penS, #quizS { display: none; width: 100%; max-width: 380px; }
 
         .reg-header { text-align: center; margin-bottom: 20px; }
         .reg-header h1 { font-size: 26px; color: var(--p); margin: 0 0 8px 0; font-weight: 800; }
@@ -86,7 +86,7 @@
 <div id="penS" class="card" style="text-align: center;">
     <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
     <h3>Pending Approval</h3>
-    <p>Your payment is under review (1-6 hours).</p>
+    <p>Your payment is under review. Dashboard will open once admin approves.</p>
 </div>
 
 <div id="quizS">
@@ -102,17 +102,12 @@
     <div class="question-card"><div class="question-text" id="qT">Loading...</div></div>
     <div class="options-grid" id="qG"></div>
     <button class="main-btn" id="mB" onclick="h()">SUBMIT ANSWER</button>
-    <div class="banner-card" style="margin-top:15px;">
-        <small>Level 2: 5 Refs | Level 3: 10 Refs</small>
-    </div>
 </div>
 
 <div id="adBox">
     <div id="aT" style="color: var(--p); font-weight:bold;">Ad Closing in 20s...</div>
     <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; border-radius:20px;">CLOSE AD</button>
 </div>
-
-<div class="sticky-ad" id="stickAd"></div>
 
 <script>
     const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
@@ -121,17 +116,34 @@
     let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
     let conf = {l:1, r:0.40, p:0.20}, limit = 200, qs = [], cur, sel;
 
-    window.onload = () => { init(); };
+    // پیج لوڈ ہوتے ہی سب سے پہلے چیک کرو
+    window.onload = () => { 
+        if (!u.id) {
+            show("regS"); // آئی ڈی نہیں ہے تو فارم دکھاؤ
+        } else {
+            init(); // آئی ڈی ہے تو سرور سے اسٹیٹس پوچھو
+        }
+    };
 
     async function init() {
-        if (!u.id) return show("regS");
         try {
+            // سرور سے ڈیٹا لینا
             let r = await fetch(URL + "?checkID=" + u.id);
             let res = await r.json();
-            if (res === "NotFound") { localStorage.removeItem("psID"); show("regS"); }
-            else if (res.status === "Pending") show("penS");
-            else if (res.status === "Approved") { u.refs = res.referrals || 0; setup(); }
-        } catch(e) { show("regS"); }
+
+            if (res === "NotFound") {
+                localStorage.removeItem("psID");
+                show("regS");
+            } else if (res.status === "Pending") {
+                show("penS");
+            } else if (res.status === "Approved") {
+                u.refs = res.referrals || 0;
+                setup(); // ڈائریکٹ ڈیش بورڈ کھولیں
+            }
+        } catch(e) { 
+            // اگر نیٹ کا مسئلہ ہو تو فارم دکھا دیں
+            show("regS"); 
+        }
     }
 
     function show(id) {
@@ -141,30 +153,34 @@
 
     async function reg() {
         let n = document.getElementById("n").value, id = document.getElementById("i").value, trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
-        if (!n || !id || !trx || !file) return Swal.fire("Error", "Fill all fields", "error");
+        if (!n || !id || !trx || !file) return Swal.fire("Error", "All fields required", "error");
         
-        Swal.fire({title: 'Uploading...', didOpen: () => Swal.showLoading()});
+        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
         try {
             let fd = new FormData(); fd.append("image", file);
             let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
             let imgD = await imgR.json();
             await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
+            
             localStorage.setItem("psID", id);
-            Swal.fire("Success", "Request Sent!", "success").then(()=>location.reload());
+            u.id = id; // آئی ڈی کو اپڈیٹ کریں
+            Swal.fire("Success", "Account Sent for Approval!", "success").then(() => init());
         } catch(e) { Swal.fire("Error", "Server Error", "error"); }
     }
 
     function setup() {
         show("quizS");
+        // لیول لاجک
         if (u.refs >= 10) conf = { l: 3, r: 0.60, p: 0.30 };
         else if (u.refs >= 5) conf = { l: 2, r: 0.50, p: 0.25 };
+        
         limit = 200 + (u.refs * 50);
         document.getElementById("reward").innerText = conf.r.toFixed(2);
         load();
     }
 
     async function load() {
-        try { let r = await fetch(URL); qs = await r.json(); next(); } catch(e) { console.log("Error loading quiz"); }
+        try { let r = await fetch(URL); qs = await r.json(); next(); } catch(e) { console.log("Quiz load error"); }
     }
 
     function next() {
