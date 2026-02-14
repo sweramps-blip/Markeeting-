@@ -136,112 +136,120 @@
         </div>
     </div>
 <script>
-    // 1. سیٹ اپ اور ویری ایبلز
+    // 1. بنیادی سیٹ اپ
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3fnGwD-IBIEm6tZ4E5dd45df7E0ECc1aVANadpEmdSzCTQdaRVUE7c4KP-L4MGhXh/exec";
     const user = JSON.parse(localStorage.getItem("ps_user"));
     
-    // یوزر کی مکمل کردہ لسٹ (مقامی طور پر محفوظ)
     let completedList = JSON.parse(localStorage.getItem("ps_done_tasks")) || [];
-    let serverTasks = [];
+    let allEnginesData = { m: [], p: [], v: [] };
     let isPaused = false;
-    let requiredTime = 60; // 60 سیکنڈز (1 منٹ)
+    let requiredTime = 60; // 1 منٹ
 
-    // ونڈو فوکس لاجک (چیٹنگ روکنے کے لیے)
     window.onblur = () => { isPaused = true; };
     window.onfocus = () => { isPaused = false; };
 
-    // 2. ٹاسک لوڈ کرنے کا فنکشن (پیج لوڈ ہوتے ہی چلے گا)
+    // 2. تمام ٹاسک لوڈ کرنا اور UI اپ ڈیٹ کرنا
     async function loadTasks() {
-        if (!user) return;
+        if (!user) return console.log("User not logged in");
         try {
             const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
             const data = await res.json();
-            serverTasks = data.m || []; // صرف 'm' ٹائپ کے ویڈیو ٹاسک
-            updateProgressUI();
+            allEnginesData = data; // m, p, v سارا ڈیٹا یہاں آ گیا
+            
+            updateEngineUI('m'); // صرف 'm' انجن کو اپ ڈیٹ کریں
+            // اگر آپ چاہیں تو p اور v کے لیے یہاں اپنی مرضی کی لاجک دے سکتے ہیں
         } catch (e) {
-            console.error("Task loading failed", e);
+            console.error("Loading Error:", e);
         }
     }
 
-    // 3. مین 'Start' بٹن کا فنکشن
-    async function startEngine() {
-        if (!user || !user.user_id) {
-            return Swal.fire("لاگ ان ضروری ہے", "براہ کرم پہلے اکاؤنٹ لاگ ان کریں۔", "warning");
+    // 3. اسٹارٹ انجن فنکشن (صرف 'm' کے لیے کام کرے گا)
+    async function runEngine(type) {
+        if (type !== 'm') {
+            // یہاں آپ اپنے دوسرے پروجیکٹس کے لنکس دے سکتے ہیں
+            if(type === 'p') window.location.href = "YOUR_PREMIUM_LINK";
+            if(type === 'v') window.location.href = "YOUR_VIRAL_LINK";
+            return;
         }
 
-        // اگلا وہ ٹاسک ڈھونڈیں جو 'completedList' میں نہیں ہے
-        let nextTask = serverTasks.find(t => !completedList.includes(t.tid));
+        if (!user || !user.user_id) return Swal.fire("لاگ ان ضروری ہے", "Account login karen", "warning");
+
+        let tasks = allEnginesData.m || [];
+        let nextTask = tasks.find(t => !completedList.includes(t.tid));
 
         if (!nextTask) {
-            return Swal.fire("ٹاسک مکمل 💯", "فی الحال کوئی نیا ٹاسک دستیاب نہیں ہے۔ کل دوبارہ چیک کریں!", "info");
+            return Swal.fire("ٹاسک مکمل 💯", "آج کے ویڈیو ٹاسک ختم ہو چکے ہیں۔", "info");
         }
 
-        // پروفیشنل ون بٹن ایکشن: لنک کھولنا اور ٹائمر شروع کرنا
         window.open(nextTask.link, '_blank');
         document.getElementById('loading-overlay').style.display = 'flex';
-        initiateTimer(nextTask);
+        startTimer(nextTask);
     }
 
-    // 4. ٹائمر کی لاجک
-    function initiateTimer(task) {
+    // 4. ٹائمر لاجک
+    function startTimer(task) {
         let elapsed = 0;
         let oBar = document.getElementById('overlayBar');
         
         let timer = setInterval(async () => {
             if (!isPaused) {
                 elapsed++;
-                let progress = (elapsed / requiredTime) * 100;
-                oBar.style.width = progress + '%';
-                document.querySelector('.loading-text').innerHTML = `ویڈیو کی تصدیق ہو رہی ہے... ${requiredTime - elapsed}s`;
+                oBar.style.width = (elapsed / requiredTime * 100) + '%';
+                document.querySelector('.loading-text').innerHTML = `تصدیق ہو رہی ہے... ${requiredTime - elapsed}s`;
 
                 if (elapsed >= requiredTime) {
                     clearInterval(timer);
-                    await finalizeTask(task);
+                    finalizeTask(task);
                 }
             } else {
-                document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br>ویڈیو مکمل دیکھیں`;
+                document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br>واپس ویڈیو پر جائیں`;
             }
         }, 1000);
     }
 
-    // 5. بیلنس اپ ڈیٹ اور ریکارڈ سیونگ
+    // 5. بیلنس اور ریکارڈ سیونگ
     async function finalizeTask(task) {
         try {
             const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=VID_${task.tid}`);
             const result = await res.json();
 
             if (result.status === "Success") {
-                // ٹاسک آئی ڈی کو لوکل لسٹ میں شامل کریں تاکہ یہ دوبارہ نہ آئے
                 completedList.push(task.tid);
                 localStorage.setItem("ps_done_tasks", JSON.stringify(completedList));
-                
                 document.getElementById('loading-overlay').style.display = 'none';
-                updateProgressUI();
-                Swal.fire("کامیابی ✅", `روپے ${task.price} آپ کے اکاؤنٹ میں شامل کر دیے گئے ہیں۔`, "success");
-            } else {
-                throw new Error("Update failed");
+                updateEngineUI('m');
+                Swal.fire("کامیابی ✅", `Rs. ${task.price} اکاؤنٹ میں شامل ہو گئے۔`, "success");
             }
         } catch (e) {
             document.getElementById('loading-overlay').style.display = 'none';
-            Swal.fire("ایرر", "بیلنس اپ ڈیٹ نہیں ہو سکا۔ انٹرنیٹ چیک کریں۔", "error");
+            Swal.fire("ایرر", "انٹرنیٹ کنکشن چیک کریں۔", "error");
         }
     }
 
-    // 6. یو آئی (UI) اپ ڈیٹ کرنا
-    function updateProgressUI() {
-        let doneCount = serverTasks.filter(t => completedList.includes(t.tid)).length;
-        let total = serverTasks.length;
+    // 6. UI ریفریش کرنا
+    function updateEngineUI(type) {
+        let tasks = allEnginesData[type] || [];
+        let done = tasks.filter(t => completedList.includes(t.tid)).length;
+        let total = tasks.length;
         
-        if (document.getElementById('bar-m')) {
-            let percentage = (total > 0 ? (doneCount / total * 100) : 0);
-            document.getElementById('bar-m').style.width = percentage + '%';
+        // قیمت دکھانا
+        let nextTask = tasks.find(t => !completedList.includes(t.tid));
+        if (nextTask) {
+            document.getElementById(`price-${type}`).innerText = `Rs. ${nextTask.price}`;
+        } else {
+            document.getElementById(`price-${type}`).innerText = `All Done ✅`;
         }
-        if (document.getElementById('text-m')) {
-            document.getElementById('text-m').innerText = `مکمل ٹاسک: ${doneCount}/${total}`;
+
+        // پروگریس بار اور ٹیکسٹ
+        if (document.getElementById(`bar-${type}`)) {
+            document.getElementById(`bar-${type}`).style.width = (total > 0 ? (done / total * 100) : 0) + '%';
+        }
+        if (document.getElementById(`text-${type}`)) {
+            document.getElementById(`text-${type}`).innerText = `Progress: ${done}/${total} Tasks`;
         }
     }
 
     window.onload = loadTasks;
-</script>     
+</script>
 </body>
 </html>
