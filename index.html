@@ -135,92 +135,113 @@
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
- <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9llK0wlsmM8-6LSr0VUKoQELBlA5asHIY09y7p_oQksXQNUk4XBWBJKUo3DDIeXL4/exec";
+<script>
+    // 1. سیٹ اپ اور ویری ایبلز
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3fnGwD-IBIEm6tZ4E5dd45df7E0ECc1aVANadpEmdSzCTQdaRVUE7c4KP-L4MGhXh/exec";
     const user = JSON.parse(localStorage.getItem("ps_user"));
-    let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
-    let serverTasks = { m: [], p: [], v: [] };
+    
+    // یوزر کی مکمل کردہ لسٹ (مقامی طور پر محفوظ)
+    let completedList = JSON.parse(localStorage.getItem("ps_done_tasks")) || [];
+    let serverTasks = [];
     let isPaused = false;
-    let requiredTime = 60; // 1 منٹ (60 سیکنڈ)
+    let requiredTime = 60; // 60 سیکنڈز (1 منٹ)
 
+    // ونڈو فوکس لاجک (چیٹنگ روکنے کے لیے)
     window.onblur = () => { isPaused = true; };
     window.onfocus = () => { isPaused = false; };
 
-    async function fetchTasks() {
+    // 2. ٹاسک لوڈ کرنے کا فنکشن (پیج لوڈ ہوتے ہی چلے گا)
+    async function loadTasks() {
+        if (!user) return;
         try {
             const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
-            serverTasks = await res.json();
-            ['m', 'p', 'v'].forEach(t => updateUI(t));
-        } catch (e) { console.error(e); }
+            const data = await res.json();
+            serverTasks = data.m || []; // صرف 'm' ٹائپ کے ویڈیو ٹاسک
+            updateProgressUI();
+        } catch (e) {
+            console.error("Task loading failed", e);
+        }
     }
 
-    async function runEngine(type) {
-        if (!user || !user.user_id) return Swal.fire("Error", "Login First!", "error");
-        
-        let tasks = serverTasks[type] || [];
-        let index = stats[type];
-
-        // ٹاسک مکمل ہونے پر دوبارہ نہیں چلے گا
-        if (index >= tasks.length && tasks.length > 0) {
-            return Swal.fire("Complete 💯", "Saray tasks mukammal hain! ✅", "success");
+    // 3. مین 'Start' بٹن کا فنکشن
+    async function startEngine() {
+        if (!user || !user.user_id) {
+            return Swal.fire("لاگ ان ضروری ہے", "براہ کرم پہلے اکاؤنٹ لاگ ان کریں۔", "warning");
         }
 
-        if (tasks.length === 0) return Swal.fire("Wait", "No tasks found!", "info");
+        // اگلا وہ ٹاسک ڈھونڈیں جو 'completedList' میں نہیں ہے
+        let nextTask = serverTasks.find(t => !completedList.includes(t.tid));
 
-        // ویڈیو لنک اوپن کرنا
-        window.open(tasks[index].link, '_blank');
-        startLoadingBar(type, tasks[index]);
+        if (!nextTask) {
+            return Swal.fire("ٹاسک مکمل 💯", "فی الحال کوئی نیا ٹاسک دستیاب نہیں ہے۔ کل دوبارہ چیک کریں!", "info");
+        }
+
+        // پروفیشنل ون بٹن ایکشن: لنک کھولنا اور ٹائمر شروع کرنا
+        window.open(nextTask.link, '_blank');
+        document.getElementById('loading-overlay').style.display = 'flex';
+        initiateTimer(nextTask);
     }
 
-    function startLoadingBar(type, task) {
-        document.getElementById('loading-overlay').style.display = 'flex';
+    // 4. ٹائمر کی لاجک
+    function initiateTimer(task) {
         let elapsed = 0;
         let oBar = document.getElementById('overlayBar');
         
-        let timer = setInterval(() => {
+        let timer = setInterval(async () => {
             if (!isPaused) {
                 elapsed++;
-                oBar.style.width = (elapsed / requiredTime * 100) + '%';
-                document.querySelector('.loading-text').innerHTML = 
-                    `ویڈیو کی تصدیق ہو رہی ہے...<br>باقی وقت: ${requiredTime - elapsed}s`;
+                let progress = (elapsed / requiredTime) * 100;
+                oBar.style.width = progress + '%';
+                document.querySelector('.loading-text').innerHTML = `ویڈیو کی تصدیق ہو رہی ہے... ${requiredTime - elapsed}s`;
 
                 if (elapsed >= requiredTime) {
                     clearInterval(timer);
-                    finishTask(type, task);
+                    await finalizeTask(task);
                 }
             } else {
-                document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br>واپس آئیں`;
+                document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br>ویڈیو مکمل دیکھیں`;
             }
         }, 1000);
     }
 
-    async function finishTask(type, task) {
-        document.getElementById('loading-overlay').style.display = 'none';
+    // 5. بیلنس اپ ڈیٹ اور ریکارڈ سیونگ
+    async function finalizeTask(task) {
         try {
-            const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=${type.toUpperCase()}_Engine&t=${new Date().getTime()}`);
+            const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=VID_${task.tid}`);
             const result = await res.json();
+
             if (result.status === "Success") {
-                stats[type]++; // پروگریس بڑھانا
-                localStorage.setItem("ps_task_stats", JSON.stringify(stats));
-                updateUI(type);
-                Swal.fire("Verified ✅", `Rs. ${task.price} Added!`, "success");
+                // ٹاسک آئی ڈی کو لوکل لسٹ میں شامل کریں تاکہ یہ دوبارہ نہ آئے
+                completedList.push(task.tid);
+                localStorage.setItem("ps_done_tasks", JSON.stringify(completedList));
+                
+                document.getElementById('loading-overlay').style.display = 'none';
+                updateProgressUI();
+                Swal.fire("کامیابی ✅", `روپے ${task.price} آپ کے اکاؤنٹ میں شامل کر دیے گئے ہیں۔`, "success");
+            } else {
+                throw new Error("Update failed");
             }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            Swal.fire("ایرر", "بیلنس اپ ڈیٹ نہیں ہو سکا۔ انٹرنیٹ چیک کریں۔", "error");
+        }
     }
 
-    function updateUI(type) {
-        let tasks = serverTasks[type] || [];
-        let done = stats[type];
-        let total = tasks.length;
+    // 6. یو آئی (UI) اپ ڈیٹ کرنا
+    function updateProgressUI() {
+        let doneCount = serverTasks.filter(t => completedList.includes(t.tid)).length;
+        let total = serverTasks.length;
         
-        // پروگریس بار اور ٹیکسٹ اپ ڈیٹ کرنا
-        if(document.getElementById('bar-' + type)) 
-            document.getElementById('bar-' + type).style.width = (total > 0 ? (Math.min(done/total*100, 100)) : 0) + '%';
-        if(document.getElementById('text-' + type)) 
-            document.getElementById('text-' + type).innerText = `Progress: ${done}/${total} Tasks`;
+        if (document.getElementById('bar-m')) {
+            let percentage = (total > 0 ? (doneCount / total * 100) : 0);
+            document.getElementById('bar-m').style.width = percentage + '%';
+        }
+        if (document.getElementById('text-m')) {
+            document.getElementById('text-m').innerText = `مکمل ٹاسک: ${doneCount}/${total}`;
+        }
     }
 
-    window.onload = fetchTasks;
-            </script>          
+    window.onload = loadTasks;
+</script>     
 </body>
 </html>
