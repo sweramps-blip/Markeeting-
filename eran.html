@@ -13,8 +13,10 @@
         
         .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 15px; box-sizing: border-box; }
         
-        /* سب کو شروع میں چھپا کر رکھیں */
-        #regS, #penS, #quizS { display: none; width: 100%; max-width: 380px; }
+        /* Default visibility - Registration screen visible by default */
+        #penS, #quizS { display: none; width: 100%; max-width: 380px; }
+        #regS { display: block; width: 100%; max-width: 380px; }
+        #adBox { display: none; }
 
         .reg-header { text-align: center; margin-bottom: 20px; }
         .reg-header h1 { font-size: 26px; color: var(--p); margin: 0 0 8px 0; font-weight: 800; }
@@ -40,23 +42,48 @@
         .info-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; }
         .info-card h4 { font-size: 12px; color: rgba(255,255,255,0.8); margin: 0 0 8px 0; }
         .info-card .value { font-size: 22px; color: white; font-weight: 800; }
+        .info-card .sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; }
         .stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .stat-box { background: #151b2d; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #2a344d; }
-        .stat-box small { font-size: 10px; color: var(--text); }
+        .stat-box small { font-size: 10px; color: var(--text); display: block; margin-bottom: 5px; }
         .stat-box b { color: var(--p); font-size: 14px; }
         
         .question-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; text-align: center; min-height: 80px; display: flex; align-items: center; justify-content: center; }
         .question-text { font-size: 18px; font-weight: 700; color: white; }
         
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; width: 100%; }
-        .opt-btn { background: #1e263d; border: 2px solid #3d4b6e; padding: 18px 12px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; }
+        .opt-btn { background: #1e263d; border: 2px solid #3d4b6e; padding: 18px 12px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .opt-btn:hover { border-color: var(--p); }
         .correct { background: #27ae60 !important; border-color: #2ecc71 !important; }
         .wrong { background: #c0392b !important; border-color: #e74c3c !important; }
 
-        .banner-card { background: linear-gradient(135deg, #FFD93D 0%, #FFC107 100%); padding: 15px; border-radius: 15px; text-align: center; color: #000; }
-        
-        #adBox { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
-        .sticky-ad { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background: #000; display: flex; justify-content: center; z-index: 100; border-top: 1px solid #2a344d; }
+        /* Ad Box - Fixed positioning and display */
+        #adBox { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.98); 
+            z-index: 999; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            display: none; /* Hidden by default */
+        }
+        #adBox.active { display: flex !important; } /* Active class for showing */
+        #aT { color: var(--p); font-weight: bold; font-size: 20px; }
+        #cB { 
+            margin-top: 20px; 
+            padding: 15px 40px; 
+            background: var(--p); 
+            border: none; 
+            border-radius: 20px; 
+            color: #000; 
+            font-weight: bold; 
+            cursor: pointer;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -83,7 +110,7 @@
     </div>
 </div>
 
-<div id="penS" class="card" style="text-align: center;">
+<div id="penS" class="card" style="text-align: center; margin-top: 50px;">
     <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
     <h3>Pending Approval</h3>
     <p>Your payment is under review. Dashboard will open once admin approves.</p>
@@ -91,8 +118,16 @@
 
 <div id="quizS">
     <div class="top-cards">
-        <div class="info-card"><h4>Balance</h4><div class="value" id="bal">0.00</div><div class="sub">Level <span id="lvl">1</span></div></div>
-        <div class="info-card"><h4>Limit</h4><div class="value" id="lim">0/200</div><div class="sub">Questions</div></div>
+        <div class="info-card">
+            <h4>Balance</h4>
+            <div class="value" id="bal">0.00</div>
+            <div class="sub">Level <span id="lvl">1</span></div>
+        </div>
+        <div class="info-card">
+            <h4>Limit</h4>
+            <div class="value" id="lim">0/200</div>
+            <div class="sub">Questions</div>
+        </div>
     </div>
     <div class="stats-mini">
         <div class="stat-box"><small>EARNED</small><b id="earned">0.00</b></div>
@@ -105,8 +140,8 @@
 </div>
 
 <div id="adBox">
-    <div id="aT" style="color: var(--p); font-weight:bold;">Ad Closing in 20s...</div>
-    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; border-radius:20px;">CLOSE AD</button>
+    <div id="aT">Ad Closing in 20s...</div>
+    <button id="cB" onclick="cA()" style="display:none;">CLOSE AD</button>
 </div>
 
 <script>
@@ -116,112 +151,273 @@
     let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
     let conf = {l:1, r:0.40, p:0.20}, limit = 200, qs = [], cur, sel;
 
-    // پیج لوڈ ہوتے ہی سب سے پہلے چیک کرو
+    // Page load handler with better error handling
     window.onload = () => { 
-        if (!u.id) {
-            show("regS"); // آئی ڈی نہیں ہے تو فارم دکھاؤ
+        console.log("Page loaded, user ID:", u.id);
+        if (u.id && u.id !== "null" && u.id !== "") {
+            init(); 
         } else {
-            init(); // آئی ڈی ہے تو سرور سے اسٹیٹس پوچھو
+            show("regS");
         }
     };
 
+    // Initialize user session with improved error handling
     async function init() {
         try {
-            // سرور سے ڈیٹا لینا
-            let r = await fetch(URL + "?checkID=" + u.id);
-            let res = await r.json();
-
-            if (res === "NotFound") {
+            console.log("Initializing for user:", u.id);
+            let r = await fetch(URL + "?checkID=" + encodeURIComponent(u.id), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
+            if (!r.ok) {
+                throw new Error("Server response failed");
+            }
+            
+            let text = await r.text();
+            console.log("Server response:", text);
+            
+            // Handle NotFound case
+            if (text === "NotFound" || text.trim() === "NotFound") {
+                console.log("User not found, clearing ID");
                 localStorage.removeItem("psID");
+                u.id = null;
                 show("regS");
-            } else if (res.status === "Pending") {
+                return;
+            }
+
+            // Parse JSON response
+            let res;
+            try {
+                res = JSON.parse(text);
+            } catch(e) {
+                console.error("JSON parse error:", e);
+                throw new Error("Invalid server response");
+            }
+
+            // Handle different statuses
+            if (res.status === "Pending") {
+                console.log("User status: Pending");
                 show("penS");
             } else if (res.status === "Approved") {
+                console.log("User status: Approved");
                 u.refs = res.referrals || 0;
-                setup(); // ڈائریکٹ ڈیش بورڈ کھولیں
+                setup(); 
+            } else {
+                console.log("Unknown status:", res.status);
+                show("regS");
             }
         } catch(e) { 
-            // اگر نیٹ کا مسئلہ ہو تو فارم دکھا دیں
+            console.error("Init Error:", e);
+            // Fallback to registration screen on any error
             show("regS"); 
         }
     }
 
+    // Show specific screen and hide others
     function show(id) {
-        ["regS", "penS", "quizS"].forEach(s => document.getElementById(s).style.display = "none");
-        document.getElementById(id).style.display = "block";
+        console.log("Showing screen:", id);
+        ["regS", "penS", "quizS"].forEach(s => {
+            let el = document.getElementById(s);
+            if (el) el.style.display = "none";
+        });
+        
+        let target = document.getElementById(id);
+        if (target) {
+            target.style.display = "block";
+        } else {
+            console.error("Screen not found:", id);
+            // Fallback to registration
+            document.getElementById("regS").style.display = "block";
+        }
     }
 
+    // Registration handler
     async function reg() {
-        let n = document.getElementById("n").value, id = document.getElementById("i").value, trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
-        if (!n || !id || !trx || !file) return Swal.fire("Error", "All fields required", "error");
+        let n = document.getElementById("n").value.trim();
+        let id = document.getElementById("i").value.trim();
+        let trx = document.getElementById("trx").value.trim();
+        let file = document.getElementById("fileInput").files[0];
         
-        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
+        if (!n || !id || !trx || !file) {
+            return Swal.fire("Error", "All fields are required", "error");
+        }
+        
+        Swal.fire({
+            title: 'Processing...', 
+            allowOutsideClick: false, 
+            didOpen: () => Swal.showLoading()
+        });
+        
         try {
-            let fd = new FormData(); fd.append("image", file);
-            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
+            // Upload image to imgbb
+            let fd = new FormData(); 
+            fd.append("image", file);
+            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {
+                method: "POST", 
+                body: fd
+            });
             let imgD = await imgR.json();
-            await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
+            
+            if (!imgD.data || !imgD.data.url) {
+                throw new Error("Image upload failed");
+            }
+
+            // Submit registration
+            await fetch(URL, { 
+                method: "POST", 
+                body: JSON.stringify({ 
+                    type: "reg", 
+                    id: id, 
+                    name: n, 
+                    trx: trx, 
+                    proof: imgD.data.url 
+                }) 
+            });
             
             localStorage.setItem("psID", id);
-            u.id = id; // آئی ڈی کو اپڈیٹ کریں
-            Swal.fire("Success", "Account Sent for Approval!", "success").then(() => init());
-        } catch(e) { Swal.fire("Error", "Server Error", "error"); }
+            u.id = id;
+            Swal.fire("Success", "Account sent for approval!", "success").then(() => {
+                init();
+            });
+        } catch(e) { 
+            console.error("Registration error:", e);
+            Swal.fire("Error", "Server Error: " + e.message, "error"); 
+        }
     }
 
+    // Setup quiz dashboard
     function setup() {
         show("quizS");
-        // لیول لاجک
-        if (u.refs >= 10) conf = { l: 3, r: 0.60, p: 0.30 };
-        else if (u.refs >= 5) conf = { l: 2, r: 0.50, p: 0.25 };
+        
+        // Set level based on referrals
+        if (u.refs >= 10) {
+            conf = { l: 3, r: 0.60, p: 0.30 };
+        } else if (u.refs >= 5) {
+            conf = { l: 2, r: 0.50, p: 0.25 };
+        }
         
         limit = 200 + (u.refs * 50);
         document.getElementById("reward").innerText = conf.r.toFixed(2);
         load();
     }
 
+    // Load quiz questions
     async function load() {
-        try { let r = await fetch(URL); qs = await r.json(); next(); } catch(e) { console.log("Quiz load error"); }
+        try { 
+            let r = await fetch(URL); 
+            let data = await r.json();
+            qs = data.map(q => ({
+                q: q.q,
+                a: q.a,
+                c: q.c
+            }));
+            console.log("Loaded questions:", qs.length);
+            next(); 
+        } catch(e) { 
+            console.error("Quiz load error:", e);
+            Swal.fire("Error", "Failed to load questions", "error");
+        }
     }
 
+    // Load next question
     function next() {
-        if (u.p >= limit) return Swal.fire("Done", "Daily limit reached", "info");
+        if (u.p >= limit) {
+            return Swal.fire("Done", "Daily limit reached", "info");
+        }
+        
         sel = null;
         document.getElementById("mB").innerText = "SUBMIT ANSWER";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
+        
         let h = "";
-        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; });
+        cur.a.forEach((o, i) => { 
+            h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; 
+        });
         document.getElementById("qG").innerHTML = h;
         updateUI();
     }
 
+    // Select answer
     function s(i, b) {
-        if(document.getElementById("mB").innerText === "NEXT") return;
+        if (document.getElementById("mB").innerText === "NEXT") return;
         sel = {i, b};
-        document.querySelectorAll(".opt-btn").forEach(x=>x.style.borderColor="#3d4b6e");
-        b.style.borderColor="var(--p)";
+        document.querySelectorAll(".opt-btn").forEach(x => x.style.borderColor = "#3d4b6e");
+        b.style.borderColor = "var(--p)";
     }
 
+    // Handle answer submission
     function h() {
         let b = document.getElementById("mB");
-        if (b.innerText === "NEXT") { u.p++; u.ad++; if (u.ad >= 10) triggerAd(); else next(); return; }
-        if (!sel) return;
-        if (sel.i == cur.c) { sel.b.classList.add("correct"); u.e += conf.r; }
-        else { sel.b.classList.add("wrong"); u.d += conf.p; document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); }
+        
+        if (b.innerText === "NEXT") { 
+            u.p++; 
+            u.ad++; 
+            if (u.ad >= 10) {
+                triggerAd();
+            } else {
+                next();
+            }
+            return; 
+        }
+        
+        if (!sel) {
+            Swal.fire("", "Please select an answer", "warning");
+            return;
+        }
+        
+        if (sel.i == cur.c) { 
+            sel.b.classList.add("correct"); 
+            u.e += conf.r; 
+        } else { 
+            sel.b.classList.add("wrong"); 
+            u.d += conf.p; 
+            document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); 
+        }
+        
         b.innerText = "NEXT";
+        updateUI();
     }
 
+    // Trigger ad display - FIXED
     function triggerAd() {
-        document.getElementById("adBox").style.display = "flex";
+        console.log("Triggering ad");
+        let adBox = document.getElementById("adBox");
+        let closeBtn = document.getElementById("cB");
+        let adText = document.getElementById("aT");
+        
+        // Show ad box
+        adBox.classList.add("active");
+        closeBtn.style.display = "none";
+        
         let sec = 20;
+        adText.innerText = `Ad Closing in ${sec}s...`;
+        
         let t = setInterval(() => {
-            sec--; document.getElementById("aT").innerText = `Ad Closing in ${sec}s...`;
-            if (sec <= 0) { clearInterval(t); document.getElementById("cB").style.display = "block"; }
+            sec--; 
+            adText.innerText = `Ad Closing in ${sec}s...`;
+            
+            if (sec <= 0) { 
+                clearInterval(t); 
+                closeBtn.style.display = "block"; 
+            }
         }, 1000);
     }
 
-    function cA() { document.getElementById("adBox").style.display="none"; document.getElementById("cB").style.display="none"; u.ad=0; next(); }
+    // Close ad - FIXED
+    function cA() { 
+        console.log("Closing ad");
+        let adBox = document.getElementById("adBox");
+        let closeBtn = document.getElementById("cB");
+        
+        adBox.classList.remove("active");
+        closeBtn.style.display = "none";
+        u.ad = 0; 
+        next(); 
+    }
 
+    // Update UI elements
     function updateUI() {
         document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
         document.getElementById("earned").innerText = u.e.toFixed(2);
