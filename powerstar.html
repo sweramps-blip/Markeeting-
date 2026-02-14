@@ -20,7 +20,6 @@
             margin: 0;
         }
 
-        /* Background Glow */
         body::before {
             content: '';
             position: fixed;
@@ -45,23 +44,38 @@
         .logo {
             font-size: 22px;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background: linear-gradient(45deg, #58a6ff, #bc85ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* 1. Video Box (Now Bigger & Top) */
+        /* Small Ad on Top */
+        .ad-top {
+            width: 300px;
+            height: 250px;
+            margin: 0 auto 15px auto;
+            background: #000;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: scale(0.85); /* Slightly smaller to keep focus on video */
+        }
+
+        /* Big Video Box */
         .video-box {
             position: relative;
             width: 100%;
-            padding-bottom: 160%; /* Adjusted for a larger vertical look */
+            padding-bottom: 150%; 
             height: 0;
             background: #000;
             border-radius: 15px;
             overflow: hidden;
             border: 2px solid #58a6ff;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .video-box iframe {
@@ -70,22 +84,6 @@
             border: none;
         }
 
-        /* 2. Ad Box (Now Smaller & Bottom) */
-        .ad-box {
-            width: 300px;
-            height: 250px;
-            background: #000;
-            margin: 10px auto;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #30363d;
-            transform: scale(0.9); /* Making it look slightly smaller */
-        }
-
-        /* WhatsApp Button */
         .wa-btn {
             display: block;
             background: #25d366;
@@ -93,14 +91,12 @@
             text-decoration: none;
             padding: 12px;
             border-radius: 12px;
-            margin: 15px 0;
             font-weight: 600;
             font-size: 15px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            margin-bottom: 10px;
         }
 
         .status-bar {
-            margin-top: 15px;
             font-size: 12px;
             color: #8b949e;
         }
@@ -113,21 +109,7 @@
         <i class="fa-solid fa-bolt"></i> POWER STAR
     </div>
 
-    <div class="video-box">
-        <iframe 
-            src="https://www.youtube.com/embed/M3fVMpgV43M" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-        </iframe>
-    </div>
-
-    <a href="https://wa.me/923189309729" class="wa-btn">
-        <i class="fa-brands fa-whatsapp"></i> Contact 03189309729
-    </a>
-
-    <div class="ad-box">
+    <div class="ad-top">
         <script type="text/javascript">
             atOptions = {
                 'key' : '577f75aa7d65a7ccebfa35e124c256c4',
@@ -139,6 +121,20 @@
         </script>
         <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
     </div>
+
+    <div class="video-box">
+        <iframe 
+            src="https://www.youtube.com/embed/M3fVMpgV43M?autoplay=0" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <a href="https://wa.me/923189309729" class="wa-btn">
+        <i class="fa-brands fa-whatsapp"></i> Contact 03189309729
+    </a>
 
     <div class="status-bar">
         <i class="fa-solid fa-shield-halved"></i> Powered by Power Star Auth
