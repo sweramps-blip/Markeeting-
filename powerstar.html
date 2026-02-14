@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Power Star | Pro Stream</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0a0e1a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Background Glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1e3a8a 0%, transparent 70%);
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 20px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #58a6ff, #bc85ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 1. Video Box (Now Bigger & Top) */
+        .video-box {
+            position: relative;
+            width: 100%;
+            padding-bottom: 160%; /* Adjusted for a larger vertical look */
+            height: 0;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #58a6ff;
+            margin-bottom: 20px;
+        }
+
+        .video-box iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+        }
+
+        /* 2. Ad Box (Now Smaller & Bottom) */
+        .ad-box {
+            width: 300px;
+            height: 250px;
+            background: #000;
+            margin: 10px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #30363d;
+            transform: scale(0.9); /* Making it look slightly smaller */
+        }
+
+        /* WhatsApp Button */
+        .wa-btn {
+            display: block;
+            background: #25d366;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .status-bar {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">
+        <i class="fa-solid fa-bolt"></i> POWER STAR
+    </div>
+
+    <div class="video-box">
+        <iframe 
+            src="https://www.youtube.com/embed/M3fVMpgV43M" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <a href="https://wa.me/923189309729" class="wa-btn">
+        <i class="fa-brands fa-whatsapp"></i> Contact 03189309729
+    </a>
+
+    <div class="ad-box">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '577f75aa7d65a7ccebfa35e124c256c4',
+                'format' : 'iframe',
+                'height' : 250,
+                'width' : 300,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+    </div>
+
+    <div class="status-bar">
+        <i class="fa-solid fa-shield-halved"></i> Powered by Power Star Auth
+    </div>
+</div>
+
+</body>
+</html>
