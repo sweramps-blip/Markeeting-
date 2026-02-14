@@ -135,7 +135,7 @@
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
-<script>
+   <script>
     // 1. بنیادی سیٹ اپ
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3fnGwD-IBIEm6tZ4E5dd45df7E0ECc1aVANadpEmdSzCTQdaRVUE7c4KP-L4MGhXh/exec";
     const user = JSON.parse(localStorage.getItem("ps_user"));
@@ -143,45 +143,41 @@
     let completedList = JSON.parse(localStorage.getItem("ps_done_tasks")) || [];
     let allEnginesData = { m: [], p: [], v: [] };
     let isPaused = false;
-    let requiredTime = 60; // 1 منٹ
+    let isProcessing = false; // فکس: ڈبل پیمنٹ روکنے کے لیے لاک
+    let requiredTime = 60; 
 
     window.onblur = () => { isPaused = true; };
     window.onfocus = () => { isPaused = false; };
 
-    // 2. تمام ٹاسک لوڈ کرنا اور UI اپ ڈیٹ کرنا
+    // 2. ٹاسک لوڈ کرنا
     async function loadTasks() {
-        if (!user) return console.log("User not logged in");
+        if (!user) return;
         try {
             const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
-            const data = await res.json();
-            allEnginesData = data; // m, p, v سارا ڈیٹا یہاں آ گیا
-            
-            updateEngineUI('m'); // صرف 'm' انجن کو اپ ڈیٹ کریں
-            // اگر آپ چاہیں تو p اور v کے لیے یہاں اپنی مرضی کی لاجک دے سکتے ہیں
-        } catch (e) {
-            console.error("Loading Error:", e);
-        }
+            allEnginesData = await res.json();
+            updateEngineUI('m');
+        } catch (e) { console.error("Load Error", e); }
     }
 
-    // 3. اسٹارٹ انجن فنکشن (صرف 'm' کے لیے کام کرے گا)
+    // 3. انجن چلانا (ویڈیو ایشو فکس)
     async function runEngine(type) {
-        if (type !== 'm') {
-            // یہاں آپ اپنے دوسرے پروجیکٹس کے لنکس دے سکتے ہیں
-            if(type === 'p') window.location.href = "YOUR_PREMIUM_LINK";
-            if(type === 'v') window.location.href = "YOUR_VIRAL_LINK";
-            return;
-        }
-
-        if (!user || !user.user_id) return Swal.fire("لاگ ان ضروری ہے", "Account login karen", "warning");
+        if (type !== 'm' || isProcessing) return;
 
         let tasks = allEnginesData.m || [];
         let nextTask = tasks.find(t => !completedList.includes(t.tid));
 
-        if (!nextTask) {
-            return Swal.fire("ٹاسک مکمل 💯", "آج کے ویڈیو ٹاسک ختم ہو چکے ہیں۔", "info");
+        if (!nextTask) return Swal.fire("ٹاسک مکمل 💯", "آج کے ٹاسک ختم ہو چکے ہیں۔", "info");
+
+        if (!user || !user.user_id) return Swal.fire("لاگ ان", "Account login karen", "warning");
+
+        // فکس: ویڈیو لنک کھولنے کا بہتر طریقہ
+        let videoWin = window.open(nextTask.link, '_blank');
+        
+        // اگر پاپ اپ بلاک ہو جائے
+        if (!videoWin || videoWin.closed || typeof videoWin.closed == 'undefined') {
+            return Swal.fire("Pop-up Blocked!", "براہ کرم براؤزر سیٹنگ میں Pop-ups کو Allow کریں تاکہ ویڈیو چل سکے۔", "error");
         }
 
-        window.open(nextTask.link, '_blank');
         document.getElementById('loading-overlay').style.display = 'flex';
         startTimer(nextTask);
     }
@@ -199,7 +195,10 @@
 
                 if (elapsed >= requiredTime) {
                     clearInterval(timer);
-                    finalizeTask(task);
+                    // فکس: یہاں چیک کریں کہ کیا بیلنس پہلے سے ایڈ تو نہیں ہو رہا
+                    if (!isProcessing) {
+                        finalizeTask(task);
+                    }
                 }
             } else {
                 document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br>واپس ویڈیو پر جائیں`;
@@ -207,8 +206,11 @@
         }, 1000);
     }
 
-    // 5. بیلنس اور ریکارڈ سیونگ
+    // 5. بیلنس فائنل کرنا (ڈبل پیمنٹ فکس)
     async function finalizeTask(task) {
+        if (isProcessing) return; // ڈبل انٹری روکنے کا پہلا پہرہ
+        isProcessing = true;     // لاک لگا دیا
+
         try {
             const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=VID_${task.tid}`);
             const result = await res.json();
@@ -218,31 +220,27 @@
                 localStorage.setItem("ps_done_tasks", JSON.stringify(completedList));
                 document.getElementById('loading-overlay').style.display = 'none';
                 updateEngineUI('m');
-                Swal.fire("کامیابی ✅", `Rs. ${task.price} اکاؤنٹ میں شامل ہو گئے۔`, "success");
+                Swal.fire("کامیابی ✅", `Rs. ${task.price} شامل کر دیے گئے۔`, "success");
             }
         } catch (e) {
-            document.getElementById('loading-overlay').style.display = 'none';
-            Swal.fire("ایرر", "انٹرنیٹ کنکشن چیک کریں۔", "error");
+            Swal.fire("ایرر", "نیٹ ورک کا مسئلہ ہے۔ دوبارہ کوشش کریں۔", "error");
+        } finally {
+            isProcessing = false; // کام مکمل ہونے پر لاک کھولیں
         }
     }
 
-    // 6. UI ریفریش کرنا
+    // 6. UI اپ ڈیٹ
     function updateEngineUI(type) {
         let tasks = allEnginesData[type] || [];
         let done = tasks.filter(t => completedList.includes(t.tid)).length;
         let total = tasks.length;
-        
-        // قیمت دکھانا
         let nextTask = tasks.find(t => !completedList.includes(t.tid));
-        if (nextTask) {
-            document.getElementById(`price-${type}`).innerText = `Rs. ${nextTask.price}`;
-        } else {
-            document.getElementById(`price-${type}`).innerText = `All Done ✅`;
-        }
 
-        // پروگریس بار اور ٹیکسٹ
+        if (document.getElementById(`price-${type}`)) {
+            document.getElementById(`price-${type}`).innerText = nextTask ? `Rs. ${nextTask.price}` : "All Done ✅";
+        }
         if (document.getElementById(`bar-${type}`)) {
-            document.getElementById(`bar-${type}`).style.width = (total > 0 ? (done / total * 100) : 0) + '%';
+            document.getElementById(`bar-${type}`).style.width = (total > 0 ? (done/total*100) : 0) + '%';
         }
         if (document.getElementById(`text-${type}`)) {
             document.getElementById(`text-${type}`).innerText = `Progress: ${done}/${total} Tasks`;
@@ -250,6 +248,6 @@
     }
 
     window.onload = loadTasks;
-</script>
+</script>         
 </body>
 </html>
