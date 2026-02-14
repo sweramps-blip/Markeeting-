@@ -66,15 +66,6 @@
     </div>
 
     <h2 class="section-title">Earning Engines</h2>
-<div class="task-card">
-        <div class="task-main" style="margin-bottom: 0;">
-            <div class="task-icon">🎓</div>
-            <div class="task-info">
-                <h3>Educational Quiz</h3>
-                <span>Open Quiz & Earn Money</span>
-            </div>
-            <a href="eran.html" class="btn-start" style="text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">Start</a>
-        </div>
 </div>
     <div class="task-card">
         <div class="task-main">
@@ -144,94 +135,92 @@
             <div class="smart-bar-fill" id="overlayBar"></div>
         </div>
     </div>
-
-<script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-EgUC0YUdCuEJpLaK5BcEkccU7aRY3DI_ZMHPR-T_3ajzYEci6x16r1lcdFQRD0wV/exec";
-
+ <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9llK0wlsmM8-6LSr0VUKoQELBlA5asHIY09y7p_oQksXQNUk4XBWBJKUo3DDIeXL4/exec";
     const user = JSON.parse(localStorage.getItem("ps_user"));
     let stats = JSON.parse(localStorage.getItem("ps_task_stats")) || { m: 0, p: 0, v: 0 };
     let serverTasks = { m: [], p: [], v: [] };
+    let isPaused = false;
+    let requiredTime = 60; // 1 منٹ (60 سیکنڈ)
+
+    window.onblur = () => { isPaused = true; };
+    window.onfocus = () => { isPaused = false; };
 
     async function fetchTasks() {
         try {
-            const urlWithCacheBuster = `${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`;
-            const response = await fetch(urlWithCacheBuster);
-            const data = await response.json();
-            if (data && (data.m || data.p || data.v)) {
-                serverTasks = data;
-                ['m', 'p', 'v'].forEach(t => updateUI(t));
-            }
-        } catch (e) { console.error("Fetch Error:", e); }
+            const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
+            serverTasks = await res.json();
+            ['m', 'p', 'v'].forEach(t => updateUI(t));
+        } catch (e) { console.error(e); }
     }
 
     async function runEngine(type) {
-        if (!user || !user.user_id) return Swal.fire("Error", "Pehle Login Karen!", "error");
+        if (!user || !user.user_id) return Swal.fire("Error", "Login First!", "error");
         
         let tasks = serverTasks[type] || [];
         let index = stats[type];
 
-        if (tasks.length === 0) return Swal.fire("Wait", "No tasks available!", "info");
-        if (index >= tasks.length) return Swal.fire("Complete", "Saray tasks mukammal hain! ✅", "success");
-
-        let currentTask = tasks[index];
-        let linkToOpen = currentTask.link;
-
-        if (linkToOpen.includes("cpagrip.com")) {
-            linkToOpen += (linkToOpen.includes("?") ? "&" : "?") + `aff_sub=${user.user_id}`;
+        // ٹاسک مکمل ہونے پر دوبارہ نہیں چلے گا
+        if (index >= tasks.length && tasks.length > 0) {
+            return Swal.fire("Complete 💯", "Saray tasks mukammal hain! ✅", "success");
         }
 
-        window.open(linkToOpen, '_blank');
-        startLoadingBar(type, currentTask);
+        if (tasks.length === 0) return Swal.fire("Wait", "No tasks found!", "info");
+
+        // ویڈیو لنک اوپن کرنا
+        window.open(tasks[index].link, '_blank');
+        startLoadingBar(type, tasks[index]);
     }
 
     function startLoadingBar(type, task) {
         document.getElementById('loading-overlay').style.display = 'flex';
-        let p = 0;
+        let elapsed = 0;
         let oBar = document.getElementById('overlayBar');
         
-        // 300 = 30 Seconds approx (Shrinkme Safety)
         let timer = setInterval(() => {
-            p += 1; 
-            oBar.style.width = p + '%';
-            
-            if(p >= 100) {
-                clearInterval(timer);
-                finishTask(type, task);
+            if (!isPaused) {
+                elapsed++;
+                oBar.style.width = (elapsed / requiredTime * 100) + '%';
+                document.querySelector('.loading-text').innerHTML = 
+                    `ویڈیو کی تصدیق ہو رہی ہے...<br>باقی وقت: ${requiredTime - elapsed}s`;
+
+                if (elapsed >= requiredTime) {
+                    clearInterval(timer);
+                    finishTask(type, task);
+                }
+            } else {
+                document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br>واپس آئیں`;
             }
-        }, 300); 
+        }, 1000);
     }
 
     async function finishTask(type, task) {
         document.getElementById('loading-overlay').style.display = 'none';
         try {
-            const updateUrl = `${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=${type.toUpperCase()}_Engine&t=${new Date().getTime()}`;
-            const response = await fetch(updateUrl);
-            const result = await response.json();
-            
+            const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&source=${type.toUpperCase()}_Engine&t=${new Date().getTime()}`);
+            const result = await res.json();
             if (result.status === "Success") {
-                stats[type]++;
+                stats[type]++; // پروگریس بڑھانا
                 localStorage.setItem("ps_task_stats", JSON.stringify(stats));
                 updateUI(type);
                 Swal.fire("Verified ✅", `Rs. ${task.price} Added!`, "success");
             }
-        } catch (error) { Swal.fire("Error", "Update failed!", "error"); }
+        } catch (e) { console.error(e); }
     }
 
     function updateUI(type) {
         let tasks = serverTasks[type] || [];
-        let total = tasks.length;
         let done = stats[type];
-        let totalVal = tasks.reduce((sum, t) => sum + parseFloat(t.price || 0), 0);
+        let total = tasks.length;
         
-        if(document.getElementById('price-' + type)) 
-            document.getElementById('price-' + type).innerText = total > 0 ? `Earn Rs. ${totalVal.toFixed(2)}` : "No Tasks";
+        // پروگریس بار اور ٹیکسٹ اپ ڈیٹ کرنا
         if(document.getElementById('bar-' + type)) 
-            document.getElementById('bar-' + type).style.width = total > 0 ? (Math.min(done / total * 100, 100)) + '%' : '0%';
+            document.getElementById('bar-' + type).style.width = (total > 0 ? (Math.min(done/total*100, 100)) : 0) + '%';
         if(document.getElementById('text-' + type)) 
             document.getElementById('text-' + type).innerText = `Progress: ${done}/${total} Tasks`;
     }
 
     window.onload = fetchTasks;
-</script>
+            </script>          
 </body>
 </html>
