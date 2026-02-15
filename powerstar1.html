@@ -21,6 +21,7 @@
             overflow: hidden;
         }
 
+        /* Background Glow */
         body::before {
             content: '';
             position: fixed;
@@ -43,12 +44,21 @@
             position: relative;
         }
 
-        /* Ad Overlays */
-        .overlay {
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #58a6ff, #bc85ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 30-Second Ad Overlay */
+        #ad-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 14, 26, 0.98);
-            z-index: 1000;
+            z-index: 999;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -57,23 +67,24 @@
         }
 
         .timer-circle {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border: 4px solid #58a6ff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
         }
 
+        /* Video Frame */
         .video-box {
             position: relative;
             width: 100%;
-            padding-bottom: 177.78%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio for standard video */
             height: 0;
             background: #000;
             border-radius: 15px;
@@ -96,74 +107,61 @@
             padding: 12px;
             border-radius: 12px;
             font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    
-    <div id="cpa-overlay" class="overlay">
-        <div class="timer-circle" id="cpa-seconds">20</div>
-        <p style="margin-bottom: 15px; font-size: 13px; color: #58a6ff;">Verifying Connection...</p>
-        <iframe src="https://singingfiles.com/show.php?l=0&u=2498658&id=59478" style="width: 320px; height: 350px; border: none; border-radius: 10px;"></iframe>
-    </div>
-
-    <div id="adsterra-overlay" class="overlay" style="display: none;">
-        <div class="timer-circle" id="ads-seconds">10</div>
-        <p style="margin-bottom: 15px; font-size: 13px; color: #bc85ff;">Finalizing Stream...</p>
-        <div style="width: 300px; height: 250px; background: #000; border-radius: 8px;">
+    <div id="ad-overlay">
+        <div class="timer-circle" id="seconds">30</div>
+        <p style="margin-bottom: 20px; font-size: 14px; color: #8b949e;">Please wait for the Ad...</p>
+        
+        <div id="ad-content" style="width: 300px; height: 250px; background: #000; border-radius: 8px;">
             <script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
         </div>
     </div>
 
-    <div class="logo" style="margin-bottom: 15px; font-weight: 800; font-size: 22px; color: #58a6ff;">
-        POWER STAR
+    <div class="logo">
+        <i class="fa-solid fa-bolt"></i> POWER STAR
     </div>
 
     <div class="video-box">
-        <iframe src="https://www.youtube.com/embed/pftl_3aXx0Y" frameborder="0" allowfullscreen></iframe>
+        <iframe 
+            id="yt-player"
+            src="https://www.youtube.com/embed/sTqo8B2OCLo" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
     </div>
 
     <a href="https://wa.me/923189309729" class="wa-btn">
         <i class="fa-brands fa-whatsapp"></i> Contact 03189309729
     </a>
+
+    <div style="font-size: 11px; color: #8b949e; margin-top: 10px;">
+        <i class="fa-solid fa-lock"></i> Secured by Power Star Auth
+    </div>
 </div>
 
 <script>
-    let cpaTime = 20;
-    let adsTime = 10;
-    
-    const cpaOverlay = document.getElementById('cpa-overlay');
-    const adsOverlay = document.getElementById('adsterra-overlay');
-    const cpaTimer = document.getElementById('cpa-seconds');
-    const adsTimer = document.getElementById('ads-seconds');
+    let timeLeft = 30;
+    const timerElement = document.getElementById('seconds');
+    const overlay = document.getElementById('ad-overlay');
 
-    // CPA Timer Logic
-    const cpaInterval = setInterval(() => {
-        cpaTime--;
-        cpaTimer.innerText = cpaTime;
+    const countdown = setInterval(() => {
+        timeLeft--;
+        timerElement.innerText = timeLeft;
         
-        if (cpaTime <= 0) {
-            clearInterval(cpaInterval);
-            cpaOverlay.style.display = 'none';
-            startAdsterra();
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            overlay.style.display = 'none'; // Timer khatam hote hi ad screen hat jayegi
         }
     }, 1000);
-
-    // Adsterra Timer Logic
-    function startAdsterra() {
-        adsOverlay.style.display = 'flex';
-        const adsInterval = setInterval(() => {
-            adsTime--;
-            adsTimer.innerText = adsTime;
-            
-            if (adsTime <= 0) {
-                clearInterval(adsInterval);
-                adsOverlay.style.display = 'none';
-            }
-        }, 1000);
-    }
 </script>
 
 </body>
