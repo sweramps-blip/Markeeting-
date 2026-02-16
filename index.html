@@ -57,21 +57,21 @@
     </style>
 </head>
 <body>
-
+<div class="container">
     <div class="nav-header">
-        <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html" class="btn-back">
+        <a href="dashboard.html" class="btn-back">
             <i class="fas fa-arrow-left"></i> Back
         </a>
         <span style="font-size: 12px; color: #64748b;">Server Active ✅</span>
     </div>
 
     <h2 class="section-title">Earning Engines</h2>
-</div>
+
     <div class="task-card">
         <div class="task-main">
-            <div class="task-icon">🔥</div>
+            <div class="task-icon" style="color:#ff0000;"><i class="fab fa-youtube"></i></div>
             <div class="task-info">
-                <h3>Marketing Engine</h3>
+                <h3>Watch Videos</h3>
                 <span id="price-m">Loading Price...</span>
             </div>
             <button class="btn-start" onclick="runEngine('m')">Start</button>
@@ -79,62 +79,56 @@
         <div class="smart-bar-container"><div class="smart-bar-fill" id="bar-m"></div></div>
         <div class="task-footer">
             <span id="text-m">Progress: 0/0 Tasks</span>
-            <span>Est: Sheet Rates</span>
+            <span>Est: Video Rates</span>
         </div>
     </div>
 
     <div class="task-card">
         <div class="task-main">
-            <div class="task-icon">💎</div>
+            <div class="task-icon" style="color:#00d4ff;"><i class="fas fa-brain"></i></div>
             <div class="task-info">
-                <h3>Premium Engine</h3>
-                <span id="price-p">Loading Price...</span>
+                <h3>Quiz Competition</h3>
+                <span id="price-p">Start Contest</span>
             </div>
-            <button class="btn-start" onclick="runEngine('p')">Start</button>
+            <button class="btn-start" onclick="location.href='eran.html'">Start</button>
         </div>
-        <div class="smart-bar-container"><div class="smart-bar-fill" id="bar-p"></div></div>
+        <div class="smart-bar-container"><div class="smart-bar-fill" style="width:0%"></div></div>
         <div class="task-footer">
-            <span id="text-p">Progress: 0/0 Tasks</span>
-            <span>Est: Premium Rates</span>
+            <span>Live Competition</span>
+            <span>Est: High Rates</span>
         </div>
     </div>
 
     <div class="task-card">
         <div class="task-main">
-            <div class="task-icon">🚀</div>
+            <div class="task-icon" style="color:#ffd700;"><i class="fas fa-coins"></i></div>
             <div class="task-info">
-                <h3>Viral Engine</h3>
-                <span id="price-v">Loading Price...</span>
+                <h3>Play and Win Coin</h3>
+                <span id="price-v">Earn Coins</span>
             </div>
-            <button class="btn-start" onclick="runEngine('v')">Start</button>
+            <button class="btn-start" onclick="location.href='mega.html'">Start</button>
         </div>
-        <div class="smart-bar-container"><div class="smart-bar-fill" id="bar-v"></div></div>
+        <div class="smart-bar-container"><div class="smart-bar-fill" style="width:0%"></div></div>
         <div class="task-footer">
-            <span id="text-v">Progress: 0/0 Tasks</span>
-            <span>Est: Viral Rates</span>
+            <span>Instant Win</span>
+            <span>Est: Mega Rates</span>
         </div>
     </div>
 
     <div class="instruction-box">
         <h4><i class="fas fa-info-circle"></i> Tasks Instructions</h4>
         <ul>
-            <li><i class="fas fa-check-circle"></i> Click "Start" and wait for the link to open in a new tab.</li>
-            <li><i class="fas fa-check-circle"></i> Keep the task page open until the verification bar hits 100%.</li>
-            <li><i class="fas fa-check-circle"></i> Don't close this app while the engine is running.</li>
-            <li><i class="fas fa-check-circle"></i> Balance will be added automatically after successful verification.</li>
+            <li><i class="fas fa-check-circle"></i> Click "Start" and wait for the task to load.</li>
+            <li><i class="fas fa-check-circle"></i> Keep the page open until verification is complete.</li>
+            <li><i class="fas fa-check-circle"></i> Balance is updated automatically after task completion.</li>
         </ul>
     </div>
 
-    <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html" class="btn-next">
+    <a href="dashboard.html" class="btn-next">
         GO TO NEXT STEP <i class="fas fa-arrow-right"></i>
     </a>
+</div>
 
-    <div id="loading-overlay">
-        <div class="loading-text">Verifying Offer...<br><span style="font-size: 12px; color: #94a3b8;">Don't close or refresh this page</span></div>
-        <div class="smart-bar-container" style="width: 60%; height: 3px;">
-            <div class="smart-bar-fill" id="overlayBar"></div>
-        </div>
-    </div>
    <script>
     // 1. بنیادی سیٹ اپ
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3fnGwD-IBIEm6tZ4E5dd45df7E0ECc1aVANadpEmdSzCTQdaRVUE7c4KP-L4MGhXh/exec";
