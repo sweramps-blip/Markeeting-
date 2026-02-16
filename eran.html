@@ -2,70 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | All-in-One</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Power Star | Earning Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --p: #d4ff00; --bg: #0a0e1a; --card: #151b2d; --text: #94a3b8; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; }
-        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #2a344d; text-align: center; display: none; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #2a344d; background: #000; color: #fff; box-sizing: border-box; font-size: 14px; }
-        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 16px; transition: 0.3s; }
-        .btn:active { transform: scale(0.95); }
+        :root { --p: #d4ff00; --bg: #0a0e1a; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; 
+            margin: 0; padding: 15px; overflow-x: hidden; width: 100%; min-height: 100vh;
+        }
+
+        /* Container Lock */
+        .app-container { max-width: 500px; margin: 0 auto; }
+
+        .card { 
+            background: var(--card); padding: 20px; border-radius: 24px; 
+            border: 1px solid rgba(255,255,255,0.05); text-align: center; 
+            display: none; margin-top: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
         .stat-grid { display: flex; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .opt-btn { width: 100%; padding: 15px; margin-top: 10px; border-radius: 12px; border: 1px solid #3d4b6e; background: #1e263d; color: #fff; cursor: pointer; font-weight: 600; text-align: left; }
+        .stat-box { 
+            background: linear-gradient(145deg, #1e293b, #0f172a); 
+            padding: 15px; border-radius: 20px; flex: 1; text-align: center; 
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        /* Timer Circle */
+        .timer-wrap {
+            width: 60px; height: 60px; border: 4px solid #1e293b; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 15px; position: relative; transition: 0.3s;
+        }
+        #timer { font-weight: 800; font-size: 18px; color: var(--p); }
+
+        .opt-btn { 
+            width: 100%; padding: 16px; margin-top: 10px; border-radius: 16px; 
+            border: 1px solid #2a344d; background: #1e263d; color: #fff; 
+            cursor: pointer; font-weight: 600; text-align: left; font-size: 15px;
+        }
+
+        .btn-main { 
+            width: 100%; padding: 18px; border-radius: 18px; border: none; 
+            background: linear-gradient(90deg, #d4ff00, #a0cc00); color: #000; 
+            font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 16px;
+        }
+
+        /* Ad Section */
+        .ad-slot { 
+            margin-top: 20px; border-radius: 15px; overflow: hidden; 
+            background: #000; min-height: 250px; display: flex; 
+            align-items: center; justify-content: center;
+        }
+
+        .lv-tag { 
+            background: var(--p); color: #000; padding: 4px 12px; 
+            border-radius: 50px; font-size: 11px; font-weight: 800; margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
 
-<div id="loader" style="text-align:center; margin-top:100px; color:var(--p); font-weight:bold;">
-    <div style="font-size:24px; margin-bottom:10px;">POWER STAR</div>
-    Verifying Connection...
-</div>
-
-<div id="regS" class="card">
-    <h1 style="color:var(--p); margin-top:0;">REGISTER</h1>
-    <div style="background:rgba(212,255,0,0.1); padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; color:var(--p);">Fee: 200 PKR | EasyPaisa: 03412049729</div>
-    <input id="n" placeholder="Full Name">
-    <input id="i" placeholder="Enter Power Star ID">
-    <input id="trx" type="number" placeholder="11 Digit TRX ID">
-    <div style="text-align:left; font-size:12px; color:var(--text); margin-bottom:5px;">Upload Payment Screenshot:</div>
-    <input type="file" id="fI" accept="image/*" style="border:none; padding:5px;">
-    <button class="btn" onclick="register()">ACTIVATE ACCOUNT</button>
-</div>
-
-<div id="penS" class="card">
-    <div style="font-size:50px; color:var(--p); margin-bottom:10px;">⏳</div>
-    <h2 style="color:var(--p)">UNDER REVIEW</h2>
-    <p style="color:var(--text); font-size:14px; line-height:1.6;">Your payment for ID: <b id="dID" style="color:#fff"></b> is being verified. This usually takes 1 to 12 hours. Please check back later.</p>
-</div>
-
-<div id="dashS" style="display:none;">
-    <div class="stat-grid">
-        <div class="stat-box"><small style="font-size:10px; opacity:0.8;">MAIN BALANCE</small><h2 id="mB" style="margin:5px 0 0 0;">0.00</h2></div>
-        <div class="stat-box" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"><small style="font-size:10px; opacity:0.8;">REFERRALS</small><h2 id="mR" style="margin:5px 0 0 0;">0</h2></div>
+<div class="app-container">
+    <div id="loader" style="text-align:center; margin-top:100px;">
+        <h2 style="color:var(--p); letter-spacing:3px;">POWER STAR</h2>
+        <p style="color:var(--text)">Loading Secure Environment...</p>
     </div>
-    
-    <div class="card" style="display:block; margin-top:0;">
-        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text); margin-bottom:15px;">
-            <span>Earning: <b id="tE" style="color:var(--p)">0.00</b></span>
-            <span>Reward/Q: <b id="rwd">0.40</b></span>
+
+    <div id="regS" class="card">
+        <h1 style="color:var(--p); margin-top:0;">JOIN NOW</h1>
+        <p style="font-size:12px; color:var(--text)">Fee: 200 PKR | 03412049729</p>
+        <input id="n" placeholder="Full Name">
+        <input id="i" placeholder="Power Star ID">
+        <input id="trx" type="number" placeholder="11 Digit TRX ID">
+        <input type="file" id="fI" accept="image/*" style="padding:10px; font-size:12px;">
+        <button class="btn-main" onclick="register()">ACTIVATE ACCOUNT</button>
+    </div>
+
+    <div id="penS" class="card">
+        <div style="font-size:50px;">⏳</div>
+        <h2 style="color:var(--p)">UNDER REVIEW</h2>
+        <p style="color:var(--text)">Verifying Payment for ID: <b id="dID" style="color:#fff"></b></p>
+    </div>
+
+    <div id="dashS" style="display:none;">
+        <div class="stat-grid">
+            <div class="stat-box"><small style="font-size:10px; color:var(--text)">WALLET</small><h2 id="mB">0.00</h2></div>
+            <div class="stat-box"><small style="font-size:10px; color:var(--text)">REFS</small><h2 id="mR">0</h2></div>
         </div>
-        <div id="qT" style="font-size:18px; font-weight:800; margin-bottom:20px; min-height:50px;">Loading Question...</div>
-        <div id="qG"></div>
-        <button id="nB" class="btn" style="display:none; background:#fff; color:#000;" onclick="nextQ()">NEXT QUESTION</button>
+        
+        <div class="card" style="display:block; margin-top:0;">
+            <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
+            <div class="timer-wrap" id="tWrap"><span id="timer">15s</span></div>
+            
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:15px;">
+                <span>Earned: <b id="tE" style="color:var(--p)">0.00</b></span>
+                <span>Tasks: <b id="pgr">0/200</b></span>
+            </div>
+            
+            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px; min-height:50px;">Loading Question...</div>
+            <div id="qG"></div>
+            
+            <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
+        </div>
+
+        <button class="btn-main" onclick="claim()">CLAIM TO MAIN WALLET</button>
+
+        <div class="ad-slot">
+            <script>
+                atOptions = {
+                    'key' : '577f75aa7d65a7ccebfa35e124c256c4',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            </script>
+            <script src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+        </div>
     </div>
-    
-    <button class="btn" onclick="claim()" style="margin-top:20px; background:linear-gradient(to right, #d4ff00, #a0cc00);">CLAIM TO MAIN WALLET</button>
 </div>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycby6md6X92N0vSudZadIWPH-fKGFDOnYBFbKuq1Ds-BWb6AvsSyuvNRimJYsDBJpcfHglA/exec";
     const IMBB = "14d35273fb4122ebb999baa08057f3f0";
-    let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40 };
-    let qs = [], cur, sel = null;
+    
+    let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
+    let qs = [], cur, sel = null, timerInt;
 
     window.onload = async () => {
         if(!u.id) { show("regS"); return; }
@@ -75,8 +142,7 @@
             if(res.status === "Approved") {
                 document.getElementById("mB").innerText = "Rs " + res.mainBalance;
                 document.getElementById("mR").innerText = res.referrals;
-                if(res.referrals >= 10) u.r = 0.60;
-                document.getElementById("rwd").innerText = u.r.toFixed(2);
+                setupLevel(parseInt(res.referrals));
                 show("dashS"); loadQuiz();
             } else if(res.status === "Pending") {
                 document.getElementById("dID").innerText = u.id;
@@ -85,27 +151,24 @@
         } catch(e) { show("regS"); }
     };
 
-    function show(id) {
-        document.getElementById("loader").style.display = "none";
-        document.getElementById(id).style.display = "block";
+    function setupLevel(refs) {
+        if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
+        else if(refs <= 10) { u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; }
+        else { u.lv=3; u.r=0.60; u.pnl=0.40; u.lim=300; }
+        document.getElementById("lvDisplay").innerText = "LEVEL " + u.lv;
+        document.getElementById("pgr").innerText = `0/${u.lim}`;
     }
 
-    async function register() {
-        let n=document.getElementById("n").value, id=document.getElementById("i").value, trx=document.getElementById("trx").value, file=document.getElementById("fI").files[0];
-        if(!n || !id || !trx || !file) return Swal.fire("Required", "Please fill all fields and upload proof", "warning");
-        if(trx.length < 11) return Swal.fire("Invalid TRX", "Transaction ID must be 11 digits", "error");
-        
-        Swal.fire({title: 'Submitting...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-        
-        try {
-            let fd = new FormData(); fd.append("image", file);
-            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB}`, {method:"POST", body:fd});
-            let imgD = await imgR.json();
-
-            await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
-            localStorage.setItem("psID", id);
-            location.reload();
-        } catch(e) { Swal.fire("Error", "Check your connection", "error"); }
+    function startTimer() {
+        let t = 15;
+        document.getElementById("timer").innerText = t + "s";
+        document.getElementById("tWrap").style.borderColor = "var(--p)";
+        timerInt = setInterval(() => {
+            t--;
+            document.getElementById("timer").innerText = t + "s";
+            if(t <= 5) document.getElementById("tWrap").style.borderColor = "var(--danger)";
+            if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
+        }, 1000);
     }
 
     async function loadQuiz() {
@@ -115,38 +178,76 @@
     }
 
     function nextQ() {
-        sel = null; document.getElementById("nB").style.display="none";
+        if(u.solved >= u.lim) return Swal.fire("Limit Reached", "Daily quota finished!", "info");
+        clearInterval(timerInt);
+        sel = null; 
+        document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
+        document.getElementById("qT").style.color = "#fff";
         let h = "";
         cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="check(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h;
+        startTimer();
     }
 
     function check(i, b) {
         if(sel !== null) return;
-        sel = i;
+        clearInterval(timerInt);
+        sel = i; u.solved++;
+        document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
         if(i == cur.c) { 
-            b.style.background="#27ae60"; b.style.borderColor="#2ecc71";
-            u.e += u.r; document.getElementById("tE").innerText = u.e.toFixed(2);
+            b.style.background="var(--success)"; b.style.borderColor="var(--success)";
+            u.e += u.r; 
         } else { 
-            b.style.background="#c0392b"; b.style.borderColor="#e74c3c";
-            document.querySelectorAll(".opt-btn")[cur.c].style.background="#27ae60";
+            b.style.background="var(--danger)"; b.style.borderColor="var(--danger)";
+            handlePenalty();
         }
+        document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("nB").style.display="block";
     }
 
+    function handlePenalty(type) {
+        u.e -= u.pnl; if(u.e < 0) u.e = 0;
+        document.getElementById("tE").innerText = u.e.toFixed(2);
+        document.querySelectorAll(".opt-btn")[cur.c].style.background="var(--success)";
+        if(type === "TIMEOUT") {
+            u.solved++;
+            document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
+            document.getElementById("qT").innerText = "TIME OUT! Penalty Applied.";
+            document.getElementById("qT").style.color = "var(--danger)";
+            document.getElementById("nB").style.display="block";
+        }
+    }
+
     async function claim() {
-        if(u.e <= 0) return Swal.fire("No Earnings", "Please complete some quizzes first", "info");
-        Swal.fire({title: 'Transferring to Wallet...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        if(u.e <= 0) return Swal.fire("No Points", "Earn first", "info");
+        Swal.fire({title: 'Processing...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
         try {
             let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
             let res = await r.json();
             if(res.result === "success") {
-                u.e = 0; 
-                Swal.fire("Claimed!", "Earnings added to Main Sheet successfully", "success").then(()=>location.reload());
+                u.e = 0; Swal.fire("Done!", "Main Wallet Updated", "success").then(()=>location.reload());
             }
-        } catch(e) { Swal.fire("Error", "Failed to update balance", "error"); }
+        } catch(e) { Swal.fire("Error", "Server Issue", "error"); }
+    }
+
+    function show(id) {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById(id).style.display = "block";
+    }
+
+    async function register() {
+        let n=document.getElementById("n").value, id=document.getElementById("i").value, trx=document.getElementById("trx").value, file=document.getElementById("fI").files[0];
+        if(!n || !id || !trx || !file) return Swal.fire("Required", "Complete all steps", "warning");
+        Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
+        try {
+            let fd = new FormData(); fd.append("image", file);
+            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB}`, {method:"POST", body:fd});
+            let imgD = await imgR.json();
+            await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
+            localStorage.setItem("psID", id); location.reload();
+        } catch(e) { Swal.fire("Error", "Failed", "error"); }
     }
 </script>
 </body>
