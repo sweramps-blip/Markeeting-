@@ -2,48 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Pro Fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Power Star | Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --p: #d4ff00; --bg: #0a0e1a; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; overflow-x: hidden; width: 100%; min-height: 100vh; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; overflow-x: hidden; }
         .app-container { max-width: 500px; margin: 0 auto; }
-        .card { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: center; display: none; margin-top: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .card { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: center; display: none; margin-top: 15px; }
         .stat-grid { display: flex; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 15px; border-radius: 20px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
-        .timer-wrap { width: 60px; height: 60px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; transition: 0.3s; }
-        #timer { font-weight: 800; font-size: 18px; color: var(--p); }
-        .opt-btn { width: 100%; padding: 16px; margin-top: 10px; border-radius: 16px; border: 1px solid #2a344d; background: #1e263d; color: #fff; cursor: pointer; font-weight: 600; text-align: left; font-size: 15px; }
-        .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: linear-gradient(90deg, #d4ff00, #a0cc00); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 16px; }
-        .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; margin-bottom: 8px; display: inline-block; }
-        .ad-slot { margin-top: 20px; border-radius: 15px; overflow: hidden; background: #000; min-height: 250px; display: flex; align-items: center; justify-content: center; }
+        .stat-box { background: #1e293b; padding: 15px; border-radius: 20px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        .timer-wrap { width: 60px; height: 60px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
+        .opt-btn { width: 100%; padding: 16px; margin-top: 10px; border-radius: 16px; border: 1px solid #2a344d; background: #1e263d; color: #fff; cursor: pointer; text-align: left; }
+        .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; }
+        .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div id="loader" style="text-align:center; margin-top:120px;">
-        <h2 style="color:var(--p); letter-spacing:3px;">POWER STAR</h2>
-        <div style="margin:20px auto; width:40px; height:40px; border:4px solid #1e293b; border-top-color:var(--p); border-radius:50%; animation: spin 1s linear infinite;"></div>
-        <p style="color:var(--text)">Loading Secure Environment...</p>
-    </div>
-
-    <div id="regS" class="card">
-        <h1 style="color:var(--p); margin-top:0;">JOIN NOW</h1>
-        <input id="n" placeholder="Full Name">
-        <input id="i" placeholder="Power Star ID">
-        <input id="trx" type="number" placeholder="11 Digit TRX ID">
-        <input type="file" id="fI" accept="image/*" style="padding:10px; font-size:12px;">
-        <button class="btn-main" onclick="register()">ACTIVATE ACCOUNT</button>
-    </div>
-
-    <div id="penS" class="card">
-        <div style="font-size:50px;">⏳</div>
-        <h2 style="color:var(--p)">UNDER REVIEW</h2>
-        <p style="color:var(--text)">ID: <b id="dID" style="color:#fff"></b> is being verified.</p>
+    <div id="loader" style="text-align:center; margin-top:100px;">
+        <h2 style="color:var(--p);">POWER STAR</h2>
+        <p>Syncing Data...</p>
     </div>
 
     <div id="dashS" style="display:none;">
@@ -54,58 +35,52 @@
         
         <div class="card" style="display:block; margin-top:0;">
             <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
-            <div class="timer-wrap" id="tWrap"><span id="timer">30s</span></div>
+            <div class="timer-wrap" id="tWrap"><span id="timer" style="font-weight:800; color:var(--p)">30s</span></div>
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:15px;">
                 <span>Session: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>Tasks: <b id="pgr">0/200</b></span>
             </div>
-            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px;">Loading...</div>
+            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px;">Loading Questions...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
 
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET</button>
 
-        <div class="ad-slot">
-            <script>
+        <div style="margin-top:20px; text-align:center;">
+            <script type="text/javascript">
                 atOptions = {'key' : '577f75aa7d65a7ccebfa35e124c256c4','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};
             </script>
-            <script src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
         </div>
     </div>
 </div>
 
-<style> @keyframes spin { to { transform: rotate(360deg); } } </style>
-
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycby6md6X92N0vSudZadIWPH-fKGFDOnYBFbKuq1Ds-BWb6AvsSyuvNRimJYsDBJpcfHglA/exec";
-    const IMBB = "14d35273fb4122ebb999baa08057f3f0";
-    
     let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
     let qs = [], cur, sel = null, timerInt;
 
     window.onload = async () => {
-        if(!u.id) { show("regS"); return; }
+        if(!u.id) { location.reload(); return; } // Should show registration if ID missing
         try {
-            let response = await fetch(GAS_URL + "?checkID=" + u.id);
-            let res = await response.json();
-            
+            let r = await fetch(GAS_URL + "?checkID=" + u.id);
+            let res = await r.json();
             if(res.status === "Approved") {
                 document.getElementById("mB").innerText = "Rs " + res.mainBalance;
                 document.getElementById("mR").innerText = res.referrals;
-                setupLevel(parseInt(res.referrals));
-                show("dashS");
+                
+                // Logic Fix: "DIRECT" یا الفاظ کو 0 میں تبدیل کریں
+                let refCount = parseInt(res.referrals) || 0; 
+                setupLevel(refCount);
+                
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("dashS").style.display = "block";
                 loadQuiz();
-            } else if(res.status === "Pending") {
-                document.getElementById("dID").innerText = u.id;
-                show("penS");
             } else {
-                show("regS");
+                Swal.fire("Error", "ID Not Found or Pending", "error");
             }
-        } catch(err) {
-            console.log(err);
-            show("regS");
-        }
+        } catch(e) { Swal.fire("Server Error", "Check Internet", "error"); }
     };
 
     function setupLevel(refs) {
@@ -116,38 +91,36 @@
         document.getElementById("pgr").innerText = `0/${u.lim}`;
     }
 
-    function startTimer() {
-        let t = 30; // 30 Second Timer
-        document.getElementById("timer").innerText = t + "s";
-        document.getElementById("tWrap").style.borderColor = "var(--p)";
-        clearInterval(timerInt);
-        timerInt = setInterval(() => {
-            t--;
-            document.getElementById("timer").innerText = t + "s";
-            if(t <= 10) document.getElementById("tWrap").style.borderColor = "var(--danger)";
-            if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
-        }, 1000);
-    }
-
     async function loadQuiz() {
         try {
             let r = await fetch(GAS_URL + "?getQuiz=true");
             qs = await r.json();
-            if(qs.length > 0) nextQ();
-        } catch(e) { console.log("Quiz Load Error"); }
+            if(qs && qs.length > 0) nextQ();
+            else document.getElementById("qT").innerText = "No Questions in Sheet!";
+        } catch(e) { document.getElementById("qT").innerText = "Failed to load Questions"; }
     }
 
     function nextQ() {
-        if(u.solved >= u.lim) { Swal.fire("Limit Reached", "Done for today!", "info"); return; }
+        if(u.solved >= u.lim) { Swal.fire("Limit Reached", "Daily tasks done!", "success"); return; }
+        clearInterval(timerInt);
         sel = null;
         document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
-        document.getElementById("qT").style.color = "#fff";
         let h = "";
         cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="check(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h;
         startTimer();
+    }
+
+    function startTimer() {
+        let t = 30;
+        document.getElementById("timer").innerText = t + "s";
+        timerInt = setInterval(() => {
+            t--;
+            document.getElementById("timer").innerText = t + "s";
+            if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
+        }, 1000);
     }
 
     function check(i, b) {
@@ -155,13 +128,8 @@
         clearInterval(timerInt);
         sel = i; u.solved++;
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-        if(i == cur.c) {
-            b.style.background="var(--success)";
-            u.e += u.r;
-        } else {
-            b.style.background="var(--danger)";
-            handlePenalty();
-        }
+        if(i == cur.c) { b.style.background="var(--success)"; u.e += u.r; }
+        else { b.style.background="var(--danger)"; handlePenalty(); }
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("nB").style.display="block";
     }
@@ -170,41 +138,16 @@
         u.e -= u.pnl; if(u.e < 0) u.e = 0;
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.querySelectorAll(".opt-btn")[cur.c].style.background="var(--success)";
-        if(type === "TIMEOUT") {
-            u.solved++;
-            document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-            document.getElementById("qT").innerText = "TIME OUT!";
-            document.getElementById("qT").style.color = "var(--danger)";
-            document.getElementById("nB").style.display="block";
-        }
+        if(type === "TIMEOUT") { u.solved++; nextQ(); }
     }
 
     async function claim() {
-        if(u.e <= 0) return Swal.fire("No Points", "Earn first", "info");
+        if(u.e <= 0) return Swal.fire("Empty", "Earn first", "info");
         Swal.fire({title: 'Claiming...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
         try {
-            let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
-            let res = await r.json();
-            if(res.result === "success") { u.e = 0; location.reload(); }
-        } catch(e) { Swal.fire("Error", "Server Issue", "error"); }
-    }
-
-    function show(id) {
-        document.getElementById("loader").style.display = "none";
-        document.getElementById(id).style.display = "block";
-    }
-
-    async function register() {
-        let n=document.getElementById("n").value, id=document.getElementById("i").value, trx=document.getElementById("trx").value, file=document.getElementById("fI").files[0];
-        if(!n || !id || !trx || !file) return Swal.fire("Required", "Complete all fields", "warning");
-        Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
-        try {
-            let fd = new FormData(); fd.append("image", file);
-            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB}`, {method:"POST", body:fd});
-            let imgD = await imgR.json();
-            await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
-            localStorage.setItem("psID", id); location.reload();
-        } catch(e) { Swal.fire("Error", "Try again", "error"); }
+            await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
+            location.reload();
+        } catch(e) { Swal.fire("Error", "Sync Failed", "error"); }
     }
 </script>
 </body>
