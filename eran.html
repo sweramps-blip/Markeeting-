@@ -2,45 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | Fixed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Power Star | Fixed & Secured</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --p: #d4ff00; --bg: #0a0e1a; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; overflow-x: hidden; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; overflow-x: hidden; width: 100%; min-height: 100vh; }
         .app-container { max-width: 500px; margin: 0 auto; }
-        .card { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: center; display: none; margin-top: 15px; }
+        .card { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: center; display: none; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .stat-grid { display: flex; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: #1e293b; padding: 15px; border-radius: 20px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
-        .timer-wrap { width: 60px; height: 60px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
-        .opt-btn { width: 100%; padding: 16px; margin-top: 10px; border-radius: 16px; border: 1px solid #2a344d; background: #1e263d; color: #fff; cursor: pointer; text-align: left; }
-        .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; }
+        .stat-box { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 15px; border-radius: 20px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        
+        /* New 2x2 Grid Layout */
+        #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+        .opt-btn { 
+            width: 100%; padding: 18px 10px; border-radius: 16px; border: 1px solid #2a344d; 
+            background: #1e263d; color: #fff; cursor: pointer; font-weight: 600; 
+            text-align: center; font-size: 14px; transition: 0.2s;
+        }
+
+        .timer-wrap { width: 65px; height: 65px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; transition: 0.3s; }
+        #timer { font-weight: 800; font-size: 20px; color: var(--p); }
+        .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 16px; }
         .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 10px; }
     </style>
 </head>
-<body>
-
-<div class="app-container">
+<body oncontextmenu="return false;"> <div class="app-container">
     <div id="loader" style="text-align:center; margin-top:100px;">
         <h2 style="color:var(--p);">POWER STAR</h2>
-        <p>Syncing Data...</p>
+        <p>Syncing Secure Data...</p>
     </div>
 
     <div id="dashS" style="display:none;">
         <div class="stat-grid">
-            <div class="stat-box"><small>WALLET</small><h2 id="mB">0.00</h2></div>
-            <div class="stat-box"><small>REFS</small><h2 id="mR">0</h2></div>
+            <div class="stat-box"><small style="font-size:10px;">WALLET</small><h2 id="mB">0.00</h2></div>
+            <div class="stat-box"><small style="font-size:10px;">APPROVED REFS</small><h2 id="mR">0</h2></div>
         </div>
         
         <div class="card" style="display:block; margin-top:0;">
             <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
-            <div class="timer-wrap" id="tWrap"><span id="timer" style="font-weight:800; color:var(--p)">30s</span></div>
+            <div class="timer-wrap" id="tWrap"><span id="timer">30s</span></div>
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:15px;">
                 <span>Session: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>Tasks: <b id="pgr">0/200</b></span>
             </div>
-            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px;">Loading Questions...</div>
+            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px; min-height:50px;">Loading Questions...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
@@ -57,28 +65,33 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycby6md6X92N0vSudZadIWPH-fKGFDOnYBFbKuq1Ds-BWb6AvsSyuvNRimJYsDBJpcfHglA/exec";
+    // Security: Block F12 & Inspect Shortcuts
+    document.onkeydown = (e) => {
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false;
+    };
+
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyi8Hd1eQMMV_q8EfGPDsywPymO0GZbGY9oamiSEkzWfVRxDtZgQvTmmIac9OyDYOQyYg/exec";
     let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
     let qs = [], cur, sel = null, timerInt;
 
     window.onload = async () => {
-        if(!u.id) { location.reload(); return; } // Should show registration if ID missing
+        if(!u.id) { location.reload(); return; }
         try {
             let r = await fetch(GAS_URL + "?checkID=" + u.id);
             let res = await r.json();
             if(res.status === "Approved") {
                 document.getElementById("mB").innerText = "Rs " + res.mainBalance;
-                document.getElementById("mR").innerText = res.referrals;
                 
-                // Logic Fix: "DIRECT" یا الفاظ کو 0 میں تبدیل کریں
-                let refCount = parseInt(res.referrals) || 0; 
+                // Update: Get only Approved Referrals count
+                let refCount = parseInt(res.approvedReferrals) || parseInt(res.referrals) || 0; 
+                document.getElementById("mR").innerText = refCount;
+                
                 setupLevel(refCount);
-                
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("dashS").style.display = "block";
                 loadQuiz();
             } else {
-                Swal.fire("Error", "ID Not Found or Pending", "error");
+                Swal.fire("Error", "ID Not Approved", "error");
             }
         } catch(e) { Swal.fire("Server Error", "Check Internet", "error"); }
     };
@@ -94,9 +107,10 @@
     async function loadQuiz() {
         try {
             let r = await fetch(GAS_URL + "?getQuiz=true");
-            qs = await r.json();
+            let data = await r.json();
+            // Shuffle/Randomize Questions
+            qs = data.sort(() => Math.random() - 0.5);
             if(qs && qs.length > 0) nextQ();
-            else document.getElementById("qT").innerText = "No Questions in Sheet!";
         } catch(e) { document.getElementById("qT").innerText = "Failed to load Questions"; }
     }
 
@@ -116,9 +130,11 @@
     function startTimer() {
         let t = 30;
         document.getElementById("timer").innerText = t + "s";
+        document.getElementById("tWrap").style.borderColor = "var(--p)";
         timerInt = setInterval(() => {
             t--;
             document.getElementById("timer").innerText = t + "s";
+            if(t <= 10) document.getElementById("tWrap").style.borderColor = "var(--danger)";
             if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
         }, 1000);
     }
@@ -128,8 +144,18 @@
         clearInterval(timerInt);
         sel = i; u.solved++;
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-        if(i == cur.c) { b.style.background="var(--success)"; u.e += u.r; }
-        else { b.style.background="var(--danger)"; handlePenalty(); }
+        
+        // Correct Index Fix for Sheet (1, 2, 3...)
+        let correctIdx = parseInt(cur.c);
+        if((i + 1) === correctIdx) { 
+            b.style.background="var(--success)"; 
+            u.e += u.r; 
+        } else { 
+            b.style.background="var(--danger)"; 
+            let btns = document.querySelectorAll(".opt-btn");
+            if(btns[correctIdx - 1]) btns[correctIdx - 1].style.background = "var(--success)";
+            handlePenalty(); 
+        }
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("nB").style.display="block";
     }
@@ -137,8 +163,14 @@
     function handlePenalty(type) {
         u.e -= u.pnl; if(u.e < 0) u.e = 0;
         document.getElementById("tE").innerText = u.e.toFixed(2);
-        document.querySelectorAll(".opt-btn")[cur.c].style.background="var(--success)";
-        if(type === "TIMEOUT") { u.solved++; nextQ(); }
+        if(type === "TIMEOUT") { 
+            let cIdx = parseInt(cur.c);
+            let btns = document.querySelectorAll(".opt-btn");
+            if(btns[cIdx - 1]) btns[cIdx - 1].style.background = "var(--success)";
+            u.solved++; 
+            document.getElementById("nB").style.display="block"; 
+            document.getElementById("qT").innerText = "TIME OUT!";
+        }
     }
 
     async function claim() {
