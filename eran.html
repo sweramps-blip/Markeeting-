@@ -3,79 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Earning Pro</title>
+    <title>Power Star | Pro Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --p: #d4ff00; --bg: #0a0e1a; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
-        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; 
-            margin: 0; padding: 15px; overflow-x: hidden; width: 100%; min-height: 100vh;
-        }
-
-        /* Container Lock */
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; overflow-x: hidden; width: 100%; min-height: 100vh; }
         .app-container { max-width: 500px; margin: 0 auto; }
-
-        .card { 
-            background: var(--card); padding: 20px; border-radius: 24px; 
-            border: 1px solid rgba(255,255,255,0.05); text-align: center; 
-            display: none; margin-top: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
+        .card { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); text-align: center; display: none; margin-top: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         .stat-grid { display: flex; gap: 10px; margin-bottom: 15px; }
-        .stat-box { 
-            background: linear-gradient(145deg, #1e293b, #0f172a); 
-            padding: 15px; border-radius: 20px; flex: 1; text-align: center; 
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-
-        /* Timer Circle */
-        .timer-wrap {
-            width: 60px; height: 60px; border: 4px solid #1e293b; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 15px; position: relative; transition: 0.3s;
-        }
+        .stat-box { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 15px; border-radius: 20px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.03); }
+        .timer-wrap { width: 60px; height: 60px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; transition: 0.3s; }
         #timer { font-weight: 800; font-size: 18px; color: var(--p); }
-
-        .opt-btn { 
-            width: 100%; padding: 16px; margin-top: 10px; border-radius: 16px; 
-            border: 1px solid #2a344d; background: #1e263d; color: #fff; 
-            cursor: pointer; font-weight: 600; text-align: left; font-size: 15px;
-        }
-
-        .btn-main { 
-            width: 100%; padding: 18px; border-radius: 18px; border: none; 
-            background: linear-gradient(90deg, #d4ff00, #a0cc00); color: #000; 
-            font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 16px;
-        }
-
-        /* Ad Section */
-        .ad-slot { 
-            margin-top: 20px; border-radius: 15px; overflow: hidden; 
-            background: #000; min-height: 250px; display: flex; 
-            align-items: center; justify-content: center;
-        }
-
-        .lv-tag { 
-            background: var(--p); color: #000; padding: 4px 12px; 
-            border-radius: 50px; font-size: 11px; font-weight: 800; margin-bottom: 8px;
-        }
+        .opt-btn { width: 100%; padding: 16px; margin-top: 10px; border-radius: 16px; border: 1px solid #2a344d; background: #1e263d; color: #fff; cursor: pointer; font-weight: 600; text-align: left; font-size: 15px; }
+        .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: linear-gradient(90deg, #d4ff00, #a0cc00); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 16px; }
+        .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; margin-bottom: 8px; display: inline-block; }
+        .ad-slot { margin-top: 20px; border-radius: 15px; overflow: hidden; background: #000; min-height: 250px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div id="loader" style="text-align:center; margin-top:100px;">
+    <div id="loader" style="text-align:center; margin-top:120px;">
         <h2 style="color:var(--p); letter-spacing:3px;">POWER STAR</h2>
+        <div style="margin:20px auto; width:40px; height:40px; border:4px solid #1e293b; border-top-color:var(--p); border-radius:50%; animation: spin 1s linear infinite;"></div>
         <p style="color:var(--text)">Loading Secure Environment...</p>
     </div>
 
     <div id="regS" class="card">
         <h1 style="color:var(--p); margin-top:0;">JOIN NOW</h1>
-        <p style="font-size:12px; color:var(--text)">Fee: 200 PKR | 03412049729</p>
         <input id="n" placeholder="Full Name">
         <input id="i" placeholder="Power Star ID">
         <input id="trx" type="number" placeholder="11 Digit TRX ID">
@@ -86,46 +43,39 @@
     <div id="penS" class="card">
         <div style="font-size:50px;">⏳</div>
         <h2 style="color:var(--p)">UNDER REVIEW</h2>
-        <p style="color:var(--text)">Verifying Payment for ID: <b id="dID" style="color:#fff"></b></p>
+        <p style="color:var(--text)">ID: <b id="dID" style="color:#fff"></b> is being verified.</p>
     </div>
 
     <div id="dashS" style="display:none;">
         <div class="stat-grid">
-            <div class="stat-box"><small style="font-size:10px; color:var(--text)">WALLET</small><h2 id="mB">0.00</h2></div>
-            <div class="stat-box"><small style="font-size:10px; color:var(--text)">REFS</small><h2 id="mR">0</h2></div>
+            <div class="stat-box"><small>WALLET</small><h2 id="mB">0.00</h2></div>
+            <div class="stat-box"><small>REFS</small><h2 id="mR">0</h2></div>
         </div>
         
         <div class="card" style="display:block; margin-top:0;">
             <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
-            <div class="timer-wrap" id="tWrap"><span id="timer">15s</span></div>
-            
+            <div class="timer-wrap" id="tWrap"><span id="timer">30s</span></div>
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:15px;">
-                <span>Earned: <b id="tE" style="color:var(--p)">0.00</b></span>
+                <span>Session: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>Tasks: <b id="pgr">0/200</b></span>
             </div>
-            
-            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px; min-height:50px;">Loading Question...</div>
+            <div id="qT" style="font-size:18px; font-weight:700; margin-bottom:15px;">Loading...</div>
             <div id="qG"></div>
-            
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
 
-        <button class="btn-main" onclick="claim()">CLAIM TO MAIN WALLET</button>
+        <button class="btn-main" onclick="claim()">CLAIM TO WALLET</button>
 
         <div class="ad-slot">
             <script>
-                atOptions = {
-                    'key' : '577f75aa7d65a7ccebfa35e124c256c4',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
+                atOptions = {'key' : '577f75aa7d65a7ccebfa35e124c256c4','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};
             </script>
             <script src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
         </div>
     </div>
 </div>
+
+<style> @keyframes spin { to { transform: rotate(360deg); } } </style>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycby6md6X92N0vSudZadIWPH-fKGFDOnYBFbKuq1Ds-BWb6AvsSyuvNRimJYsDBJpcfHglA/exec";
@@ -137,18 +87,25 @@
     window.onload = async () => {
         if(!u.id) { show("regS"); return; }
         try {
-            let r = await fetch(GAS_URL + "?checkID=" + u.id);
-            let res = await r.json();
+            let response = await fetch(GAS_URL + "?checkID=" + u.id);
+            let res = await response.json();
+            
             if(res.status === "Approved") {
                 document.getElementById("mB").innerText = "Rs " + res.mainBalance;
                 document.getElementById("mR").innerText = res.referrals;
                 setupLevel(parseInt(res.referrals));
-                show("dashS"); loadQuiz();
+                show("dashS");
+                loadQuiz();
             } else if(res.status === "Pending") {
                 document.getElementById("dID").innerText = u.id;
                 show("penS");
-            } else show("regS");
-        } catch(e) { show("regS"); }
+            } else {
+                show("regS");
+            }
+        } catch(err) {
+            console.log(err);
+            show("regS");
+        }
     };
 
     function setupLevel(refs) {
@@ -160,27 +117,29 @@
     }
 
     function startTimer() {
-        let t = 30;
+        let t = 30; // 30 Second Timer
         document.getElementById("timer").innerText = t + "s";
         document.getElementById("tWrap").style.borderColor = "var(--p)";
+        clearInterval(timerInt);
         timerInt = setInterval(() => {
             t--;
             document.getElementById("timer").innerText = t + "s";
-            if(t <= 5) document.getElementById("tWrap").style.borderColor = "var(--danger)";
+            if(t <= 10) document.getElementById("tWrap").style.borderColor = "var(--danger)";
             if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
         }, 1000);
     }
 
     async function loadQuiz() {
-        let r = await fetch(GAS_URL + "?getQuiz=true");
-        qs = await r.json();
-        nextQ();
+        try {
+            let r = await fetch(GAS_URL + "?getQuiz=true");
+            qs = await r.json();
+            if(qs.length > 0) nextQ();
+        } catch(e) { console.log("Quiz Load Error"); }
     }
 
     function nextQ() {
-        if(u.solved >= u.lim) return Swal.fire("Limit Reached", "Daily quota finished!", "info");
-        clearInterval(timerInt);
-        sel = null; 
+        if(u.solved >= u.lim) { Swal.fire("Limit Reached", "Done for today!", "info"); return; }
+        sel = null;
         document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
@@ -196,11 +155,11 @@
         clearInterval(timerInt);
         sel = i; u.solved++;
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-        if(i == cur.c) { 
-            b.style.background="var(--success)"; b.style.borderColor="var(--success)";
-            u.e += u.r; 
-        } else { 
-            b.style.background="var(--danger)"; b.style.borderColor="var(--danger)";
+        if(i == cur.c) {
+            b.style.background="var(--success)";
+            u.e += u.r;
+        } else {
+            b.style.background="var(--danger)";
             handlePenalty();
         }
         document.getElementById("tE").innerText = u.e.toFixed(2);
@@ -214,7 +173,7 @@
         if(type === "TIMEOUT") {
             u.solved++;
             document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-            document.getElementById("qT").innerText = "TIME OUT! Penalty Applied.";
+            document.getElementById("qT").innerText = "TIME OUT!";
             document.getElementById("qT").style.color = "var(--danger)";
             document.getElementById("nB").style.display="block";
         }
@@ -222,13 +181,11 @@
 
     async function claim() {
         if(u.e <= 0) return Swal.fire("No Points", "Earn first", "info");
-        Swal.fire({title: 'Processing...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        Swal.fire({title: 'Claiming...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
         try {
             let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
             let res = await r.json();
-            if(res.result === "success") {
-                u.e = 0; Swal.fire("Done!", "Main Wallet Updated", "success").then(()=>location.reload());
-            }
+            if(res.result === "success") { u.e = 0; location.reload(); }
         } catch(e) { Swal.fire("Error", "Server Issue", "error"); }
     }
 
@@ -239,7 +196,7 @@
 
     async function register() {
         let n=document.getElementById("n").value, id=document.getElementById("i").value, trx=document.getElementById("trx").value, file=document.getElementById("fI").files[0];
-        if(!n || !id || !trx || !file) return Swal.fire("Required", "Complete all steps", "warning");
+        if(!n || !id || !trx || !file) return Swal.fire("Required", "Complete all fields", "warning");
         Swal.fire({title: 'Submitting...', didOpen: () => Swal.showLoading()});
         try {
             let fd = new FormData(); fd.append("image", file);
@@ -247,7 +204,7 @@
             let imgD = await imgR.json();
             await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
             localStorage.setItem("psID", id); location.reload();
-        } catch(e) { Swal.fire("Error", "Failed", "error"); }
+        } catch(e) { Swal.fire("Error", "Try again", "error"); }
     }
 </script>
 </body>
