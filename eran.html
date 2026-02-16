@@ -3,275 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | Official</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Power Star | All-in-One</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --p: #d4ff00; --bg: #0a0e1a; --c: #151b2d; --text: #94a3b8; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; padding-bottom: 70px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        
-        .card { background: #151b2d; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; border: 1px solid #2a344d; margin-bottom: 15px; box-sizing: border-box; }
-        
-        /* FIX 1: Proper initial visibility */
-        #penS, #quizS, #adBox { display: none; width: 100%; max-width: 380px; }
-        #regS { display: block; width: 100%; max-width: 380px; }
-
-        .reg-header { text-align: center; margin-bottom: 20px; }
-        .reg-header h1 { font-size: 26px; color: var(--p); margin: 0 0 8px 0; font-weight: 800; }
-        .reg-header p { color: var(--text); font-size: 13px; margin: 0; }
-        
-        .info-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 18px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
-        .info-box p { color: white; font-size: 13px; margin: 5px 0; line-height: 1.6; }
-        .info-box b { color: var(--p); }
-        
-        input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #2a344d; background: #0a0e1a; color: #fff; box-sizing: border-box; font-size: 14px; }
-        input:focus { outline: none; border-color: var(--p); }
-        
-        .file-box { border: 2px dashed #2a344d; padding: 15px; border-radius: 12px; margin: 10px 0; background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .file-info { flex: 1; display: flex; align-items: center; gap: 10px; }
-        .file-info i { font-size: 28px; color: var(--p); }
-        #fileName { color: var(--text); font-size: 13px; }
-        .upload-btn { background: var(--p); color: #000; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; }
-        
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px rgba(212, 255, 0, 0.4); }
-        
-        /* Quiz Styles */
-        .top-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .info-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; }
-        .info-card h4 { font-size: 12px; color: rgba(255,255,255,0.8); margin: 0 0 8px 0; }
-        .info-card .value { font-size: 22px; color: white; font-weight: 800; }
-        .stats-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .stat-box { background: #151b2d; padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #2a344d; }
-        .stat-box small { font-size: 10px; color: var(--text); }
-        .stat-box b { color: var(--p); font-size: 14px; }
-        
-        .question-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 15px; margin-bottom: 15px; text-align: center; min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .question-text { font-size: 18px; font-weight: 700; color: white; }
-        
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; width: 100%; }
-        .opt-btn { background: #1e263d; border: 2px solid #3d4b6e; padding: 18px 12px; border-radius: 12px; color: #fff; font-weight: 600; cursor: pointer; }
-        .correct { background: #27ae60 !important; border-color: #2ecc71 !important; }
-        .wrong { background: #c0392b !important; border-color: #e74c3c !important; }
-
-        /* FIX 2: Ad box proper display */
-        #adBox { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.98); z-index:999; flex-direction:column; align-items:center; justify-content:center; }
+        :root { --p: #d4ff00; --bg: #0a0e1a; --card: #151b2d; --text: #94a3b8; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 15px; }
+        .card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #2a344d; text-align: center; display: none; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #2a344d; background: #000; color: #fff; box-sizing: border-box; font-size: 14px; }
+        .btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 10px; font-size: 16px; transition: 0.3s; }
+        .btn:active { transform: scale(0.95); }
+        .stat-grid { display: flex; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 15px; border-radius: 15px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .opt-btn { width: 100%; padding: 15px; margin-top: 10px; border-radius: 12px; border: 1px solid #3d4b6e; background: #1e263d; color: #fff; cursor: pointer; font-weight: 600; text-align: left; }
     </style>
 </head>
 <body>
 
-<div id="regS">
-    <div class="card">
-        <div class="reg-header">
-            <h1>💎 OFFICIAL MEMBERSHIP</h1>
-            <p>Start Your Earning Journey Today</p>
-        </div>
-        <div class="info-box">
-            <p>Fees: <b>Rs. 200</b> (Life Time)</p>
-            <p>EasyPaisa: <b>03412049729</b> (Muhammad Hussain)</p>
-        </div>
-        <input id="n" placeholder="Full Name">
-        <input id="i" placeholder="Username / ID">
-        <input id="trx" placeholder="Transaction ID (11 Digits)">
-        <div class="file-box">
-            <div class="file-info"><i class="fas fa-image"></i> <span id="fileName">No file chosen</span></div>
-            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">CHOOSE</button>
-        </div>
-        <input type="file" id="fileInput" style="display: none;" onchange="document.getElementById('fileName').innerText=this.files[0].name">
-        <button class="main-btn" onclick="reg()">ACTIVATE NOW</button>
-    </div>
+<div id="loader" style="text-align:center; margin-top:100px; color:var(--p); font-weight:bold;">
+    <div style="font-size:24px; margin-bottom:10px;">POWER STAR</div>
+    Verifying Connection...
 </div>
 
-<div id="penS" class="card" style="text-align: center; margin-top: 50px;">
-    <i class="fas fa-clock" style="font-size: 40px; color: var(--p); margin-bottom: 15px;"></i>
-    <h3>Pending Approval</h3>
-    <p>Your payment is under review. Dashboard will open once admin approves.</p>
+<div id="regS" class="card">
+    <h1 style="color:var(--p); margin-top:0;">REGISTER</h1>
+    <div style="background:rgba(212,255,0,0.1); padding:10px; border-radius:10px; font-size:12px; margin-bottom:15px; color:var(--p);">Fee: 200 PKR | EasyPaisa: 03412049729</div>
+    <input id="n" placeholder="Full Name">
+    <input id="i" placeholder="Enter Power Star ID">
+    <input id="trx" type="number" placeholder="11 Digit TRX ID">
+    <div style="text-align:left; font-size:12px; color:var(--text); margin-bottom:5px;">Upload Payment Screenshot:</div>
+    <input type="file" id="fI" accept="image/*" style="border:none; padding:5px;">
+    <button class="btn" onclick="register()">ACTIVATE ACCOUNT</button>
 </div>
 
-<div id="quizS">
-    <div class="top-cards">
-        <div class="info-card"><h4>Balance</h4><div class="value" id="bal">0.00</div><div class="sub">Level <span id="lvl">1</span></div></div>
-        <div class="info-card"><h4>Limit</h4><div class="value" id="lim">0/200</div><div class="sub">Questions</div></div>
-    </div>
-    <div class="stats-mini">
-        <div class="stat-box"><small>EARNED</small><b id="earned">0.00</b></div>
-        <div class="stat-box"><small>DED.</small><b id="deducted">0.00</b></div>
-        <div class="stat-box"><small>REWARD</small><b id="reward">0.40</b></div>
-    </div>
-    <div class="question-card"><div class="question-text" id="qT">Loading...</div></div>
-    <div class="options-grid" id="qG"></div>
-    <button class="main-btn" id="mB" onclick="h()">SUBMIT ANSWER</button>
+<div id="penS" class="card">
+    <div style="font-size:50px; color:var(--p); margin-bottom:10px;">⏳</div>
+    <h2 style="color:var(--p)">UNDER REVIEW</h2>
+    <p style="color:var(--text); font-size:14px; line-height:1.6;">Your payment for ID: <b id="dID" style="color:#fff"></b> is being verified. This usually takes 1 to 12 hours. Please check back later.</p>
 </div>
 
-<div id="adBox">
-    <div id="aT" style="color: var(--p); font-weight:bold;">Ad Closing in 20s...</div>
-    <button id="cB" onclick="cA()" style="display:none; margin-top:20px; padding:10px 30px; background:var(--p); border:none; border-radius:20px; color:#000; font-weight:bold;">CLOSE AD</button>
+<div id="dashS" style="display:none;">
+    <div class="stat-grid">
+        <div class="stat-box"><small style="font-size:10px; opacity:0.8;">MAIN BALANCE</small><h2 id="mB" style="margin:5px 0 0 0;">0.00</h2></div>
+        <div class="stat-box" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"><small style="font-size:10px; opacity:0.8;">REFERRALS</small><h2 id="mR" style="margin:5px 0 0 0;">0</h2></div>
+    </div>
+    
+    <div class="card" style="display:block; margin-top:0;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text); margin-bottom:15px;">
+            <span>Earning: <b id="tE" style="color:var(--p)">0.00</b></span>
+            <span>Reward/Q: <b id="rwd">0.40</b></span>
+        </div>
+        <div id="qT" style="font-size:18px; font-weight:800; margin-bottom:20px; min-height:50px;">Loading Question...</div>
+        <div id="qG"></div>
+        <button id="nB" class="btn" style="display:none; background:#fff; color:#000;" onclick="nextQ()">NEXT QUESTION</button>
+    </div>
+    
+    <button class="btn" onclick="claim()" style="margin-top:20px; background:linear-gradient(to right, #d4ff00, #a0cc00);">CLAIM TO MAIN WALLET</button>
 </div>
 
 <script>
-    const URL = "https://script.google.com/macros/s/AKfycbyD4XH_WPLQBnRyLxIGTLxhXJ0OY6cnZLQvNgrmIqkAC9RTMdtxgdEXG4h17uKz-sZhZQ/exec";
-    const IMBB_KEY = "14d35273fb4122ebb999baa08057f3f0"; 
-    
-    let u = { id: localStorage.getItem("psID"), e: 0, d: 0, p: 0, refs: 0, ad: 0 };
-    let conf = {l:1, r:0.40, p:0.20}, limit = 200, qs = [], cur, sel;
+    const GAS_URL = "آپ_کا_DEPLOY_URL_یہاں_پیسٹ_کریں";
+    const IMBB = "14d35273fb4122ebb999baa08057f3f0";
+    let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40 };
+    let qs = [], cur, sel = null;
 
-    window.onload = () => { 
-        if (u.id && u.id !== "null") {
-            init(); 
-        } else {
-            show("regS");
-        }
+    window.onload = async () => {
+        if(!u.id) { show("regS"); return; }
+        try {
+            let r = await fetch(GAS_URL + "?checkID=" + u.id);
+            let res = await r.json();
+            if(res.status === "Approved") {
+                document.getElementById("mB").innerText = "Rs " + res.mainBalance;
+                document.getElementById("mR").innerText = res.referrals;
+                if(res.referrals >= 10) u.r = 0.60;
+                document.getElementById("rwd").innerText = u.r.toFixed(2);
+                show("dashS"); loadQuiz();
+            } else if(res.status === "Pending") {
+                document.getElementById("dID").innerText = u.id;
+                show("penS");
+            } else show("regS");
+        } catch(e) { show("regS"); }
     };
 
-    async function init() {
-        try {
-            let r = await fetch(URL + "?checkID=" + encodeURIComponent(u.id));
-            let text = await r.text();
-            
-            let res;
-            try {
-                res = JSON.parse(text);
-            } catch(e) {
-                if(text === "NotFound") {
-                    localStorage.removeItem("psID");
-                    show("regS");
-                    return;
-                }
-                throw e;
-            }
-
-            if (res.status === "Pending") {
-                show("penS");
-            } else if (res.status === "Approved") {
-                u.refs = res.referrals || 0;
-                setup(); 
-            }
-        } catch(e) { 
-            console.error("Init Error:", e);
-            show("regS"); 
-        }
-    }
-
     function show(id) {
-        ["regS", "penS", "quizS"].forEach(s => document.getElementById(s).style.display = "none");
-        let target = document.getElementById(id);
-        if(target) target.style.display = "block";
+        document.getElementById("loader").style.display = "none";
+        document.getElementById(id).style.display = "block";
     }
 
-    async function reg() {
-        let n = document.getElementById("n").value, id = document.getElementById("i").value, trx = document.getElementById("trx").value, file = document.getElementById("fileInput").files[0];
-        if (!n || !id || !trx || !file) return Swal.fire("Error", "All fields required", "error");
+    async function register() {
+        let n=document.getElementById("n").value, id=document.getElementById("i").value, trx=document.getElementById("trx").value, file=document.getElementById("fI").files[0];
+        if(!n || !id || !trx || !file) return Swal.fire("Required", "Please fill all fields and upload proof", "warning");
+        if(trx.length < 11) return Swal.fire("Invalid TRX", "Transaction ID must be 11 digits", "error");
         
-        Swal.fire({title: 'Processing...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        Swal.fire({title: 'Submitting...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        
         try {
             let fd = new FormData(); fd.append("image", file);
-            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB_KEY}`, {method:"POST", body:fd});
+            let imgR = await fetch(`https://api.imgbb.com/1/upload?key=${IMBB}`, {method:"POST", body:fd});
             let imgD = await imgR.json();
-            
-            if(!imgD.data) throw new Error("Image Upload Failed");
 
-            await fetch(URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
-            
+            await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "reg", id: id, name: n, trx: trx, proof: imgD.data.url }) });
             localStorage.setItem("psID", id);
-            u.id = id;
-            Swal.fire("Success", "Account Sent for Approval!", "success").then(() => init());
-        } catch(e) { 
-            Swal.fire("Error", "Server Error: " + e.message, "error"); 
-        }
+            location.reload();
+        } catch(e) { Swal.fire("Error", "Check your connection", "error"); }
     }
 
-    function setup() {
-        show("quizS");
-        if (u.refs >= 10) conf = { l: 3, r: 0.60, p: 0.30 };
-        else if (u.refs >= 5) conf = { l: 2, r: 0.50, p: 0.25 };
-        
-        limit = 200 + (u.refs * 50);
-        document.getElementById("reward").innerText = conf.r.toFixed(2);
-        load();
+    async function loadQuiz() {
+        let r = await fetch(GAS_URL + "?getQuiz=true");
+        qs = await r.json();
+        nextQ();
     }
 
-    async function load() {
-        try { 
-            let r = await fetch(URL); 
-            let data = await r.json();
-            qs = data.map(q => ({
-                q: q.q,
-                a: q.a,
-                c: q.c
-            }));
-            next(); 
-        } catch(e) { 
-            console.log("Quiz load error"); 
-        }
-    }
-
-    function next() {
-        if (u.p >= limit) return Swal.fire("Done", "Daily limit reached", "info");
-        sel = null;
-        document.getElementById("mB").innerText = "SUBMIT ANSWER";
+    function nextQ() {
+        sel = null; document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
         let h = "";
-        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="s(${i}, this)">${o}</button>`; });
+        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="check(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h;
-        updateUI();
     }
 
-    function s(i, b) {
-        if(document.getElementById("mB").innerText === "NEXT") return;
-        sel = {i, b};
-        document.querySelectorAll(".opt-btn").forEach(x=>x.style.borderColor="#3d4b6e");
-        b.style.borderColor="var(--p)";
-    }
-
-    function h() {
-        let b = document.getElementById("mB");
-        if (b.innerText === "NEXT") { 
-            u.p++; 
-            u.ad++; 
-            if (u.ad >= 10) triggerAd(); else next(); 
-            return; 
-        }
-        if (!sel) return;
-        if (sel.i == cur.c) { 
-            sel.b.classList.add("correct"); 
-            u.e += conf.r; 
+    function check(i, b) {
+        if(sel !== null) return;
+        sel = i;
+        if(i == cur.c) { 
+            b.style.background="#27ae60"; b.style.borderColor="#2ecc71";
+            u.e += u.r; document.getElementById("tE").innerText = u.e.toFixed(2);
         } else { 
-            sel.b.classList.add("wrong"); 
-            u.d += conf.p; 
-            document.querySelectorAll(".opt-btn")[cur.c].classList.add("correct"); 
+            b.style.background="#c0392b"; b.style.borderColor="#e74c3c";
+            document.querySelectorAll(".opt-btn")[cur.c].style.background="#27ae60";
         }
-        b.innerText = "NEXT";
-        updateUI();
+        document.getElementById("nB").style.display="block";
     }
 
-    // FIX 3: Ad display fixed
-    function triggerAd() {
-        document.getElementById("adBox").style.display = "flex";
-        let sec = 20;
-        let t = setInterval(() => {
-            sec--; 
-            document.getElementById("aT").innerText = `Ad Closing in ${sec}s...`;
-            if (sec <= 0) { 
-                clearInterval(t); 
-                document.getElementById("cB").style.display = "block"; 
+    async function claim() {
+        if(u.e <= 0) return Swal.fire("No Earnings", "Please complete some quizzes first", "info");
+        Swal.fire({title: 'Transferring to Wallet...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        try {
+            let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
+            let res = await r.json();
+            if(res.result === "success") {
+                u.e = 0; 
+                Swal.fire("Claimed!", "Earnings added to Main Sheet successfully", "success").then(()=>location.reload());
             }
-        }, 1000);
-    }
-
-    function cA() { 
-        document.getElementById("adBox").style.display="none"; 
-        document.getElementById("cB").style.display="none"; 
-        u.ad = 0; 
-        next(); 
-    }
-
-    function updateUI() {
-        document.getElementById("bal").innerText = (u.e - u.d).toFixed(2);
-        document.getElementById("earned").innerText = u.e.toFixed(2);
-        document.getElementById("deducted").innerText = u.d.toFixed(2);
-        document.getElementById("lvl").innerText = conf.l;
-        document.getElementById("lim").innerText = u.p + "/" + limit;
+        } catch(e) { Swal.fire("Error", "Failed to update balance", "error"); }
     }
 </script>
 </body>
