@@ -126,9 +126,17 @@
     };
 
     function setupLevel(refs) {
-        if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
-        else if(refs <= 10) { u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; }
-        else { u.lv=3; u.r=0.60; u.pnl=0.40; u.lim=300; }
+        if(refs <= 5) { 
+            u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; 
+        }
+        else if(refs <= 10) { 
+            u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; 
+        }
+        else { 
+            u.lv=3; u.r=0.60; 
+            u.pnl=0.30; // یہاں 0.40 کی جگہ 0.30 کر دیا گیا ہے
+            u.lim=300; 
+        }
         document.getElementById("lvDisplay").innerText = "LEVEL " + u.lv;
         document.getElementById("pgr").innerText = `0/${u.lim}`;
     }
