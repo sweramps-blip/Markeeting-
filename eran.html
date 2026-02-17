@@ -122,35 +122,36 @@
             status.style.color = "var(--p)";
         } catch(e) { status.innerText = "Upload Failed!"; status.style.color = "red"; }
     }
+async function onRegister() {
+    const walletID = document.getElementById("rID").value.trim();
+    const fullName = document.getElementById("rName").value.trim();
+    const trxID = document.getElementById("rTrx").value.trim();
 
-    async function onRegister() {
-        const walletID = document.getElementById("rID").value.trim();
-        const fullName = document.getElementById("rName").value.trim();
-        const trxID = document.getElementById("rTrx").value.trim();
-
-        if(!walletID || !fullName || !trxID || !imgUrl) {
-            return Swal.fire("Error", "Fill all fields and upload screenshot", "error");
-        }
-
-        Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
-
-        const d = { 
-            type: "reg", 
-            id: walletID, 
-            name: fullName, 
-            trx: trxID, 
-            proof: imgUrl // Exact Column E mapping
-        };
-
-        try {
-            let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
-            let json = await res.json();
-            if(json.result === "success") { 
-                localStorage.setItem("psID", walletID); 
-                location.reload(); 
-            }
-        } catch(e) { Swal.fire("Error", "Failed to reach server", "error"); }
+    // ریفرل کی ضرورت نہیں، اس لیے وہ یہاں سے ہٹا دیا گیا ہے
+    if(!walletID || !fullName || !trxID || !imgUrl) {
+        return Swal.fire("Error", "Fill all fields and upload screenshot", "error");
     }
+
+    Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
+
+    const d = { 
+        type: "reg", 
+        id: walletID, 
+        name: fullName, 
+        trx: trxID, 
+        proof: imgUrl 
+    };
+
+    try {
+        let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
+        let json = await res.json();
+        if(json.result === "success") { 
+            localStorage.setItem("psID", walletID); 
+            location.reload(); 
+        }
+    } catch(e) { Swal.fire("Error", "Failed to reach server", "error"); }
+}
+    
 
     async function syncUser() {
         try {
