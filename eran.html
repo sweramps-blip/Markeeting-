@@ -70,7 +70,7 @@
         
         <div class="ad-slot">ADSTERRA MIDDLE BANNER</div>
 
-        <button class="btn-main" onclick="claim()">CLAIM TO WALLET</button>
+        <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 50)</button>
         <button class="btn-back" onclick="location.reload()">REFRESH DASHBOARD</button>
     </div>
 
@@ -81,8 +81,18 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyVnSk9XYhullKU6fYDocqUz5Et5jOsZlZLapPNFDk5ApOJnzZk06uPbRJDWPRXs0y6Hw/exec";
-    let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0 };
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzlxcmynno9armoszRSEbMNv17IYvrd_t90IPoe_zNBcOiAQo-o92UhaluZO92VXi1oJw/exec";
+    
+    // سیشن ڈیٹا لوکل اسٹوریج سے اٹھانا تاکہ ری لوڈ پر فوری نظر آئے
+    let u = { 
+        id: localStorage.getItem("psID"), 
+        e: parseFloat(localStorage.getItem("psEarned")) || 0, 
+        r: 0.40, 
+        pnl: 0.20, 
+        lim: 200, 
+        solved: parseInt(localStorage.getItem("psSolved")) || 0 
+    };
+    
     let qs = [], cur, sel = null, timerInt, imgUrl = "";
 
     window.onload = () => { if(!u.id) showReg(); else syncUser(); };
@@ -107,12 +117,8 @@
         const nm = document.getElementById("rName").value.trim();
         const tx = document.getElementById("rTrx").value.trim();
         if(!id || !nm || !tx || !imgUrl) return Swal.fire("Error", "Fill all fields", "error");
-
         Swal.fire({title: 'Registering...', didOpen: () => Swal.showLoading()});
-        
-        // Data sequence matching your sheet exactly
         const d = { type: "reg", id: id, referrer_id: "DIRECT", name: nm, trx: tx, proof: imgUrl };
-
         try {
             let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
             let json = await res.json();
@@ -128,13 +134,27 @@
                 document.getElementById("mB").innerText = res.mainBalance;
                 document.getElementById("mR").innerText = res.approvedReferrals;
                 document.getElementById("mC").innerText = parseFloat(res.teamCommission).toFixed(2);
+                
+                // شیٹ سے لائیو ڈیٹا اٹھانا
                 u.solved = res.solved || 0;
+                localStorage.setItem("psSolved", u.solved);
+                
+                // لیول سیٹ اپ
+                setupLevel(parseInt(res.approvedReferrals));
+
+                document.getElementById("tE").innerText = u.e.toFixed(2);
+                document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
                 document.getElementById("loader").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadQuiz();
-            } else if(res.status === "NotFound") { localStorage.removeItem("psID"); location.reload(); }
-            else { document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">${res.status}</b><br>ID: ${u.id}`; }
+            } else { document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">${res.status}</b><br>ID: ${u.id}`; }
         } catch(e) { showReg(); }
+    }
+
+    function setupLevel(refs) {
+        if(refs <= 5) { u.r=0.40; u.pnl=0.20; u.lim=200; }
+        else if(refs <= 10) { u.r=0.50; u.pnl=0.25; u.lim=250; }
+        else { u.r=0.60; u.pnl=0.30; u.lim=300; }
     }
 
     async function loadQuiz() {
@@ -161,34 +181,50 @@
         }, 1000);
     }
 
-    function checkAns(i, b) {
-        if(sel !== null) return; clearInterval(timerInt); sel = i; u.solved++;
-        document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-        let correctIdx = parseInt(cur.c) - 1; // 0-based index
+    async function checkAns(i, b) {
+        if(sel !== null) return; clearInterval(timerInt); sel = i; 
+        u.solved++;
+        localStorage.setItem("psSolved", u.solved);
 
+        let correctIdx = parseInt(cur.c) - 1;
         if(i === correctIdx) {
             b.style.background = "var(--success)"; u.e += u.r;
         } else {
             b.style.background = "var(--danger)";
-            // UPDATE: Show correct answer by highlighting it green
             document.getElementById("opt" + correctIdx).style.background = "var(--success)";
-            handlePenalty();
+            u.e -= u.pnl; if(u.e < 0) u.e = 0;
         }
-        document.getElementById("tE").innerText = u.e.toFixed(2);
-        document.getElementById("nB").style.display = "block";
+        
+        localStorage.setItem("psEarned", u.e);
+        updateUIAndSync();
     }
 
-    function handlePenalty(type) {
+    async function handlePenalty(type) {
+        u.solved++; localStorage.setItem("psSolved", u.solved);
         u.e -= u.pnl; if(u.e < 0) u.e = 0;
+        localStorage.setItem("psEarned", u.e);
+        updateUIAndSync();
+    }
+
+    function updateUIAndSync() {
         document.getElementById("tE").innerText = u.e.toFixed(2);
-        if(type === "TIMEOUT") { u.solved++; document.getElementById("nB").style.display = "block"; }
+        document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
+        document.getElementById("nB").style.display = "block";
+        
+        // شیٹ میں لائیو ڈیٹا بھیجنا (Background Sync)
+        fetch(GAS_URL, {
+            method: "POST",
+            body: JSON.stringify({ type: "syncProgress", id: u.id, solved: u.solved })
+        });
     }
 
     async function claim() {
-        // UPDATE: Check for 50 PKR Minimum Limit
-        if(u.e < 50) return Swal.fire("Limit", "Minimum 50 PKR required to claim", "warning");
-
+        if(u.e < 50) return Swal.fire("Limit", "Minimum 50 PKR required", "warning");
         Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
+        
+        // کلیم کے وقت سیشن زیرو کریں
+        localStorage.setItem("psEarned", 0);
+        
         await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
         location.reload();
     }
