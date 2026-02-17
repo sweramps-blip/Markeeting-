@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Luxury Fixed</title>
+    <title>Power Star | Luxury Fixed & Auth</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -13,52 +13,50 @@
         
         .app-container { max-width: 500px; margin: 0 auto; }
 
-        /* 1. Stat Grid (Three Boxes in One Line) */
+        /* --- AUTH SECTION STYLE --- */
+        .auth-card { background: var(--card); padding: 25px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.05); text-align: center; margin-top: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { font-size: 10px; color: var(--p); margin-left: 10px; text-transform: uppercase; font-weight: 700; }
+        input { width: 100%; background: #0a0e1a; border: 1px solid #2a344d; padding: 15px; border-radius: 16px; color: #fff; font-size: 14px; outline: none; margin-top: 5px; }
+        input:focus { border-color: var(--p); }
+
+        /* --- DASHBOARD STYLE (Unchanged) --- */
         .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
-        .stat-box { 
-            background: linear-gradient(145deg, #161d2f, #0a0e1a); 
-            padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; 
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .stat-box small { font-size: 8px; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .stat-box { background: linear-gradient(145deg, #161d2f, #0a0e1a); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .stat-box small { font-size: 8px; color: var(--text); text-transform: uppercase; display: block; }
         .stat-box h3 { margin: 4px 0 0; font-size: 13px; color: #fff; font-weight: 800; }
 
-        /* 2. ATM Card Style Quiz Section */
-        .atm-card { 
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
-            padding: 22px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); 
-            text-align: center; display: none; position: relative; overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .atm-card::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(212,255,0,0.03) 0%, transparent 60%);
-            pointer-events: none;
-        }
+        .atm-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 22px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         
         #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .opt-btn { 
-            width: 100%; padding: 16px 8px; border-radius: 15px; border: 1px solid #2a344d; 
-            background: rgba(30, 38, 61, 0.6); color: #fff; cursor: pointer; font-weight: 600; 
-            text-align: center; font-size: 13px; transition: 0.2s; backdrop-filter: blur(5px);
-        }
+        .opt-btn { width: 100%; padding: 16px 8px; border-radius: 15px; border: 1px solid #2a344d; background: rgba(30, 38, 61, 0.6); color: #fff; cursor: pointer; font-weight: 600; text-align: center; font-size: 13px; transition: 0.2s; backdrop-filter: blur(5px); }
 
         .timer-wrap { width: 55px; height: 55px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
         #timer { font-weight: 800; font-size: 18px; color: var(--p); }
 
-        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 15px; box-shadow: 0 8px 20px rgba(212,255,0,0.15); }
+        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 15px; }
         .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); font-weight: 600; cursor: pointer; margin-top: 15px; font-size: 13px; }
-        
         .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; display: inline-block; margin-bottom: 12px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div class="app-container">
+    <div id="regView" style="display:none;">
+        <div class="auth-card">
+            <h1 style="color:var(--p); margin-bottom:10px;">POWER STAR</h1>
+            <p style="color:var(--text); font-size:12px; margin-bottom:25px;">REGISTRATION FORM</p>
+            <div class="input-group"><label>Wallet ID</label><input type="text" id="rID" placeholder="Unique ID"></div>
+            <div class="input-group"><label>Full Name</label><input type="text" id="rName" placeholder="Your Name"></div>
+            <div class="input-group"><label>Referrer ID</label><input type="text" id="rRef" placeholder="Referrer (Optional)"></div>
+            <div class="input-group"><label>TRX Proof</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
+            <button class="btn-main" onclick="onRegister()">JOIN NOW</button>
+        </div>
+    </div>
+
     <div id="loader" style="text-align:center; margin-top:120px;">
         <h2 style="color:var(--p);">POWER STAR</h2>
-        <p>Syncing Data & Design...</p>
+        <p id="loadText">Syncing Data & Design...</p>
     </div>
 
     <div id="dashS" style="display:none;">
@@ -68,7 +66,7 @@
             <div class="stat-box"><small>Team Bonus</small><h3 id="mC">0.00</h3></div>
         </div>
         
-        <div class="atm-card" id="mainCard" style="display:block;">
+        <div class="atm-card" id="mainCard">
             <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
             <div class="timer-wrap" id="tWrap"><span id="timer">30s</span></div>
             
@@ -83,60 +81,68 @@
         </div>
 
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET</button>
-        
-        <button class="btn-back" onclick="window.history.back()">← BACK TO HOME</button>
-
-        <div style="margin-top:20px; text-align:center;">
-            <script type="text/javascript">
-                atOptions = {'key' : '577f75aa7d65a7ccebfa35e124c256c4','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};
-            </script>
-            <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
-        </div>
+        <button class="btn-back" onclick="location.reload()">REFRESH DASHBOARD</button>
     </div>
 </div>
 
 <script>
-    // Anti-Cheat
-    document.onkeydown = (e) => { if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false; };
-
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyqqwdI6fA0vFIDBG1rSHoZ7Is7_Ipyocr6RO4_RV92S8ncwNuTb87YzY8USL5Hnjfupw/exec"; 
     let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
     let qs = [], cur, sel = null, timerInt;
 
     window.onload = async () => {
-        if(!u.id) { location.reload(); return; }
+        if(!u.id) {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("regView").style.display = "block";
+            return;
+        }
+        syncUser();
+    };
+
+    async function onRegister() {
+        const d = { 
+            type: "reg", 
+            id: document.getElementById("rID").value, 
+            name: document.getElementById("rName").value, 
+            referrer_id: document.getElementById("rRef").value || "DIRECT", 
+            trx: document.getElementById("rTrx").value 
+        };
+        if(!d.id || !d.name || !d.trx) return Swal.fire("Error", "Fill all fields", "error");
+        
+        Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
+        let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
+        let json = await res.json();
+        if(json.result === "success") { 
+            localStorage.setItem("psID", d.id); 
+            location.reload(); 
+        } else {
+            Swal.fire("Error", "Registration failed", "error");
+        }
+    }
+
+    async function syncUser() {
         try {
             let r = await fetch(GAS_URL + "?checkID=" + u.id);
             let res = await r.json();
             if(res.status === "Approved") {
                 document.getElementById("mB").innerText = "Rs " + res.mainBalance;
-                document.getElementById("mR").innerText = res.approvedReferrals || res.referrals || 0;
-                
-                // ٹیم بونس اب شیٹ سے آ رہا ہے (Refreshes won't kill it)
+                document.getElementById("mR").innerText = res.approvedReferrals || 0;
                 document.getElementById("mC").innerText = "Rs " + parseFloat(res.teamCommission || 0).toFixed(2);
                 
-                setupLevel(parseInt(res.approvedReferrals || res.referrals || 0));
+                setupLevel(parseInt(res.approvedReferrals || 0));
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("dashS").style.display = "block";
                 loadQuiz();
             } else {
-                Swal.fire("Error", "ID Not Approved", "error");
+                document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">${res.status.toUpperCase()}</b><br>ID: ${u.id}`;
             }
         } catch(e) { Swal.fire("Server Error", "Check Internet", "error"); }
-    };
+    }
 
     function setupLevel(refs) {
-        if(refs <= 5) { 
-            u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; 
-        }
-        else if(refs <= 10) { 
-            u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; 
-        }
-        else { 
-            u.lv=3; u.r=0.60; 
-            u.pnl=0.30; // یہاں 0.40 کی جگہ 0.30 کر دیا گیا ہے
-            u.lim=300; 
-        }
+        if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
+        else if(refs <= 10) { u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; }
+        else { u.lv=3; u.r=0.60; u.pnl=0.30; u.lim=300; }
         document.getElementById("lvDisplay").innerText = "LEVEL " + u.lv;
         document.getElementById("pgr").innerText = `0/${u.lim}`;
     }
@@ -153,12 +159,11 @@
     function nextQ() {
         if(u.solved >= u.lim) { Swal.fire("Done!", "Daily tasks complete", "success"); return; }
         clearInterval(timerInt);
-        sel = null;
-        document.getElementById("nB").style.display="none";
+        sel = null; document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
         let h = "";
-        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="check(${i}, this)">${o}</button>`; });
+        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="checkAns(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h;
         startTimer();
     }
@@ -166,30 +171,22 @@
     function startTimer() {
         let t = 30;
         document.getElementById("timer").innerText = t + "s";
-        document.getElementById("tWrap").style.borderColor = "var(--p)";
         timerInt = setInterval(() => {
-            t--;
-            document.getElementById("timer").innerText = t + "s";
-            if(t <= 10) document.getElementById("tWrap").style.borderColor = "var(--danger)";
+            t--; document.getElementById("timer").innerText = t + "s";
             if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
         }, 1000);
     }
 
-    function check(i, b) {
+    function checkAns(i, b) {
         if(sel !== null) return;
         clearInterval(timerInt);
         sel = i; u.solved++;
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-        
         let correctIdx = parseInt(cur.c);
         if((i + 1) === correctIdx) { 
-            b.style.background="var(--success)"; 
-            u.e += u.r; 
+            b.style.background="var(--success)"; u.e += u.r; 
         } else { 
-            b.style.background="var(--danger)"; 
-            let btns = document.querySelectorAll(".opt-btn");
-            if(btns[correctIdx - 1]) btns[correctIdx - 1].style.background = "var(--success)";
-            handlePenalty(); 
+            b.style.background="var(--danger)"; handlePenalty(); 
         }
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("nB").style.display="block";
@@ -198,21 +195,14 @@
     function handlePenalty(type) {
         u.e -= u.pnl; if(u.e < 0) u.e = 0;
         document.getElementById("tE").innerText = u.e.toFixed(2);
-        if(type === "TIMEOUT") { 
-            let cIdx = parseInt(cur.c);
-            let btns = document.querySelectorAll(".opt-btn");
-            if(btns[cIdx - 1]) btns[cIdx - 1].style.background = "var(--success)";
-            u.solved++; 
-            document.getElementById("nB").style.display="block"; 
-            document.getElementById("qT").innerText = "TIME OUT!";
-        }
+        if(type === "TIMEOUT") u.solved++;
+        document.getElementById("nB").style.display="block";
     }
 
     async function claim() {
         if(u.e <= 0) return Swal.fire("Empty", "Earn first", "info");
         Swal.fire({title: 'Claiming...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
         try {
-            // This will send Session Earning to Main Sheet + Add Saved Bonus from Auth Sheet
             await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
             location.reload();
         } catch(e) { Swal.fire("Error", "Claim failed", "error"); }
