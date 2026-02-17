@@ -70,7 +70,7 @@
         
         <div class="ad-slot">ADSTERRA MIDDLE BANNER</div>
 
-        <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 50)</button>
+        <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
         <button class="btn-back" onclick="location.reload()">REFRESH DASHBOARD</button>
     </div>
 
@@ -219,7 +219,7 @@
     }
 
     async function claim() {
-        if(u.e < 50) return Swal.fire("Limit", "Minimum 50 PKR required", "warning");
+        if(u.e < 10) return Swal.fire("Limit", "Minimum 10 PKR required", "warning");
         Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
         
         // کلیم کے وقت سیشن زیرو کریں
