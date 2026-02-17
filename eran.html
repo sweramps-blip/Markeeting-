@@ -121,23 +121,37 @@
     }
 
     async function syncUser() {
-        try {
-            let r = await fetch(GAS_URL + "?checkID=" + u.id);
-            let res = await r.json();
-            if(res.status === "Approved") {
-                document.getElementById("mB").innerText = "Rs " + res.mainBalance;
-                document.getElementById("mR").innerText = res.approvedReferrals || 0;
-                document.getElementById("mC").innerText = "Rs " + parseFloat(res.teamCommission || 0).toFixed(2);
-                
-                setupLevel(parseInt(res.approvedReferrals || 0));
-                document.getElementById("loader").style.display = "none";
-                document.getElementById("dashS").style.display = "block";
-                loadQuiz();
-            } else {
-                document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">${res.status.toUpperCase()}</b><br>ID: ${u.id}`;
-            }
-        } catch(e) { Swal.fire("Server Error", "Check Internet", "error"); }
+    try {
+        let r = await fetch(GAS_URL + "?checkID=" + u.id);
+        let res = await r.json();
+
+        // 1. اگر ایڈمن نے منظور کر دیا ہے تو ڈیش بورڈ دکھاؤ
+        if(res.status === "Approved") {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("dashS").style.display = "block";
+            loadQuiz();
+        } 
+        // 2. اگر آئی ڈی غلط ہے یا شیٹ میں نہیں ہے (NotFound)
+        else if(res.status === "NotFound") {
+            localStorage.removeItem("psID"); // لوکل آئی ڈی ڈیلیٹ کریں
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("regView").style.display = "block"; // رجسٹریشن فارم دکھائیں
+        } 
+        // 3. اگر رجسٹریشن ہو چکی ہے لیکن ابھی Pending ہے
+        else {
+            document.getElementById("loader").style.display = "block";
+            document.getElementById("loadText").innerHTML = `
+                <b style="color:var(--danger)">${res.status.toUpperCase()}</b><br>
+                <span style="font-size:12px; color:var(--text)">Please wait for Admin Approval</span><br>
+                <small style="color:var(--p)">ID: ${u.id}</small>
+            `;
+        }
+    } catch(e) { 
+        // اگر نیٹ ورک کا مسئلہ ہو تو فارم دکھا دیں تاکہ یوزر ٹرائی کر سکے
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("regView").style.display = "block";
     }
+}
 
     function setupLevel(refs) {
         if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
