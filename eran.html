@@ -6,34 +6,27 @@
     <title>Power Star | Luxury Fixed & Auth</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
+    
     <style>
         :root { --p: #d4ff00; --bg: #060912; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 12px; min-height: 100vh; overflow-x: hidden; }
-        
         .app-container { max-width: 500px; margin: 0 auto; }
-
-        /* --- AUTH SECTION STYLE --- */
         .auth-card { background: var(--card); padding: 25px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.05); text-align: center; margin-top: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { font-size: 10px; color: var(--p); margin-left: 10px; text-transform: uppercase; font-weight: 700; }
         input { width: 100%; background: #0a0e1a; border: 1px solid #2a344d; padding: 15px; border-radius: 16px; color: #fff; font-size: 14px; outline: none; margin-top: 5px; }
         input:focus { border-color: var(--p); }
-
-        /* --- DASHBOARD STYLE (Unchanged) --- */
         .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
         .stat-box { background: linear-gradient(145deg, #161d2f, #0a0e1a); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .stat-box small { font-size: 8px; color: var(--text); text-transform: uppercase; display: block; }
         .stat-box h3 { margin: 4px 0 0; font-size: 13px; color: #fff; font-weight: 800; }
-
         .atm-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 22px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        
         #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .opt-btn { width: 100%; padding: 16px 8px; border-radius: 15px; border: 1px solid #2a344d; background: rgba(30, 38, 61, 0.6); color: #fff; cursor: pointer; font-weight: 600; text-align: center; font-size: 13px; transition: 0.2s; backdrop-filter: blur(5px); }
-
         .timer-wrap { width: 55px; height: 55px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
         #timer { font-weight: 800; font-size: 18px; color: var(--p); }
-
         .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 15px; }
         .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); font-weight: 600; cursor: pointer; margin-top: 15px; font-size: 13px; }
         .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; display: inline-block; margin-bottom: 12px; }
@@ -48,9 +41,15 @@
             <p style="color:var(--text); font-size:12px; margin-bottom:25px;">REGISTRATION FORM</p>
             <div class="input-group"><label>Wallet ID</label><input type="text" id="rID" placeholder="Unique ID"></div>
             <div class="input-group"><label>Full Name</label><input type="text" id="rName" placeholder="Your Name"></div>
-            <div class="input-group"><label>Referrer ID</label><input type="text" id="rRef" placeholder="Referrer (Optional)"></div>
-            <div class="input-group"><label>TRX Proof</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
-            <button class="btn-main" onclick="onRegister()">JOIN NOW</button>
+            <div class="input-group"><label>TRX Proof ID</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
+            
+            <div class="input-group">
+                <label>Payment Screenshot</label>
+                <input type="file" id="picInput" accept="image/*" onchange="uploadImage(this)" style="padding:10px; font-size:11px;">
+                <small id="upStatus" style="color:var(--text); font-size:9px; display:block; margin-top:5px;">Max 256kb supported</small>
+            </div>
+            
+            <button class="btn-main" id="regBtn" onclick="onRegister()">JOIN NOW</button>
         </div>
     </div>
 
@@ -65,21 +64,17 @@
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
             <div class="stat-box"><small>Team Bonus</small><h3 id="mC">0.00</h3></div>
         </div>
-        
-        <div class="atm-card" id="mainCard">
+        <div class="atm-card">
             <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
-            <div class="timer-wrap" id="tWrap"><span id="timer">30s</span></div>
-            
+            <div class="timer-wrap"><span id="timer">30s</span></div>
             <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:15px; color:var(--text);">
                 <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>TASKS: <b id="pgr">0/200</b></span>
             </div>
-            
-            <div id="qT" style="font-size:17px; font-weight:700; margin-bottom:15px; min-height:45px; line-height:1.4;">Loading...</div>
+            <div id="qT" style="font-size:17px; font-weight:700; margin-bottom:15px; min-height:45px;">Loading...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
-
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET</button>
         <button class="btn-back" onclick="location.reload()">REFRESH DASHBOARD</button>
     </div>
@@ -88,81 +83,104 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyqqwdI6fA0vFIDBG1rSHoZ7Is7_Ipyocr6RO4_RV92S8ncwNuTb87YzY8USL5Hnjfupw/exec"; 
     let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
-    let qs = [], cur, sel = null, timerInt;
+    let qs = [], cur, sel = null, timerInt, imgUrl = "";
 
     window.onload = async () => {
         if(!u.id) {
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("regView").style.display = "block";
+            showReg();
             return;
         }
         syncUser();
     };
 
-    async function onRegister() {
-    // آپ کا امیج والا لاجک یہاں پہلے سے موجود ہے (جو 'imgUrl' بناتا ہے)
-    const walletID = document.getElementById("rID").value.trim();
-    const fullName = document.getElementById("rName").value.trim();
-    const trxID = document.getElementById("rTrx").value.trim();
-    
-    // یہاں وہ ویری ایبل آئے گا جس میں امیج API کا لنک سیو ہے
-    const finalProof = typeof imgUrl !== 'undefined' ? imgUrl : "No Image"; 
-
-    if(!walletID || !fullName || !trxID) return Swal.fire("Error", "Fill all fields", "error");
-
-    Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
-
-    const d = { 
-        type: "reg", 
-        id: walletID, 
-        name: fullName, 
-        trx: trxID, 
-        proof: finalProof // یہ اب کالم E (Proof_URL) میں جائے گا
-    };
-
-    try {
-        let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
-        let json = await res.json();
-        if(json.result === "success") { 
-            localStorage.setItem("psID", walletID); 
-            location.reload(); 
-        }
-    } catch(e) { Swal.fire("Error", "Registration failed", "error"); }
-}
-
-    async function syncUser() {
-    try {
-        let r = await fetch(GAS_URL + "?checkID=" + u.id);
-        let res = await r.json();
-
-        // 1. اگر ایڈمن نے منظور کر دیا ہے تو ڈیش بورڈ دکھاؤ
-        if(res.status === "Approved") {
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("dashS").style.display = "block";
-            loadQuiz();
-        } 
-        // 2. اگر آئی ڈی غلط ہے یا شیٹ میں نہیں ہے (NotFound)
-        else if(res.status === "NotFound") {
-            localStorage.removeItem("psID"); // لوکل آئی ڈی ڈیلیٹ کریں
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("regView").style.display = "block"; // رجسٹریشن فارم دکھائیں
-        } 
-        // 3. اگر رجسٹریشن ہو چکی ہے لیکن ابھی Pending ہے
-        else {
-            document.getElementById("loader").style.display = "block";
-            document.getElementById("loadText").innerHTML = `
-                <b style="color:var(--danger)">${res.status.toUpperCase()}</b><br>
-                <span style="font-size:12px; color:var(--text)">Please wait for Admin Approval</span><br>
-                <small style="color:var(--p)">ID: ${u.id}</small>
-            `;
-        }
-    } catch(e) { 
-        // اگر نیٹ ورک کا مسئلہ ہو تو فارم دکھا دیں تاکہ یوزر ٹرائی کر سکے
+    function showReg() {
         document.getElementById("loader").style.display = "none";
         document.getElementById("regView").style.display = "block";
     }
-}
 
+    // IMAGE PROCESSING & UPLOAD
+    async function uploadImage(input) {
+        const file = input.files[0];
+        if(!file) return;
+        const status = document.getElementById("upStatus");
+        status.innerText = "Processing & Uploading...";
+        
+        try {
+            // Compress to 256kb
+            const options = { maxSizeMB: 0.25, maxWidthOrHeight: 1024, useWebWorker: true };
+            const compressed = await imageCompression(file, options);
+            
+            let fd = new FormData();
+            fd.append("image", compressed);
+            
+            // Note: Use your actual ImgBB API Key here
+            let res = await fetch("https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY", { method: "POST", body: fd });
+            let json = await res.json();
+            imgUrl = json.data.url;
+            status.innerText = "Uploaded Successfully ✅";
+            status.style.color = "var(--p)";
+        } catch(e) { status.innerText = "Upload Failed!"; status.style.color = "red"; }
+    }
+
+    async function onRegister() {
+        const walletID = document.getElementById("rID").value.trim();
+        const fullName = document.getElementById("rName").value.trim();
+        const trxID = document.getElementById("rTrx").value.trim();
+
+        if(!walletID || !fullName || !trxID || !imgUrl) {
+            return Swal.fire("Error", "Fill all fields and upload screenshot", "error");
+        }
+
+        Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
+
+        const d = { 
+            type: "reg", 
+            id: walletID, 
+            name: fullName, 
+            trx: trxID, 
+            proof: imgUrl // Exact Column E mapping
+        };
+
+        try {
+            let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
+            let json = await res.json();
+            if(json.result === "success") { 
+                localStorage.setItem("psID", walletID); 
+                location.reload(); 
+            }
+        } catch(e) { Swal.fire("Error", "Failed to reach server", "error"); }
+    }
+
+    async function syncUser() {
+        try {
+            let r = await fetch(GAS_URL + "?checkID=" + u.id);
+            let res = await r.json();
+
+            if(res.status === "Approved") {
+                document.getElementById("mB").innerText = "Rs " + res.mainBalance;
+                document.getElementById("mR").innerText = res.approvedReferrals || 0;
+                document.getElementById("mC").innerText = "Rs " + parseFloat(res.teamCommission || 0).toFixed(2);
+                setupLevel(parseInt(res.approvedReferrals || 0));
+                document.getElementById("loader").style.display = "none";
+                document.getElementById("dashS").style.display = "block";
+                loadQuiz();
+            } 
+            else if(res.status === "NotFound") {
+                localStorage.removeItem("psID");
+                showReg();
+            } 
+            else {
+                document.getElementById("loader").style.display = "block";
+                document.getElementById("loadText").innerHTML = `
+                    <b style="color:var(--danger)">${res.status.toUpperCase()}</b><br>
+                    <span style="font-size:12px; color:var(--text)">Admin is verifying your payment</span><br>
+                    <small>ID: ${u.id}</small>
+                `;
+            }
+        } catch(e) { showReg(); }
+    }
+
+    // DASHBOARD FUNCTIONS (Quiz, Levels, etc.)
     function setupLevel(refs) {
         if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
         else if(refs <= 10) { u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; }
@@ -207,11 +225,8 @@
         sel = i; u.solved++;
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
         let correctIdx = parseInt(cur.c);
-        if((i + 1) === correctIdx) { 
-            b.style.background="var(--success)"; u.e += u.r; 
-        } else { 
-            b.style.background="var(--danger)"; handlePenalty(); 
-        }
+        if((i + 1) === correctIdx) { b.style.background="var(--success)"; u.e += u.r; } 
+        else { b.style.background="var(--danger)"; handlePenalty(); }
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("nB").style.display="block";
     }
