@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Luxury Fixed & Auth</title>
+    <title>Power Star | Professional Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
@@ -36,23 +36,20 @@
 
 <div class="app-container">
     <div id="regView" style="display:none;">
-    <div class="auth-card">
-        <h1 style="color:var(--p); margin-bottom:10px;">POWER STAR</h1>
-        <p style="color:var(--text); font-size:12px; margin-bottom:25px;">REGISTRATION FORM</p>
-        
-        <div class="input-group"><label>Wallet ID</label><input type="text" id="rID" placeholder="Unique ID"></div>
-        <div class="input-group"><label>Full Name</label><input type="text" id="rName" placeholder="Your Name"></div>
-        <div class="input-group"><label>TRX Proof ID</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
-        
-        <div class="input-group">
-            <label>Payment Screenshot</label>
-            <input type="file" id="picInput" accept="image/*" onchange="uploadImage(this)" style="padding:10px; font-size:11px;">
-            <small id="upStatus" style="color:var(--text); font-size:9px; display:block; margin-top:5px;">Max 256kb supported</small>
+        <div class="auth-card">
+            <h1 style="color:var(--p); margin-bottom:10px;">POWER STAR</h1>
+            <p style="color:var(--text); font-size:12px; margin-bottom:25px;">REGISTRATION FORM</p>
+            <div class="input-group"><label>Wallet ID</label><input type="text" id="rID" placeholder="Unique ID"></div>
+            <div class="input-group"><label>Full Name</label><input type="text" id="rName" placeholder="Your Name"></div>
+            <div class="input-group"><label>TRX Proof ID</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
+            <div class="input-group">
+                <label>Payment Screenshot</label>
+                <input type="file" id="picInput" accept="image/*" onchange="uploadImage(this)" style="padding:10px; font-size:11px;">
+                <small id="upStatus" style="color:var(--text); font-size:9px; display:block; margin-top:5px;">Max 256kb supported</small>
+            </div>
+            <button class="btn-main" id="regBtn" onclick="onRegister()">JOIN NOW</button>
         </div>
-        
-        <button class="btn-main" id="regBtn" onclick="onRegister()">JOIN NOW</button>
     </div>
-</div>
 
     <div id="loader" style="text-align:center; margin-top:120px;">
         <h2 style="color:var(--p);">POWER STAR</h2>
@@ -82,15 +79,12 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyqqwdI6fA0vFIDBG1rSHoZ7Is7_Ipyocr6RO4_RV92S8ncwNuTb87YzY8USL5Hnjfupw/exec"; 
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyVnSk9XYhullKU6fYDocqUz5Et5jOsZlZLapPNFDk5ApOJnzZk06uPbRJDWPRXs0y6Hw/exec"; 
     let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
     let qs = [], cur, sel = null, timerInt, imgUrl = "";
 
     window.onload = async () => {
-        if(!u.id) {
-            showReg();
-            return;
-        }
+        if(!u.id) { showReg(); return; }
         syncUser();
     };
 
@@ -99,22 +93,16 @@
         document.getElementById("regView").style.display = "block";
     }
 
-    // IMAGE PROCESSING & UPLOAD
     async function uploadImage(input) {
         const file = input.files[0];
         if(!file) return;
         const status = document.getElementById("upStatus");
         status.innerText = "Processing & Uploading...";
-        
         try {
-            // Compress to 256kb
             const options = { maxSizeMB: 0.25, maxWidthOrHeight: 1024, useWebWorker: true };
             const compressed = await imageCompression(file, options);
-            
             let fd = new FormData();
             fd.append("image", compressed);
-            
-            // Note: Use your actual ImgBB API Key here
             let res = await fetch("https://api.imgbb.com/1/upload?key=14d35273fb4122ebb999baa08057f3f0", { method: "POST", body: fd });
             let json = await res.json();
             imgUrl = json.data.url;
@@ -122,36 +110,37 @@
             status.style.color = "var(--p)";
         } catch(e) { status.innerText = "Upload Failed!"; status.style.color = "red"; }
     }
-async function onRegister() {
-    const walletID = document.getElementById("rID").value.trim();
-    const fullName = document.getElementById("rName").value.trim();
-    const trxID = document.getElementById("rTrx").value.trim();
 
-    // ریفرل کی ضرورت نہیں، اس لیے وہ یہاں سے ہٹا دیا گیا ہے
-    if(!walletID || !fullName || !trxID || !imgUrl) {
-        return Swal.fire("Error", "Fill all fields and upload screenshot", "error");
-    }
+    async function onRegister() {
+        const walletID = document.getElementById("rID").value.trim();
+        const fullName = document.getElementById("rName").value.trim();
+        const trxID = document.getElementById("rTrx").value.trim();
 
-    Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
-
-    const d = { 
-        type: "reg", 
-        id: walletID, 
-        name: fullName, 
-        trx: trxID, 
-        proof: imgUrl 
-    };
-
-    try {
-        let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
-        let json = await res.json();
-        if(json.result === "success") { 
-            localStorage.setItem("psID", walletID); 
-            location.reload(); 
+        if(!walletID || !fullName || !trxID || !imgUrl) {
+            return Swal.fire("Error", "Fill all fields and upload screenshot", "error");
         }
-    } catch(e) { Swal.fire("Error", "Failed to reach server", "error"); }
-}
-    
+
+        Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
+
+        // یوزر انفارمیشن کو اسکرپٹ کے کالمز (B, C, D, E, F) کے ساتھ سنک کیا گیا ہے
+        const d = { 
+            type: "reg", 
+            id: walletID, 
+            referrer_id: "DIRECT", 
+            name: fullName, 
+            trx: trxID, 
+            proof: imgUrl 
+        };
+
+        try {
+            let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
+            let json = await res.json();
+            if(json.result === "success") { 
+                localStorage.setItem("psID", walletID); 
+                location.reload(); 
+            }
+        } catch(e) { Swal.fire("Error", "Registration failed", "error"); }
+    }
 
     async function syncUser() {
         try {
@@ -162,6 +151,7 @@ async function onRegister() {
                 document.getElementById("mB").innerText = "Rs " + res.mainBalance;
                 document.getElementById("mR").innerText = res.approvedReferrals || 0;
                 document.getElementById("mC").innerText = "Rs " + parseFloat(res.teamCommission || 0).toFixed(2);
+                u.solved = res.solved || 0; // 24h reset ڈیٹا لوڈ کرنا
                 setupLevel(parseInt(res.approvedReferrals || 0));
                 document.getElementById("loader").style.display = "none";
                 document.getElementById("dashS").style.display = "block";
@@ -182,13 +172,12 @@ async function onRegister() {
         } catch(e) { showReg(); }
     }
 
-    // DASHBOARD FUNCTIONS (Quiz, Levels, etc.)
     function setupLevel(refs) {
         if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
         else if(refs <= 10) { u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; }
         else { u.lv=3; u.r=0.60; u.pnl=0.30; u.lim=300; }
         document.getElementById("lvDisplay").innerText = "LEVEL " + u.lv;
-        document.getElementById("pgr").innerText = `0/${u.lim}`;
+        document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
     }
 
     async function loadQuiz() {
