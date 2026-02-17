@@ -100,25 +100,35 @@
     };
 
     async function onRegister() {
-        const d = { 
-            type: "reg", 
-            id: document.getElementById("rID").value, 
-            name: document.getElementById("rName").value, 
-            referrer_id: document.getElementById("rRef").value || "DIRECT", 
-            trx: document.getElementById("rTrx").value 
-        };
-        if(!d.id || !d.name || !d.trx) return Swal.fire("Error", "Fill all fields", "error");
-        
-        Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
+    // آپ کا امیج والا لاجک یہاں پہلے سے موجود ہے (جو 'imgUrl' بناتا ہے)
+    const walletID = document.getElementById("rID").value.trim();
+    const fullName = document.getElementById("rName").value.trim();
+    const trxID = document.getElementById("rTrx").value.trim();
+    
+    // یہاں وہ ویری ایبل آئے گا جس میں امیج API کا لنک سیو ہے
+    const finalProof = typeof imgUrl !== 'undefined' ? imgUrl : "No Image"; 
+
+    if(!walletID || !fullName || !trxID) return Swal.fire("Error", "Fill all fields", "error");
+
+    Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
+
+    const d = { 
+        type: "reg", 
+        id: walletID, 
+        name: fullName, 
+        trx: trxID, 
+        proof: finalProof // یہ اب کالم E (Proof_URL) میں جائے گا
+    };
+
+    try {
         let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
         let json = await res.json();
         if(json.result === "success") { 
-            localStorage.setItem("psID", d.id); 
+            localStorage.setItem("psID", walletID); 
             location.reload(); 
-        } else {
-            Swal.fire("Error", "Registration failed", "error");
         }
-    }
+    } catch(e) { Swal.fire("Error", "Registration failed", "error"); }
+}
 
     async function syncUser() {
     try {
