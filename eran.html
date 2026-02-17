@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Professional Final</title>
+    <title>Power Star | Pro Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
@@ -11,231 +11,186 @@
     <style>
         :root { --p: #d4ff00; --bg: #060912; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 12px; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 12px; min-height: 100vh; }
         .app-container { max-width: 500px; margin: 0 auto; }
-        .auth-card { background: var(--card); padding: 25px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.05); text-align: center; margin-top: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .auth-card { background: var(--card); padding: 25px; border-radius: 28px; text-align: center; margin-top: 40px; border: 1px solid rgba(255,255,255,0.05); }
         .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { font-size: 10px; color: var(--p); margin-left: 10px; text-transform: uppercase; font-weight: 700; }
-        input { width: 100%; background: #0a0e1a; border: 1px solid #2a344d; padding: 15px; border-radius: 16px; color: #fff; font-size: 14px; outline: none; margin-top: 5px; }
-        input:focus { border-color: var(--p); }
+        .input-group label { font-size: 10px; color: var(--p); text-transform: uppercase; font-weight: 700; margin-left: 10px; }
+        input { width: 100%; background: #0a0e1a; border: 1px solid #2a344d; padding: 15px; border-radius: 16px; color: #fff; outline: none; margin-top: 5px; }
         .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
-        .stat-box { background: linear-gradient(145deg, #161d2f, #0a0e1a); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .stat-box small { font-size: 8px; color: var(--text); text-transform: uppercase; display: block; }
-        .stat-box h3 { margin: 4px 0 0; font-size: 13px; color: #fff; font-weight: 800; }
-        .atm-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 22px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .stat-box { background: #161d2f; padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-box small { font-size: 8px; color: var(--text); display: block; }
+        .stat-box h3 { margin: 4px 0 0; font-size: 13px; font-weight: 800; }
+        .atm-card { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 28px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .opt-btn { width: 100%; padding: 16px 8px; border-radius: 15px; border: 1px solid #2a344d; background: rgba(30, 38, 61, 0.6); color: #fff; cursor: pointer; font-weight: 600; text-align: center; font-size: 13px; transition: 0.2s; backdrop-filter: blur(5px); }
+        .opt-btn { width: 100%; padding: 16px 8px; border-radius: 15px; border: 1px solid #2a344d; background: rgba(30,38,61,0.6); color: #fff; font-weight: 600; font-size: 13px; transition: 0.2s; }
+        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; margin-top: 15px; font-size: 15px; cursor: pointer; }
+        .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; font-size: 13px; cursor: pointer; }
         .timer-wrap { width: 55px; height: 55px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
         #timer { font-weight: 800; font-size: 18px; color: var(--p); }
-        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; margin-top: 15px; font-size: 15px; }
-        .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); font-weight: 600; cursor: pointer; margin-top: 15px; font-size: 13px; }
-        .lv-tag { background: var(--p); color: #000; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; display: inline-block; margin-bottom: 12px; }
+        .ad-slot { margin: 15px 0; min-height: 50px; background: rgba(255,255,255,0.02); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #333; }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
 <div class="app-container">
+    <div class="ad-slot">ADSTERRA TOP BANNER PLACEHOLDER</div>
+
     <div id="regView" style="display:none;">
         <div class="auth-card">
-            <h1 style="color:var(--p); margin-bottom:10px;">POWER STAR</h1>
-            <p style="color:var(--text); font-size:12px; margin-bottom:25px;">REGISTRATION FORM</p>
-            <div class="input-group"><label>Wallet ID</label><input type="text" id="rID" placeholder="Unique ID"></div>
-            <div class="input-group"><label>Full Name</label><input type="text" id="rName" placeholder="Your Name"></div>
-            <div class="input-group"><label>TRX Proof ID</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
+            <h2 style="color:var(--p)">POWER STAR</h2>
+            <div class="input-group"><label>Wallet ID</label><input type="text" id="rID"></div>
+            <div class="input-group"><label>Full Name</label><input type="text" id="rName"></div>
+            <div class="input-group"><label>TRX ID</label><input type="text" id="rTrx"></div>
             <div class="input-group">
-                <label>Payment Screenshot</label>
-                <input type="file" id="picInput" accept="image/*" onchange="uploadImage(this)" style="padding:10px; font-size:11px;">
-                <small id="upStatus" style="color:var(--text); font-size:9px; display:block; margin-top:5px;">Max 256kb supported</small>
+                <label>Screenshot</label>
+                <input type="file" accept="image/*" onchange="uploadImage(this)">
+                <small id="upStatus" style="font-size:9px; margin-top:5px; display:block;"></small>
             </div>
-            <button class="btn-main" id="regBtn" onclick="onRegister()">JOIN NOW</button>
+            <button class="btn-main" onclick="onRegister()">REGISTER NOW</button>
         </div>
-    </div>
-
-    <div id="loader" style="text-align:center; margin-top:120px;">
-        <h2 style="color:var(--p);">POWER STAR</h2>
-        <p id="loadText">Syncing Data & Design...</p>
     </div>
 
     <div id="dashS" style="display:none;">
         <div class="stat-grid">
             <div class="stat-box"><small>Wallet</small><h3 id="mB">0.00</h3></div>
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
-            <div class="stat-box"><small>Team Bonus</small><h3 id="mC">0.00</h3></div>
+            <div class="stat-box"><small>Bonus</small><h3 id="mC">0.00</h3></div>
         </div>
         <div class="atm-card">
-            <div id="lvDisplay" class="lv-tag">LEVEL 1</div>
             <div class="timer-wrap"><span id="timer">30s</span></div>
-            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:15px; color:var(--text);">
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:10px;">
                 <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>TASKS: <b id="pgr">0/200</b></span>
             </div>
-            <div id="qT" style="font-size:17px; font-weight:700; margin-bottom:15px; min-height:45px;">Loading...</div>
+            <div id="qT" style="font-size:16px; font-weight:700; min-height:40px; margin-bottom:15px;">Loading...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
+        
+        <div class="ad-slot">ADSTERRA MIDDLE BANNER</div>
+
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET</button>
         <button class="btn-back" onclick="location.reload()">REFRESH DASHBOARD</button>
+    </div>
+
+    <div id="loader" style="text-align:center; margin-top:100px;">
+        <h2 style="color:var(--p)">POWER STAR</h2>
+        <p id="loadText">Initialising Secure Sync...</p>
     </div>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyVnSk9XYhullKU6fYDocqUz5Et5jOsZlZLapPNFDk5ApOJnzZk06uPbRJDWPRXs0y6Hw/exec"; 
-    let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0, lv: 1 };
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyVnSk9XYhullKU6fYDocqUz5Et5jOsZlZLapPNFDk5ApOJnzZk06uPbRJDWPRXs0y6Hw/exec";
+    let u = { id: localStorage.getItem("psID"), e: 0, r: 0.40, pnl: 0.20, lim: 200, solved: 0 };
     let qs = [], cur, sel = null, timerInt, imgUrl = "";
 
-    window.onload = async () => {
-        if(!u.id) { showReg(); return; }
-        syncUser();
-    };
+    window.onload = () => { if(!u.id) showReg(); else syncUser(); };
 
-    function showReg() {
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("regView").style.display = "block";
-    }
+    function showReg() { document.getElementById("loader").style.display="none"; document.getElementById("regView").style.display="block"; }
 
     async function uploadImage(input) {
-        const file = input.files[0];
-        if(!file) return;
-        const status = document.getElementById("upStatus");
-        status.innerText = "Processing & Uploading...";
+        const file = input.files[0]; if(!file) return;
+        document.getElementById("upStatus").innerText = "Uploading...";
         try {
-            const options = { maxSizeMB: 0.25, maxWidthOrHeight: 1024, useWebWorker: true };
+            const options = { maxSizeMB: 0.2, maxWidthOrHeight: 1024, useWebWorker: true };
             const compressed = await imageCompression(file, options);
-            let fd = new FormData();
-            fd.append("image", compressed);
-            let res = await fetch("https://api.imgbb.com/1/upload?key=14d35273fb4122ebb999baa08057f3f0", { method: "POST", body: fd });
-            let json = await res.json();
-            imgUrl = json.data.url;
-            status.innerText = "Uploaded Successfully ✅";
-            status.style.color = "var(--p)";
-        } catch(e) { status.innerText = "Upload Failed!"; status.style.color = "red"; }
+            let fd = new FormData(); fd.append("image", compressed);
+            let r = await fetch("https://api.imgbb.com/1/upload?key=14d35273fb4122ebb999baa08057f3f0", { method:"POST", body:fd });
+            let j = await r.json(); imgUrl = j.data.url;
+            document.getElementById("upStatus").innerText = "Success ✅";
+        } catch(e) { document.getElementById("upStatus").innerText = "Error!"; }
     }
 
     async function onRegister() {
-        const walletID = document.getElementById("rID").value.trim();
-        const fullName = document.getElementById("rName").value.trim();
-        const trxID = document.getElementById("rTrx").value.trim();
+        const id = document.getElementById("rID").value.trim();
+        const nm = document.getElementById("rName").value.trim();
+        const tx = document.getElementById("rTrx").value.trim();
+        if(!id || !nm || !tx || !imgUrl) return Swal.fire("Error", "Fill all fields", "error");
 
-        if(!walletID || !fullName || !trxID || !imgUrl) {
-            return Swal.fire("Error", "Fill all fields and upload screenshot", "error");
-        }
-
-        Swal.fire({title:'Registering...', didOpen:()=>Swal.showLoading()});
-
-        // یوزر انفارمیشن کو اسکرپٹ کے کالمز (B, C, D, E, F) کے ساتھ سنک کیا گیا ہے
-        const d = { 
-            type: "reg", 
-            id: walletID, 
-            referrer_id: "DIRECT", 
-            name: fullName, 
-            trx: trxID, 
-            proof: imgUrl 
-        };
+        Swal.fire({title: 'Registering...', didOpen: () => Swal.showLoading()});
+        
+        // Data sequence matching your sheet exactly
+        const d = { type: "reg", id: id, referrer_id: "DIRECT", name: nm, trx: tx, proof: imgUrl };
 
         try {
             let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
             let json = await res.json();
-            if(json.result === "success") { 
-                localStorage.setItem("psID", walletID); 
-                location.reload(); 
-            }
-        } catch(e) { Swal.fire("Error", "Registration failed", "error"); }
+            if(json.result === "success") { localStorage.setItem("psID", id); location.reload(); }
+        } catch(e) { Swal.fire("Error", "Server Error", "error"); }
     }
 
     async function syncUser() {
         try {
             let r = await fetch(GAS_URL + "?checkID=" + u.id);
             let res = await r.json();
-
             if(res.status === "Approved") {
-                document.getElementById("mB").innerText = "Rs " + res.mainBalance;
-                document.getElementById("mR").innerText = res.approvedReferrals || 0;
-                document.getElementById("mC").innerText = "Rs " + parseFloat(res.teamCommission || 0).toFixed(2);
-                u.solved = res.solved || 0; // 24h reset ڈیٹا لوڈ کرنا
-                setupLevel(parseInt(res.approvedReferrals || 0));
-                document.getElementById("loader").style.display = "none";
-                document.getElementById("dashS").style.display = "block";
+                document.getElementById("mB").innerText = res.mainBalance;
+                document.getElementById("mR").innerText = res.approvedReferrals;
+                document.getElementById("mC").innerText = parseFloat(res.teamCommission).toFixed(2);
+                u.solved = res.solved || 0;
+                document.getElementById("loader").style.display="none";
+                document.getElementById("dashS").style.display="block";
                 loadQuiz();
-            } 
-            else if(res.status === "NotFound") {
-                localStorage.removeItem("psID");
-                showReg();
-            } 
-            else {
-                document.getElementById("loader").style.display = "block";
-                document.getElementById("loadText").innerHTML = `
-                    <b style="color:var(--danger)">${res.status.toUpperCase()}</b><br>
-                    <span style="font-size:12px; color:var(--text)">Admin is verifying your payment</span><br>
-                    <small>ID: ${u.id}</small>
-                `;
-            }
+            } else if(res.status === "NotFound") { localStorage.removeItem("psID"); location.reload(); }
+            else { document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">${res.status}</b><br>ID: ${u.id}`; }
         } catch(e) { showReg(); }
     }
 
-    function setupLevel(refs) {
-        if(refs <= 5) { u.lv=1; u.r=0.40; u.pnl=0.20; u.lim=200; }
-        else if(refs <= 10) { u.lv=2; u.r=0.50; u.pnl=0.25; u.lim=250; }
-        else { u.lv=3; u.r=0.60; u.pnl=0.30; u.lim=300; }
-        document.getElementById("lvDisplay").innerText = "LEVEL " + u.lv;
-        document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-    }
-
     async function loadQuiz() {
-        try {
-            let r = await fetch(GAS_URL + "?getQuiz=true");
-            let data = await r.json();
-            qs = data.sort(() => Math.random() - 0.5);
-            if(qs.length > 0) nextQ();
-        } catch(e) { document.getElementById("qT").innerText = "Error Loading Quiz"; }
+        let r = await fetch(GAS_URL + "?getQuiz=true");
+        qs = await r.json();
+        nextQ();
     }
 
     function nextQ() {
-        if(u.solved >= u.lim) { Swal.fire("Done!", "Daily tasks complete", "success"); return; }
-        clearInterval(timerInt);
-        sel = null; document.getElementById("nB").style.display="none";
+        if(u.solved >= u.lim) return Swal.fire("Done", "Daily limit reached", "success");
+        clearInterval(timerInt); sel = null; document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
         let h = "";
-        cur.a.forEach((o, i) => { h += `<button class="opt-btn" onclick="checkAns(${i}, this)">${o}</button>`; });
+        cur.a.forEach((o, i) => { h += `<button class="opt-btn" id="opt${i}" onclick="checkAns(${i}, this)">${o}</button>`; });
         document.getElementById("qG").innerHTML = h;
         startTimer();
     }
 
     function startTimer() {
-        let t = 30;
-        document.getElementById("timer").innerText = t + "s";
-        timerInt = setInterval(() => {
+        let t = 30; timerInt = setInterval(() => {
             t--; document.getElementById("timer").innerText = t + "s";
             if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
         }, 1000);
     }
 
     function checkAns(i, b) {
-        if(sel !== null) return;
-        clearInterval(timerInt);
-        sel = i; u.solved++;
+        if(sel !== null) return; clearInterval(timerInt); sel = i; u.solved++;
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
-        let correctIdx = parseInt(cur.c);
-        if((i + 1) === correctIdx) { b.style.background="var(--success)"; u.e += u.r; } 
-        else { b.style.background="var(--danger)"; handlePenalty(); }
+        let correctIdx = parseInt(cur.c) - 1; // 0-based index
+
+        if(i === correctIdx) {
+            b.style.background = "var(--success)"; u.e += u.r;
+        } else {
+            b.style.background = "var(--danger)";
+            // UPDATE: Show correct answer by highlighting it green
+            document.getElementById("opt" + correctIdx).style.background = "var(--success)";
+            handlePenalty();
+        }
         document.getElementById("tE").innerText = u.e.toFixed(2);
-        document.getElementById("nB").style.display="block";
+        document.getElementById("nB").style.display = "block";
     }
 
     function handlePenalty(type) {
         u.e -= u.pnl; if(u.e < 0) u.e = 0;
         document.getElementById("tE").innerText = u.e.toFixed(2);
-        if(type === "TIMEOUT") u.solved++;
-        document.getElementById("nB").style.display="block";
+        if(type === "TIMEOUT") { u.solved++; document.getElementById("nB").style.display = "block"; }
     }
 
     async function claim() {
-        if(u.e <= 0) return Swal.fire("Empty", "Earn first", "info");
-        Swal.fire({title: 'Claiming...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-        try {
-            await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
-            location.reload();
-        } catch(e) { Swal.fire("Error", "Claim failed", "error"); }
+        // UPDATE: Check for 50 PKR Minimum Limit
+        if(u.e < 50) return Swal.fire("Limit", "Minimum 50 PKR required to claim", "warning");
+
+        Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
+        await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
+        location.reload();
     }
 </script>
 </body>
