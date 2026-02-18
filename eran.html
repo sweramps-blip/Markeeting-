@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<head>
-    <script async src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Power Star | Pro Final</title>
+    
+    <script async src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.min.js"></script>
@@ -33,23 +31,25 @@
         .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; font-size: 13px; cursor: pointer; }
         .timer-wrap { width: 55px; height: 55px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
         #timer { font-weight: 800; font-size: 18px; color: var(--p); }
-        .ad-slot { margin: 15px 0; min-height: 50px; background: rgba(255,255,255,0.02); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #333; }
+        .ad-slot { margin: 15px 0; min-height: 250px; background: rgba(255,255,255,0.02); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
+<div class="app-container">
     <div id="regView" style="display:none;">
         <div class="auth-card">
             <h2 style="color:var(--p)">POWER STAR</h2>
-            <div class="input-group"><label>Wallet ID</label><input type="text" id="rID"></div>
-            <div class="input-group"><label>Full Name</label><input type="text" id="rName"></div>
-            <div class="input-group"><label>TRX ID</label><input type="text" id="rTrx"></div>
+            <p style="font-size: 11px; color: var(--text);">Create Secure Earning Account</p>
+            <div class="input-group"><label>Wallet ID</label><input type="text" id="rID" placeholder="Enter ID"></div>
+            <div class="input-group"><label>Full Name</label><input type="text" id="rName" placeholder="Your Name"></div>
+            <div class="input-group"><label>TRX ID (Payment Proof)</label><input type="text" id="rTrx" placeholder="Transaction ID"></div>
             <div class="input-group">
                 <label>Screenshot</label>
                 <input type="file" accept="image/*" onchange="uploadImage(this)">
-                <small id="upStatus" style="font-size:9px; margin-top:5px; display:block;"></small>
+                <small id="upStatus" style="font-size:9px; margin-top:5px; display:block; color:var(--p)"></small>
             </div>
-            <button class="btn-main" onclick="onRegister()">REGISTER NOW</button>
+            <button class="btn-main" id="regBtn" onclick="onRegister()">REGISTER NOW</button>
         </div>
     </div>
 
@@ -59,6 +59,7 @@
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
             <div class="stat-box"><small>Bonus</small><h3 id="mC">0.00</h3></div>
         </div>
+        
         <div class="atm-card">
             <div class="timer-wrap"><span id="timer">30s</span></div>
             <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:10px;">
@@ -70,16 +71,12 @@
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
         
-        <div class="ad-slot"><script>
-  atOptions = {
-    'key' : '577f75aa7d65a7ccebfa35e124c256c4',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script></div>
+        <div class="ad-slot">
+            <script type="text/javascript">
+                atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+            </script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
+        </div>
 
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
         <button class="btn-back" onclick="location.reload()">REFRESH DASHBOARD</button>
@@ -87,14 +84,18 @@
 
     <div id="loader" style="text-align:center; margin-top:100px;">
         <h2 style="color:var(--p)">POWER STAR</h2>
-        <p id="loadText">Initialising Secure Sync...</p>
+        <div class="timer-wrap" style="border-color:var(--p); border-width:2px; animation: pulse 1.5s infinite;"></div>
+        <p id="loadText">Syncing Secure Data...</p>
     </div>
 </div>
 
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzlxcmynno9armoszRSEbMNv17IYvrd_t90IPoe_zNBcOiAQo-o92UhaluZO92VXi1oJw/exec";
     
-    // سیشن ڈیٹا لوکل اسٹوریج سے اٹھانا تاکہ ری لوڈ پر فوری نظر آئے
+    // URL سے ریفرر آئی ڈی پکڑنا (مثال: ?ref=12345)
+    const urlParams = new URLSearchParams(window.location.search);
+    const refID = urlParams.get('ref') || "DIRECT";
+
     let u = { 
         id: localStorage.getItem("psID"), 
         e: parseFloat(localStorage.getItem("psEarned")) || 0, 
@@ -108,49 +109,68 @@
 
     window.onload = () => { if(!u.id) showReg(); else syncUser(); };
 
-    function showReg() { document.getElementById("loader").style.display="none"; document.getElementById("regView").style.display="block"; }
+    function showReg() { 
+        document.getElementById("loader").style.display="none"; 
+        document.getElementById("regView").style.display="block"; 
+    }
 
     async function uploadImage(input) {
         const file = input.files[0]; if(!file) return;
-        document.getElementById("upStatus").innerText = "Uploading...";
+        document.getElementById("upStatus").innerText = "Optimizing Image...";
         try {
-            const options = { maxSizeMB: 0.2, maxWidthOrHeight: 1024, useWebWorker: true };
+            const options = { maxSizeMB: 0.1, maxWidthOrHeight: 800, useWebWorker: true };
             const compressed = await imageCompression(file, options);
             let fd = new FormData(); fd.append("image", compressed);
+            document.getElementById("upStatus").innerText = "Uploading...";
             let r = await fetch("https://api.imgbb.com/1/upload?key=14d35273fb4122ebb999baa08057f3f0", { method:"POST", body:fd });
             let j = await r.json(); imgUrl = j.data.url;
-            document.getElementById("upStatus").innerText = "Success ✅";
-        } catch(e) { document.getElementById("upStatus").innerText = "Error!"; }
+            document.getElementById("upStatus").innerText = "Screenshot Verified ✅";
+        } catch(e) { document.getElementById("upStatus").innerText = "Upload Failed!"; }
     }
 
     async function onRegister() {
         const id = document.getElementById("rID").value.trim();
         const nm = document.getElementById("rName").value.trim();
         const tx = document.getElementById("rTrx").value.trim();
-        if(!id || !nm || !tx || !imgUrl) return Swal.fire("Error", "Fill all fields", "error");
-        Swal.fire({title: 'Registering...', didOpen: () => Swal.showLoading()});
-        const d = { type: "reg", id: id, referrer_id: "DIRECT", name: nm, trx: tx, proof: imgUrl };
+        
+        if(!id || !nm || !tx || !imgUrl) return Swal.fire("Error", "All fields & Screenshot required", "error");
+        
+        const regBtn = document.getElementById("regBtn");
+        regBtn.disabled = true;
+        regBtn.innerText = "Processing...";
+
+        const d = { type: "reg", id: id, referrer_id: refID, name: nm, trx: tx, proof: imgUrl };
+        
         try {
             let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
             let json = await res.json();
-            if(json.result === "success") { localStorage.setItem("psID", id); location.reload(); }
-        } catch(e) { Swal.fire("Error", "Server Error", "error"); }
+            if(json.result === "success") { 
+                localStorage.setItem("psID", id); 
+                Swal.fire("Success", "Account created! Waiting for Approval", "success").then(() => location.reload());
+            } else {
+                Swal.fire("Error", json.msg || "Registration failed", "error");
+                regBtn.disabled = false;
+                regBtn.innerText = "REGISTER NOW";
+            }
+        } catch(e) { 
+            Swal.fire("Error", "Server Connection Error", "error");
+            regBtn.disabled = false;
+        }
     }
 
     async function syncUser() {
         try {
-            let r = await fetch(GAS_URL + "?checkID=" + u.id);
+            // Cache buster added (?v=)
+            let r = await fetch(GAS_URL + "?checkID=" + u.id + "&v=" + new Date().getTime());
             let res = await r.json();
+            
             if(res.status === "Approved") {
-                document.getElementById("mB").innerText = res.mainBalance;
-                document.getElementById("mR").innerText = res.approvedReferrals;
-                document.getElementById("mC").innerText = parseFloat(res.teamCommission).toFixed(2);
+                document.getElementById("mB").innerText = res.mainBalance || "0.00";
+                document.getElementById("mR").innerText = res.approvedReferrals || "0";
+                document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
                 
-                // شیٹ سے لائیو ڈیٹا اٹھانا
                 u.solved = res.solved || 0;
                 localStorage.setItem("psSolved", u.solved);
-                
-                // لیول سیٹ اپ
                 setupLevel(parseInt(res.approvedReferrals));
 
                 document.getElementById("tE").innerText = u.e.toFixed(2);
@@ -158,7 +178,10 @@
                 document.getElementById("loader").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadQuiz();
-            } else { document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">${res.status}</b><br>ID: ${u.id}`; }
+            } else { 
+                document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">Status: ${res.status}</b><br>ID: ${u.id}<br><br><small>Refresh after approval</small>`; 
+                document.getElementById("loader").innerHTML += `<button class="btn-back" onclick="location.reload()">RE-CHECK STATUS</button>`;
+            }
         } catch(e) { showReg(); }
     }
 
@@ -169,14 +192,17 @@
     }
 
     async function loadQuiz() {
-        let r = await fetch(GAS_URL + "?getQuiz=true");
-        qs = await r.json();
-        nextQ();
+        try {
+            let r = await fetch(GAS_URL + "?getQuiz=true");
+            qs = await r.json();
+            nextQ();
+        } catch(e) { console.error("Quiz load failed"); }
     }
 
     function nextQ() {
-        if(u.solved >= u.lim) return Swal.fire("Done", "Daily limit reached", "success");
-        clearInterval(timerInt); sel = null; document.getElementById("nB").style.display="none";
+        if(u.solved >= u.lim) return Swal.fire("Limit", "Daily tasks completed!", "success");
+        clearInterval(timerInt); sel = null; 
+        document.getElementById("nB").style.display="none";
         cur = qs[Math.floor(Math.random() * qs.length)];
         document.getElementById("qT").innerText = cur.q;
         let h = "";
@@ -186,14 +212,16 @@
     }
 
     function startTimer() {
-        let t = 30; timerInt = setInterval(() => {
+        let t = 30; 
+        timerInt = setInterval(() => {
             t--; document.getElementById("timer").innerText = t + "s";
-            if(t <= 0) { clearInterval(timerInt); handlePenalty("TIMEOUT"); }
+            if(t <= 0) { clearInterval(timerInt); handlePenalty(); }
         }, 1000);
     }
 
     async function checkAns(i, b) {
-        if(sel !== null) return; clearInterval(timerInt); sel = i; 
+        if(sel !== null) return; 
+        clearInterval(timerInt); sel = i; 
         u.solved++;
         localStorage.setItem("psSolved", u.solved);
 
@@ -210,10 +238,10 @@
         updateUIAndSync();
     }
 
-    async function handlePenalty(type) {
-        u.solved++; localStorage.setItem("psSolved", u.solved);
-        u.e -= u.pnl; if(u.e < 0) u.e = 0;
+    function handlePenalty() {
+        u.solved++; u.e -= u.pnl; if(u.e < 0) u.e = 0;
         localStorage.setItem("psEarned", u.e);
+        localStorage.setItem("psSolved", u.solved);
         updateUIAndSync();
     }
 
@@ -222,7 +250,6 @@
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
         document.getElementById("nB").style.display = "block";
         
-        // شیٹ میں لائیو ڈیٹا بھیجنا (Background Sync)
         fetch(GAS_URL, {
             method: "POST",
             body: JSON.stringify({ type: "syncProgress", id: u.id, solved: u.solved })
@@ -230,15 +257,14 @@
     }
 
     async function claim() {
-        if(u.e < 10) return Swal.fire("Limit", "Minimum 10 PKR required", "warning");
-        Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
-        
-        // کلیم کے وقت سیشن زیرو کریں
-        localStorage.setItem("psEarned", 0);
-        
-        await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e }) });
+        if(u.e < 10) return Swal.fire("Min Claim", "Need at least 10 PKR", "warning");
+        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
+        const currentEarned = u.e;
+        u.e = 0; localStorage.setItem("psEarned", 0);
+        await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: currentEarned }) });
         location.reload();
     }
 </script>
+
 </body>
 </html>
