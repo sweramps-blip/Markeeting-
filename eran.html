@@ -92,7 +92,6 @@
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycby_W0Ng358rPcbsbHpuzYabpJGfRleOqIB_OzDCiCc2zuz90s4vgUX8oSH1R3sIfRsO-Q/exec";
     
-    // URL سے ریفرر آئی ڈی پکڑنا (مثال: ?ref=12345)
     const urlParams = new URLSearchParams(window.location.search);
     const refID = urlParams.get('ref') || "DIRECT";
 
@@ -106,11 +105,22 @@
     };
     
     let qs = [], cur, sel = null, timerInt, imgUrl = "";
+    // --- NO REPEAT LOGIC ---
+    let usedQs = JSON.parse(localStorage.getItem("psUsedQs")) || [];
 
-    window.onload = () => { if(!u.id) showReg(); else syncUser(); };
+    window.onload = () => { 
+        if(!u.id) {
+            showReg(); 
+        } else { 
+            // اگر آئی ڈی موجود ہے تو رجسٹریشن فارم کو سختی سے چھپا کر رکھیں
+            document.getElementById("regView").style.display="none";
+            syncUser(); 
+        } 
+    };
 
     function showReg() { 
         document.getElementById("loader").style.display="none"; 
+        document.getElementById("dashS").style.display="none";
         document.getElementById("regView").style.display="block"; 
     }
 
@@ -132,15 +142,11 @@
         const id = document.getElementById("rID").value.trim();
         const nm = document.getElementById("rName").value.trim();
         const tx = document.getElementById("rTrx").value.trim();
-        
         if(!id || !nm || !tx || !imgUrl) return Swal.fire("Error", "All fields & Screenshot required", "error");
-        
         const regBtn = document.getElementById("regBtn");
         regBtn.disabled = true;
         regBtn.innerText = "Processing...";
-
         const d = { type: "reg", id: id, referrer_id: refID, name: nm, trx: tx, proof: imgUrl };
-        
         try {
             let res = await fetch(GAS_URL, {method:"POST", body:JSON.stringify(d)});
             let json = await res.json();
@@ -149,23 +155,20 @@
                 Swal.fire("Success", "Account created! Waiting for Approval", "success").then(() => location.reload());
             } else {
                 Swal.fire("Error", json.msg || "Registration failed", "error");
-                regBtn.disabled = false;
-                regBtn.innerText = "REGISTER NOW";
+                regBtn.disabled = false; regBtn.innerText = "REGISTER NOW";
             }
-        } catch(e) { 
-            Swal.fire("Error", "Server Connection Error", "error");
-            regBtn.disabled = false;
-        }
+        } catch(e) { Swal.fire("Error", "Server Connection Error", "error"); regBtn.disabled = false; }
     }
 
     async function syncUser() {
         try {
-            // Cache buster added (?v=)
-            let r = await fetch(GAS_URL + "?checkID=" + u.id + "&v=" + new Date().getTime());
+            // Cache buster Date.now() تاکہ پرانا ڈیٹا نظر نہ آئے
+            let r = await fetch(GAS_URL + "?checkID=" + u.id + "&v=" + Date.now());
             let res = await r.json();
             
             if(res.status === "Approved") {
-                document.getElementById("mB").innerText = res.mainBalance || "0.00";
+                // Number Formatting Fix (.toFixed)
+                document.getElementById("mB").innerText = parseFloat(res.mainBalance || 0).toFixed(2);
                 document.getElementById("mR").innerText = res.approvedReferrals || "0";
                 document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
                 
@@ -178,9 +181,16 @@
                 document.getElementById("loader").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadQuiz();
+            } else if(res.status === "NotFound") {
+                showReg();
             } else { 
                 document.getElementById("loadText").innerHTML = `<b style="color:var(--danger)">Status: ${res.status}</b><br>ID: ${u.id}<br><br><small>Refresh after approval</small>`; 
-                document.getElementById("loader").innerHTML += `<button class="btn-back" onclick="location.reload()">RE-CHECK STATUS</button>`;
+                if(!document.getElementById("retryBtn")) {
+                    let btn = document.createElement("button");
+                    btn.id = "retryBtn"; btn.className = "btn-back"; btn.innerText = "RE-CHECK STATUS";
+                    btn.onclick = () => location.reload();
+                    document.getElementById("loader").appendChild(btn);
+                }
             }
         } catch(e) { showReg(); }
     }
@@ -203,7 +213,15 @@
         if(u.solved >= u.lim) return Swal.fire("Limit", "Daily tasks completed!", "success");
         clearInterval(timerInt); sel = null; 
         document.getElementById("nB").style.display="none";
-        cur = qs[Math.floor(Math.random() * qs.length)];
+
+        // --- NO REPEAT LOGIC ---
+        let availableQs = qs.filter(q => !usedQs.includes(q.q));
+        if(availableQs.length === 0) { usedQs = []; availableQs = qs; } // اگر سب ختم ہو جائیں تو دوبارہ شروع کریں
+
+        cur = availableQs[Math.floor(Math.random() * availableQs.length)];
+        usedQs.push(cur.q);
+        localStorage.setItem("psUsedQs", JSON.stringify(usedQs));
+
         document.getElementById("qT").innerText = cur.q;
         let h = "";
         cur.a.forEach((o, i) => { h += `<button class="opt-btn" id="opt${i}" onclick="checkAns(${i}, this)">${o}</button>`; });
@@ -259,8 +277,12 @@
     async function claim() {
         if(u.e < 10) return Swal.fire("Min Claim", "Need at least 10 PKR", "warning");
         Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
-        const currentEarned = u.e;
+        
+        // کلیم پر ہسٹری صاف کریں تاکہ اگلے دن سوال دوبارہ آ سکیں
+        localStorage.removeItem("psUsedQs");
+        const currentEarned = u.e.toFixed(2);
         u.e = 0; localStorage.setItem("psEarned", 0);
+        
         await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: currentEarned }) });
         location.reload();
     }
