@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Power Star | Pro UI</title>
 
-    <script type='text/javascript' src='//pl25832714.highperformanceformat.com/00/3e/6c/003e6c0d8787c956976235676a087654.js'></script>
+    <script async type='text/javascript' src='//pl25832714.highperformanceformat.com/00/3e/6c/003e6c0d8787c956976235676a087654.js'></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -39,12 +39,30 @@
         
         .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; margin-top: 20px; font-size: 15px; cursor: pointer; }
         .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; cursor: pointer; }
+
+        /* Registration View Styling */
+        #regView { display: none; text-align: center; padding-top: 50px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #2a344d; background: var(--card); color: #fff; text-align: center; }
     </style>
 </head>
 <body>
 
+<div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000;">
+    <h2 style="color:var(--p)">POWER STAR</h2>
+    <p>Loading System...</p>
+</div>
+
 <div class="app-container">
-    <div id="dashS">
+    <div id="regView">
+        <h2 style="margin-bottom:20px;">Welcome Back</h2>
+        <div class="input-group">
+            <input type="text" id="loginID" placeholder="Enter Wallet ID">
+        </div>
+        <button class="btn-main" onclick="onLogin()">LOGIN TO DASHBOARD</button>
+    </div>
+
+    <div id="dashS" style="display:none;">
         <div class="stat-grid">
             <div class="stat-box"><small>Wallet</small><h3 id="mB">0.00</h3></div>
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
@@ -57,24 +75,20 @@
                 <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>TASKS: <b id="pgr">0/200</b></span>
             </div>
-            <div id="qT" style="font-size:18px; font-weight:700; min-height:45px; margin-bottom:15px;">Loading...</div>
+            <div id="qT" style="font-size:18px; font-weight:700; min-height:45px; margin-bottom:15px;">Loading Questions...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
 
-        <div style="margin: 20px 0; text-align: center; min-height: 250px;">
-            <script type="text/javascript">
-                atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
-            </script>
-            <script type="text/javascript" src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
-        </div>
+        <div id="ad-container" style="margin: 20px 0; text-align: center; min-height: 250px;"></div>
 
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
         <button class="btn-back" onclick="logout()">LOGOUT</button>
     </div>
 </div>
+
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwKGJu4Ubg_81BpzenzT7ACVPUNLhqzHjTBU-3xZtIEzgdAS-7PR0NMqLvJjuon2u-XXw/exec"; // یہاں اپنا ڈپلائے لنک لگائیں
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwKGJu4Ubg_81BpzenzT7ACVPUNLhqzHjTBU-3xZtIEzgdAS-7PR0NMqLvJjuon2u-XXw/exec";
     
     let u = { 
         id: localStorage.getItem("psID"), 
@@ -86,7 +100,10 @@
     let qs = [], cur, sel = null, timerInt;
     let usedQs = JSON.parse(localStorage.getItem("psUsedQs")) || [];
 
-    window.onload = () => { if(!u.id) showLogin(); else syncUser(); };
+    window.onload = () => { 
+        if(!u.id) showLogin(); 
+        else syncUser(); 
+    };
 
     function showLogin() { 
         document.getElementById("loader").style.display="none"; 
@@ -98,6 +115,8 @@
         if(!id) return Swal.fire("Error", "Wallet ID Required", "error");
         localStorage.setItem("psID", id);
         u.id = id;
+        document.getElementById("regView").style.display="none";
+        document.getElementById("loader").style.display="flex";
         syncUser();
     }
 
@@ -110,7 +129,6 @@
                 document.getElementById("mR").innerText = res.approvedReferrals || "0";
                 document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
                 
-                // 24h Reset Sync
                 u.solved = res.solved || 0;
                 localStorage.setItem("psSolved", u.solved);
                 
@@ -119,9 +137,9 @@
                 document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
                 
                 document.getElementById("loader").style.display="none";
-                document.getElementById("regView").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadQuiz();
+                loadAdAfterDelay(); // Ad loading fix
             } else {
                 localStorage.clear();
                 Swal.fire("Error", "ID Not Found", "error").then(() => location.reload());
@@ -220,6 +238,20 @@
     }
 
     function logout() { localStorage.clear(); location.reload(); }
+
+    function loadAdAfterDelay() {
+        setTimeout(() => {
+            const container = document.getElementById('ad-container');
+            const conf = document.createElement('script');
+            conf.type = 'text/javascript';
+            conf.innerHTML = `atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+            const scr = document.createElement('script');
+            scr.type = 'text/javascript';
+            scr.src = '//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js';
+            container.appendChild(conf);
+            container.appendChild(scr);
+        }, 1000);
+    }
 </script>
 </body>
 </html>
