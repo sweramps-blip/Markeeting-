@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Power Star | Pro UI</title>
 
-    <script async type='text/javascript' src='//pl25832714.highperformanceformat.com/00/3e/6c/003e6c0d8787c956976235676a087654.js'></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
@@ -16,19 +14,17 @@
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 12px; min-height: 100vh; }
         .app-container { max-width: 500px; margin: 0 auto; }
         
-        /* Stats Styling */
         .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
         .stat-box { background: var(--card); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid var(--glass); }
         .stat-box h3 { margin: 4px 0 0; font-size: 13px; font-weight: 800; color: #fff; }
 
-        /* Beautiful Question Card (Gradient Navy Blue) */
+        /* Beautiful Question Card with Glow */
         .atm-card { 
             background: linear-gradient(145deg, #1e293b, #0f172a); 
-            padding: 25px; 
-            border-radius: 30px; 
-            text-align: center; 
-            border: 1px solid rgba(212, 255, 0, 0.1); 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            padding: 25px; border-radius: 30px; text-align: center; 
+            border: 1px solid rgba(212, 255, 0, 0.2); 
+            box-shadow: 0 0 20px rgba(212, 255, 0, 0.05), 0 15px 35px rgba(0,0,0,0.4);
+            position: relative;
         }
 
         .timer-wrap { width: 60px; height: 60px; border: 3px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-top-color: var(--p); }
@@ -40,17 +36,16 @@
         .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; margin-top: 20px; font-size: 15px; cursor: pointer; }
         .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; cursor: pointer; }
 
-        /* Registration View Styling */
         #regView { display: none; text-align: center; padding-top: 50px; }
         .input-group { margin-bottom: 20px; }
-        .input-group input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #2a344d; background: var(--card); color: #fff; text-align: center; }
+        .input-group input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #2a344d; background: var(--card); color: #fff; text-align: center; outline: none; }
     </style>
 </head>
 <body>
 
 <div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000;">
-    <h2 style="color:var(--p)">POWER STAR</h2>
-    <p>Loading System...</p>
+    <h2 style="color:var(--p); letter-spacing: 2px;">POWER STAR</h2>
+    <p style="font-size: 12px; color: var(--text);">Securing Connection...</p>
 </div>
 
 <div class="app-container">
@@ -75,7 +70,7 @@
                 <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>TASKS: <b id="pgr">0/200</b></span>
             </div>
-            <div id="qT" style="font-size:18px; font-weight:700; min-height:45px; margin-bottom:15px;">Loading Questions...</div>
+            <div id="qT" style="font-size:18px; font-weight:700; min-height:45px; margin-bottom:15px;">Loading...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
         </div>
@@ -83,7 +78,7 @@
         <div id="ad-container" style="margin: 20px 0; text-align: center; min-height: 250px;"></div>
 
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
-        <button class="btn-back" onclick="href=https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashbord.html()">Back</button>
+        <button class="btn-back" onclick="window.location.href='https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashbord.html'">Back</button>
     </div>
 </div>
 
@@ -100,10 +95,7 @@
     let qs = [], cur, sel = null, timerInt;
     let usedQs = JSON.parse(localStorage.getItem("psUsedQs")) || [];
 
-    window.onload = () => { 
-        if(!u.id) showLogin(); 
-        else syncUser(); 
-    };
+    window.onload = () => { if(!u.id) showLogin(); else syncUser(); };
 
     function showLogin() { 
         document.getElementById("loader").style.display="none"; 
@@ -115,8 +107,6 @@
         if(!id) return Swal.fire("Error", "Wallet ID Required", "error");
         localStorage.setItem("psID", id);
         u.id = id;
-        document.getElementById("regView").style.display="none";
-        document.getElementById("loader").style.display="flex";
         syncUser();
     }
 
@@ -128,18 +118,16 @@
                 document.getElementById("mB").innerText = parseFloat(res.mainBalance || 0).toFixed(2);
                 document.getElementById("mR").innerText = res.approvedReferrals || "0";
                 document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
-                
                 u.solved = res.solved || 0;
-                localStorage.setItem("psSolved", u.solved);
-                
                 setupLevel(parseInt(res.approvedReferrals || 0));
                 document.getElementById("tE").innerText = u.e.toFixed(2);
                 document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
                 
                 document.getElementById("loader").style.display="none";
+                document.getElementById("regView").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadQuiz();
-                loadAdAfterDelay(); // Ad loading fix
+                loadBannerAd();
             } else {
                 localStorage.clear();
                 Swal.fire("Error", "ID Not Found", "error").then(() => location.reload());
@@ -165,14 +153,11 @@
         if(u.solved >= u.lim) return Swal.fire("Limit", "Daily tasks completed!", "success");
         clearInterval(timerInt); sel = null;
         document.getElementById("nB").style.display="none";
-
         let availableQs = qs.filter(q => !usedQs.includes(q.q));
         if(availableQs.length === 0) { usedQs = []; availableQs = qs; }
-
         cur = availableQs[Math.floor(Math.random() * availableQs.length)];
         usedQs.push(cur.q);
         localStorage.setItem("psUsedQs", JSON.stringify(usedQs));
-
         document.getElementById("qT").innerText = cur.q;
         let h = "";
         cur.a.forEach((o, i) => { h += `<button class="opt-btn" id="opt${i}" onclick="checkAns(${i}, this)">${o}</button>`; });
@@ -193,7 +178,6 @@
         clearInterval(timerInt); sel = i; 
         u.solved++;
         localStorage.setItem("psSolved", u.solved);
-
         let correctIdx = parseInt(cur.c) - 1;
         if(i === correctIdx) {
             b.style.background = "var(--success)"; u.e += u.r;
@@ -223,35 +207,29 @@
     async function claim() {
         if(u.e < 10) return Swal.fire("Min Claim", "Minimum 10 PKR Required", "warning");
         Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
-        const amt = u.e.toFixed(2);
         try {
-            let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: amt }) });
+            let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e.toFixed(2) }) });
             let res = await r.json();
             if(res.result === "success") {
                 u.e = 0; u.solved = 0;
                 localStorage.setItem("psEarned", 0);
                 localStorage.setItem("psSolved", 0);
-                localStorage.removeItem("psUsedQs");
                 location.reload();
-            } else { Swal.fire("Error", res.msg, "error"); }
+            }
         } catch(e) { Swal.fire("Error", "Server Issue", "error"); }
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
-
-    function loadAdAfterDelay() {
-        setTimeout(() => {
-            const container = document.getElementById('ad-container');
-            const conf = document.createElement('script');
-            conf.type = 'text/javascript';
-            conf.innerHTML = `atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
-            const scr = document.createElement('script');
-            scr.type = 'text/javascript';
-            scr.src = '//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js';
-            container.appendChild(conf);
-            container.appendChild(scr);
-        }, 1000);
+    function loadBannerAd() {
+        const adCont = document.getElementById("ad-container");
+        const script = document.createElement("script");
+        script.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
+        const config = document.createElement("script");
+        config.innerHTML = `atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        adCont.appendChild(config); adCont.appendChild(script);
     }
 </script>
+
+<script type='text/javascript' src='//pl25832714.highperformanceformat.com/00/3e/6c/003e6c0d8787c956976235676a087654.js'></script>
+
 </body>
 </html>
