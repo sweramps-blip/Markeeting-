@@ -3,50 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Pro Final</title>
-    
-    <script async src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+    <title>Power Star | Pro UI</title>
+
+    <script type='text/javascript' src='//pl25832714.highperformanceformat.com/00/3e/6c/003e6c0d8787c956976235676a087654.js'></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        :root { --p: #d4ff00; --bg: #060912; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; }
+        :root { --p: #d4ff00; --bg: #060912; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; --glass: rgba(255, 255, 255, 0.05); }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 12px; min-height: 100vh; }
         .app-container { max-width: 500px; margin: 0 auto; }
-        .auth-card { background: var(--card); padding: 25px; border-radius: 28px; text-align: center; margin-top: 40px; border: 1px solid rgba(255,255,255,0.05); }
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { font-size: 10px; color: var(--p); text-transform: uppercase; font-weight: 700; margin-left: 10px; }
-        input { width: 100%; background: #0a0e1a; border: 1px solid #2a344d; padding: 15px; border-radius: 16px; color: #fff; outline: none; margin-top: 5px; }
+        
+        /* Stats Styling */
         .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
-        .stat-box { background: #161d2f; padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-box small { font-size: 8px; color: var(--text); display: block; }
-        .stat-box h3 { margin: 4px 0 0; font-size: 13px; font-weight: 800; }
-        .atm-card { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 28px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-box { background: var(--card); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid var(--glass); }
+        .stat-box h3 { margin: 4px 0 0; font-size: 13px; font-weight: 800; color: #fff; }
+
+        /* Beautiful Question Card (Gradient Navy Blue) */
+        .atm-card { 
+            background: linear-gradient(145deg, #1e293b, #0f172a); 
+            padding: 25px; 
+            border-radius: 30px; 
+            text-align: center; 
+            border: 1px solid rgba(212, 255, 0, 0.1); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .timer-wrap { width: 60px; height: 60px; border: 3px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-top-color: var(--p); }
+        #timer { font-weight: 800; font-size: 20px; color: var(--p); }
+
         #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .opt-btn { width: 100%; padding: 16px 8px; border-radius: 15px; border: 1px solid #2a344d; background: rgba(30,38,61,0.6); color: #fff; font-weight: 600; font-size: 13px; transition: 0.2s; }
-        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; margin-top: 15px; font-size: 15px; cursor: pointer; }
-        .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; font-size: 13px; cursor: pointer; }
-        .timer-wrap { width: 55px; height: 55px; border: 4px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
-        #timer { font-weight: 800; font-size: 18px; color: var(--p); }
+        .opt-btn { width: 100%; padding: 16px 8px; border-radius: 18px; border: 1px solid #2a344d; background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; cursor: pointer; }
+        
+        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; margin-top: 20px; font-size: 15px; cursor: pointer; }
+        .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div id="regView" style="display:none;">
-        <div class="auth-card">
-            <h2 style="color:var(--p)">POWER STAR</h2>
-            <p style="font-size: 11px; color: var(--text);">Login with your Wallet ID</p>
-            <div class="input-group">
-                <label>Wallet ID</label>
-                <input type="text" id="loginID" placeholder="Enter Your ID">
-            </div>
-            <button class="btn-main" id="loginBtn" onclick="onLogin()">LOGIN NOW</button>
-        </div>
-    </div>
-
-    <div id="dashS" style="display:none;">
+    <div id="dashS">
         <div class="stat-grid">
             <div class="stat-box"><small>Wallet</small><h3 id="mB">0.00</h3></div>
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
@@ -55,25 +53,26 @@
         
         <div class="atm-card">
             <div class="timer-wrap"><span id="timer">30s</span></div>
-            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px; color: var(--text);">
                 <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
                 <span>TASKS: <b id="pgr">0/200</b></span>
             </div>
-            <div id="qT" style="font-size:16px; font-weight:700; min-height:40px; margin-bottom:15px;">Loading...</div>
+            <div id="qT" style="font-size:18px; font-weight:700; min-height:45px; margin-bottom:15px;">Loading...</div>
             <div id="qG"></div>
             <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
+        </div>
+
+        <div style="margin: 20px 0; text-align: center; min-height: 250px;">
+            <script type="text/javascript">
+                atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js"></script>
         </div>
 
         <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
         <button class="btn-back" onclick="logout()">LOGOUT</button>
     </div>
-
-    <div id="loader" style="text-align:center; margin-top:100px;">
-        <h2 style="color:var(--p)">POWER STAR</h2>
-        <p id="loadText">Syncing Secure Data...</p>
-    </div>
 </div>
-
 <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwKGJu4Ubg_81BpzenzT7ACVPUNLhqzHjTBU-3xZtIEzgdAS-7PR0NMqLvJjuon2u-XXw/exec"; // یہاں اپنا ڈپلائے لنک لگائیں
     
