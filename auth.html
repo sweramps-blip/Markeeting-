@@ -2,180 +2,230 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Power Star | Secure Auth</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --p: #d4ff00; --bg: #0a0e1a; --card-bg: #151b2d; --text: #94a3b8; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        
-        .card { background: var(--card-bg); padding: 30px; border-radius: 24px; width: 100%; max-width: 400px; border: 1px solid #2a344d; box-shadow: 0 20px 40px rgba(0,0,0,0.4); text-align: center; display: none; }
-        
-        .reg-header h1 { font-size: 28px; color: var(--p); margin: 0 0 10px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .reg-header p { color: var(--text); font-size: 14px; margin-bottom: 25px; }
-        
-        .info-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .info-box p { margin: 5px 0; font-size: 13px; color: #eee; }
-        .info-box b { color: var(--p); font-size: 15px; }
-        
-        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #2a344d; background: #0a0e1a; color: #fff; box-sizing: border-box; font-size: 15px; transition: 0.3s; }
-        input:focus { border-color: var(--p); outline: none; box-shadow: 0 0 10px rgba(212, 255, 0, 0.1); }
-        
-        .file-box { border: 2px dashed #3d4b6e; padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.2); }
-        #fileName { font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
-        
-        .upload-btn { background: #2a344d; color: #fff; padding: 8px 15px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; }
-        
-        .main-btn { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--p); color: #000; font-weight: 800; cursor: pointer; font-size: 16px; box-shadow: 0 8px 25px rgba(212, 255, 0, 0.3); transition: 0.3s; }
-        .main-btn:active { transform: scale(0.97); }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Power Star | Pro UI</title>
 
-        /* Pending Screen Animations */
-        .status-icon { font-size: 60px; color: var(--p); margin-bottom: 20px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root { --p: #d4ff00; --bg: #060912; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; --glass: rgba(255, 255, 255, 0.05); }
         
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .loader { width: 40px; height: 40px; border: 4px solid #151b2d; border-top: 4px solid var(--p); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: var(--bg); 
+            color: #fff; 
+            margin: 0; 
+            padding: 15px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            width: 100%;
+            padding-bottom: 80px; /* نیچے سے جگہ تاکہ بٹن نہ چھپیں */
+        }
+        
+        /* Stats */
+        .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
+        .stat-box { background: var(--card); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid var(--glass); }
+        .stat-box h3 { margin: 4px 0 0; font-size: 14px; font-weight: 800; color: #fff; }
+
+        /* Neon Glow Question Card */
+        .atm-card { 
+            background: linear-gradient(145deg, #1e293b, #0f172a); 
+            padding: 25px; border-radius: 25px; text-align: center; 
+            border: 1px solid rgba(212, 255, 0, 0.15); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(212, 255, 0, 0.05);
+        }
+
+        .timer-wrap { width: 55px; height: 55px; border: 3px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-top-color: var(--p); }
+        #timer { font-weight: 800; font-size: 18px; color: var(--p); }
+
+        #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .opt-btn { width: 100%; padding: 15px 10px; border-radius: 15px; border: 1px solid #2a344d; background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
+        
+        /* Fixed Bottom Buttons Area */
+        .action-area {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-bottom: 20px; /* Safe area for mobile nav */
+        }
+
+        .btn-main { width: 100%; padding: 16px; border-radius: 18px; border: none; background: var(--p); color: #000; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(212, 255, 0, 0.2); }
+        .btn-back { width: 100%; padding: 14px; border-radius: 15px; border: 1px solid #2a344d; background: transparent; color: var(--text); font-weight: 600; cursor: pointer; margin-bottom: 20px; }
+
+        #regView { display: none; text-align: center; padding-top: 60px; }
+        .input-group input { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid #2a344d; background: var(--card); color: #fff; text-align: center; font-size: 16px; outline: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-<div id="loader" class="loading-screen">
-    <div class="loader"></div>
+<div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000;">
+    <h2 style="color:var(--p); margin-bottom: 10px;">POWER STAR</h2>
+    <div style="width: 30px; height: 30px; border: 3px solid var(--glass); border-top-color: var(--p); border-radius: 50%; animation: spin 1s linear infinite;"></div>
 </div>
 
-<div id="regS" class="card">
-    <div class="reg-header">
-        <h1>Power Star</h1>
-        <p>Official Membership Portal</p>
-    </div>
-    
-    <div class="info-box">
-        <p>Registration Fee: <b>Rs. 200</b> (Life Time)</p>
-        <p>EasyPaisa: <b>03412049729</b></p>
-        <p>Name: <b>Muhammad Hussain</b></p>
+<div class="app-container">
+    <div id="regView">
+        <h2 style="margin-bottom:25px;">Welcome Back</h2>
+        <input type="text" id="loginID" placeholder="Enter Wallet ID">
+        <button class="btn-main" onclick="onLogin()">Start Now</button>
     </div>
 
-    <input id="n" type="text" placeholder="Full Name">
-    <input id="i" type="text" placeholder="Power Star ID (Main Page ID)">
-    <input id="trx" type="number" placeholder="TRX ID (11 Digits)">
+    <div id="dashS" style="display:none;">
+        <div class="stat-grid">
+            <div class="stat-box"><small>Wallet</small><h3 id="mB">0.00</h3></div>
+            <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
+            <div class="stat-box"><small>Bonus</small><h3 id="mC">0.00</h3></div>
+        </div>
+        
+        <div class="atm-card">
+            <div class="timer-wrap"><span id="timer">30s</span></div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px; color: var(--text);">
+                <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
+                <span>TASKS: <b id="pgr">0/200</b></span>
+            </div>
+            <div id="qT" style="font-size:17px; font-weight:700; min-height:45px; margin-bottom:15px;">Connecting...</div>
+            <div id="qG"></div>
+            <button id="nB" class="btn-main" style="display:none; background:#fff; margin-top:15px;" onclick="nextQ()">CONTINUE</button>
+        </div>
 
-    <div class="file-box">
-        <span id="fileName">Payment Screenshot</span>
-        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">CHOOSE FILE</button>
-    </div>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="updateName(this)">
+        <div id="ad-container" style="margin: 20px 0; text-align: center; min-height: 250px;"></div>
 
-    <button class="main-btn" onclick="register()">ACTIVATE NOW</button>
-</div>
-
-<div id="penS" class="card">
-    <i class="fas fa-history status-icon"></i>
-    <h2 style="color: var(--p);">Review in Progress</h2>
-    <p style="color: var(--text); line-height: 1.6; font-size: 14px;">Your payment proof has been submitted. Admin will verify your TRX ID. This usually takes 1-12 hours.</p>
-    <div style="margin-top: 25px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; font-size: 13px;">
-        User ID: <span id="displayID" style="color: var(--p); font-weight: bold;">---</span>
+        <div class="action-area">
+            <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
+            <button class="btn-back" onclick="window.location.href='https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html'">Back to Home</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // اہم لنکس
-    const GAS_URL = "آپ_کا_GOOGLE_SCRIPT_URL_یہاں_لگائیں"; 
-    const IMGBB_KEY = "14d35273fb4122ebb999baa08057f3f0";
+    // Social Bar Loading Fix
+    (function() {
+        const s = document.createElement('script');
+        s.src = '//pl25832714.highperformanceformat.com/00/3e/6c/003e6c0d8787c956976235676a087654.js';
+        s.async = true;
+        document.head.appendChild(s);
+    })();
 
-    window.onload = () => {
-        const savedID = localStorage.getItem("psID");
-        if (savedID) {
-            checkStatus(savedID);
-        } else {
-            hideLoader();
-            document.getElementById("regS").style.display = "block";
-        }
-    };
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwKGJu4Ubg_81BpzenzT7ACVPUNLhqzHjTBU-3xZtIEzgdAS-7PR0NMqLvJjuon2u-XXw/exec";
+    let u = { id: localStorage.getItem("psID"), e: parseFloat(localStorage.getItem("psEarned")) || 0, r: 0.40, pnl: 0.20, lim: 200, solved: parseInt(localStorage.getItem("psSolved")) || 0 };
+    let qs = [], cur, sel = null, timerInt;
+    let usedQs = JSON.parse(localStorage.getItem("psUsedQs")) || [];
 
-    function updateName(input) {
-        if (input.files.length > 0) {
-            document.getElementById('fileName').innerText = input.files[0].name;
-        }
+    window.onload = () => { if(!u.id) showLogin(); else syncUser(); };
+    function showLogin() { document.getElementById("loader").style.display="none"; document.getElementById("regView").style.display="block"; }
+
+    async function onLogin() {
+        const id = document.getElementById("loginID").value.trim();
+        if(!id) return Swal.fire("Error", "ID Required", "error");
+        localStorage.setItem("psID", id); u.id = id; syncUser();
     }
 
-    function hideLoader() {
-        document.getElementById("loader").style.display = "none";
-    }
-
-    async function checkStatus(id) {
-        document.getElementById("displayID").innerText = id;
+    async function syncUser() {
         try {
-            let r = await fetch(GAS_URL + "?checkID=" + encodeURIComponent(id));
+            let r = await fetch(GAS_URL + "?checkID=" + u.id + "&v=" + Date.now());
             let res = await r.json();
-
-            if (res.status === "Approved") {
-                window.location.href = "dashboard.html"; 
-            } else if (res.status === "Pending") {
-                hideLoader();
-                document.getElementById("regS").style.display = "none";
-                document.getElementById("penS").style.display = "block";
+            if(res.status === "Approved") {
+                document.getElementById("mB").innerText = parseFloat(res.mainBalance || 0).toFixed(2);
+                document.getElementById("mR").innerText = res.approvedReferrals || "0";
+                document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
+                u.solved = res.solved || 0;
+                setupLevel(parseInt(res.approvedReferrals || 0));
+                document.getElementById("tE").innerText = u.e.toFixed(2);
+                document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
+                document.getElementById("loader").style.display="none";
+                document.getElementById("regView").style.display="none";
+                document.getElementById("dashS").style.display="block";
+                loadQuiz();
+                loadBannerAd();
             } else {
-                // اگر آئی ڈی نہیں ملی
-                hideLoader();
-                document.getElementById("regS").style.display = "block";
+                localStorage.clear(); Swal.fire("Error", "ID Not Found", "error").then(() => location.reload());
             }
-        } catch (e) {
-            // ایرر کی صورت میں پینڈنگ دکھانا سیف ہے
-            hideLoader();
-            document.getElementById("penS").style.display = "block";
-        }
+        } catch(e) { showLogin(); }
     }
 
-    async function register() {
-        const name = document.getElementById("n").value.trim();
-        const userid = document.getElementById("i").value.trim();
-        const trx = document.getElementById("trx").value.trim();
-        const file = document.getElementById("fileInput").files[0];
+    function setupLevel(refs) {
+        if(refs <= 5) { u.r=0.40; u.pnl=0.20; u.lim=200; }
+        else if(refs <= 10) { u.r=0.50; u.pnl=0.25; u.lim=250; }
+        else { u.r=0.60; u.pnl=0.30; u.lim=300; }
+    }
 
-        if (!name || !userid || !trx || !file) {
-            return Swal.fire("Required", "All fields are mandatory", "warning");
-        }
-
-        if (trx.length < 11) {
-            return Swal.fire("Invalid TRX", "TRX ID must be 11 digits", "error");
-        }
-
-        Swal.fire({ title: 'Submitting...', text: 'Uploading proof, please wait', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
+    async function loadQuiz() {
         try {
-            // 1. Uploading to ImgBB
-            let fd = new FormData();
-            fd.append("image", file);
-            let imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
-            let imgData = await imgRes.json();
+            let r = await fetch(GAS_URL + "?getQuiz=true");
+            qs = await r.json(); nextQ();
+        } catch(e) { console.error("Error"); }
+    }
 
-            if (!imgData.success) throw new Error("Image Upload Error");
+    function nextQ() {
+        if(u.solved >= u.lim) return Swal.fire("Limit", "Daily tasks completed!", "success");
+        clearInterval(timerInt); sel = null;
+        document.getElementById("nB").style.display="none";
+        let availableQs = qs.filter(q => !usedQs.includes(q.q));
+        if(availableQs.length === 0) { usedQs = []; availableQs = qs; }
+        cur = availableQs[Math.floor(Math.random() * availableQs.length)];
+        usedQs.push(cur.q);
+        localStorage.setItem("psUsedQs", JSON.stringify(usedQs));
+        document.getElementById("qT").innerText = cur.q;
+        let h = "";
+        cur.a.forEach((o, i) => { h += `<button class="opt-btn" id="opt${i}" onclick="checkAns(${i}, this)">${o}</button>`; });
+        document.getElementById("qG").innerHTML = h;
+        startTimer();
+    }
 
-            // 2. Saving to Google Sheets
-            let response = await fetch(GAS_URL, {
-                method: "POST",
-                body: JSON.stringify({
-                    type: "reg",
-                    id: userid,
-                    name: name,
-                    trx: trx,
-                    proof: imgData.data.url
-                })
-            });
+    function startTimer() {
+        let t = 30; 
+        timerInt = setInterval(() => {
+            t--; document.getElementById("timer").innerText = t + "s";
+            if(t <= 0) { clearInterval(timerInt); handlePenalty(); }
+        }, 1000);
+    }
 
-            localStorage.setItem("psID", userid);
-            Swal.fire("Success", "Account submitted for approval!", "success").then(() => {
-                location.reload();
-            });
+    function checkAns(i, b) {
+        if(sel !== null) return; 
+        clearInterval(timerInt); sel = i; u.solved++;
+        localStorage.setItem("psSolved", u.solved);
+        let correctIdx = parseInt(cur.c) - 1;
+        if(i === correctIdx) { b.style.background = "var(--success)"; u.e += u.r; } 
+        else { b.style.background = "var(--danger)"; document.getElementById("opt" + correctIdx).style.background = "var(--success)"; u.e -= u.pnl; if(u.e < 0) u.e = 0; }
+        localStorage.setItem("psEarned", u.e); updateUIAndSync();
+    }
 
-        } catch (error) {
-            Swal.fire("Error", "Server connection failed. Try again.", "error");
-        }
+    function handlePenalty() { u.solved++; u.e -= u.pnl; if(u.e < 0) u.e = 0; localStorage.setItem("psEarned", u.e); localStorage.setItem("psSolved", u.solved); updateUIAndSync(); }
+    function updateUIAndSync() {
+        document.getElementById("tE").innerText = u.e.toFixed(2);
+        document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
+        document.getElementById("nB").style.display = "block";
+        fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "syncProgress", id: u.id, solved: u.solved }) });
+    }
+
+    async function claim() {
+        if(u.e < 10) return Swal.fire("Min Claim", "Minimum 10 PKR Required", "warning");
+        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
+        try {
+            let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e.toFixed(2) }) });
+            let res = await r.json();
+            if(res.result === "success") { u.e = 0; u.solved = 0; localStorage.setItem("psEarned", 0); localStorage.setItem("psSolved", 0); location.reload(); }
+        } catch(e) { Swal.fire("Error", "Server Issue", "error"); }
+    }
+
+    function loadBannerAd() {
+        const adCont = document.getElementById("ad-container");
+        const script = document.createElement("script"); script.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
+        const config = document.createElement("script"); config.innerHTML = `atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        adCont.appendChild(config); adCont.appendChild(script);
     }
 </script>
 
+<style> @keyframes spin { to { transform: rotate(360deg); } } </style>
 </body>
 </html>
