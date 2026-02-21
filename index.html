@@ -129,7 +129,7 @@
         } catch (e) { console.error("Load Error"); }
     }
 
-    async function runEngine(type) {
+async function runEngine(type) {
         if (type !== 'm' || isProcessing) return;
 
         let tasks = allEnginesData.m || [];
@@ -137,18 +137,34 @@
 
         if (!nextTask) return Swal.fire("ٹاسک مکمل 💯", "آج کے ٹاسک ختم ہو چکے ہیں۔", "info");
 
-        // Dropbox Link Fix
         let finalLink = nextTask.link;
-        if (finalLink.includes("dropbox.com")) { 
+
+        // --- یوٹیوب لنک فکسنگ لاجک ---
+        if (finalLink.includes("youtube.com") || finalLink.includes("youtu.be")) {
+            let videoId = "";
+            if (finalLink.includes("v=")) {
+                videoId = finalLink.split('v=')[1].split('&')[0];
+            } else {
+                videoId = finalLink.split('/').pop().split('?')[0];
+            }
+            // یوٹیوب کو ایمبیڈ لنک میں بدلنا تاکہ وہ براؤزر میں ہی چلے
+            finalLink = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        } 
+        // --- ڈراپ باکس لنک فکسنگ لاجک ---
+        else if (finalLink.includes("dropbox.com")) { 
             finalLink = finalLink.replace("dl=0", "raw=1").replace("www.dropbox.com", "dl.dropboxusercontent.com");
         }
 
+        // ویڈیو ونڈو کھولنا
         let videoWin = window.open(finalLink, '_blank');
-        if (!videoWin) return Swal.fire("Pop-up Blocked!", "براہ کرم پاپ اپ الاؤ کریں", "error");
+        
+        if (!videoWin) {
+            return Swal.fire("Pop-up Blocked!", "براہ کرم پاپ اپ الاؤ کریں تاکہ ویڈیو چل سکے۔", "error");
+        }
 
         document.getElementById('loading-overlay').style.display = 'flex';
         startTimer(nextTask);
-    }
+}
 
     function startTimer(task) {
         let elapsed = 0;
