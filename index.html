@@ -101,7 +101,6 @@
     <div class="overlay-progress"><div id="overlayBar"></div></div>
     <p style="font-size: 12px; color: #94a3b8; margin-top: 15px;">ویڈیو بند نہ کریں ورنہ ٹائمر رک جائے گا</p>
 </div>
-
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNezFpzV9BLYQt7uLoeQU52ce2gbmJVSuSUWJbLn-BVU76v2FSF904nlMZEit9C764/exec";
     const user = JSON.parse(localStorage.getItem("ps_user"));
@@ -129,7 +128,7 @@
         } catch (e) { console.error("Load Error"); }
     }
 
-async function runEngine(type) {
+    async function runEngine(type) {
         if (type !== 'm' || isProcessing) return;
 
         let tasks = allEnginesData.m || [];
@@ -147,7 +146,6 @@ async function runEngine(type) {
             } else {
                 videoId = finalLink.split('/').pop().split('?')[0];
             }
-            // یوٹیوب کو ایمبیڈ لنک میں بدلنا تاکہ وہ براؤزر میں ہی چلے
             finalLink = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
         } 
         // --- ڈراپ باکس لنک فکسنگ لاجک ---
@@ -155,29 +153,34 @@ async function runEngine(type) {
             finalLink = finalLink.replace("dl=0", "raw=1").replace("www.dropbox.com", "dl.dropboxusercontent.com");
         }
 
-        // ویڈیو ونڈو کھولنا
         let videoWin = window.open(finalLink, '_blank');
         
         if (!videoWin) {
             return Swal.fire("Pop-up Blocked!", "براہ کرم پاپ اپ الاؤ کریں تاکہ ویڈیو چل سکے۔", "error");
         }
 
+        // ٹائمر اوورلے دکھائیں
         document.getElementById('loading-overlay').style.display = 'flex';
         startTimer(nextTask);
-}
+    }
 
     function startTimer(task) {
         let elapsed = 0;
         let oBar = document.getElementById('overlayBar');
         
+        // ٹائمر کو ری سیٹ کرنا ہر بار نئے ٹاسک پر
+        oBar.style.width = '0%'; 
+        
         let timer = setInterval(async () => {
             if (!isPaused) {
                 elapsed++;
-                oBar.style.width = (elapsed / requiredTime * 100) + '%';
+                let progress = (elapsed / requiredTime) * 100;
+                oBar.style.width = progress + '%';
                 document.querySelector('.loading-text').innerHTML = `تصدیق ہو رہی ہے... ${requiredTime - elapsed}s`;
 
                 if (elapsed >= requiredTime) {
                     clearInterval(timer);
+                    // 30 سیکنڈ مکمل ہونے پر بیلنس اپ ڈیٹ کال کریں
                     if (!isProcessing) finalizeTask(task);
                 }
             } else {
@@ -189,18 +192,37 @@ async function runEngine(type) {
     async function finalizeTask(task) {
         if (isProcessing) return;
         isProcessing = true;
+
         try {
             const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&tid=${task.tid}`);
             const result = await res.json();
+            
             if (result.status === "Success") {
                 completedList.push(task.tid);
                 localStorage.setItem("ps_done_tasks", JSON.stringify(completedList));
+                
+                // اوورلے چھپائیں
                 document.getElementById('loading-overlay').style.display = 'none';
-                updateEngineUI('m');
-                Swal.fire("کامیابی ✅", `رقم کالم F میں شامل کر دی گئی۔`, "success");
+                
+                // کامیابی کا میسج
+                await Swal.fire({
+                    title: "ٹاسک مکمل ✅",
+                    text: `Rs. ${task.price} آپ کے اکاؤنٹ (F Column) میں جمع کر دیے گئے ہیں۔`,
+                    icon: "success",
+                    confirmButtonColor: "#d4ff00",
+                    confirmButtonText: "بہت اچھا"
+                });
+
+                updateEngineUI('m'); // UI کو فوری اپ ڈیٹ کریں
+            } else {
+                throw new Error(result.msg || "Server Error");
             }
-        } catch (e) { Swal.fire("Error", "Network issue", "error"); }
-        finally { isProcessing = false; }
+        } catch (e) { 
+            document.getElementById('loading-overlay').style.display = 'none';
+            Swal.fire("ایرر", "تصدیق نہیں ہو سکی: " + e.message, "error"); 
+        } finally { 
+            isProcessing = false; 
+        }
     }
 
     function updateEngineUI(type) {
@@ -218,10 +240,15 @@ async function runEngine(type) {
             btn.style.color = "#64748b";
             btn.style.pointerEvents = "none";
             btn.onclick = null;
+        } else {
+            btn.innerText = "Start";
+            btn.style.background = "var(--accent)";
+            btn.style.color = "#000";
+            btn.style.pointerEvents = "auto";
         }
     }
 
     window.onload = loadTasks;
-</script>         
+</script>        
 </body>
 </html>
