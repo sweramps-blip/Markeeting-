@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Power Star | Pro UI</title>
+    <title>Power Star | Final Fixed</title>
 
     <script type='text/javascript' src='//pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js'></script>
 
@@ -15,27 +15,15 @@
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 12px; min-height: 100vh; }
         .app-container { max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
-        
         .stat-grid { display: flex; gap: 8px; margin-bottom: 15px; }
         .stat-box { background: var(--card); padding: 12px 5px; border-radius: 16px; flex: 1; text-align: center; border: 1px solid var(--glass); }
         .stat-box h3 { margin: 4px 0 0; font-size: 13px; font-weight: 800; color: #fff; }
-
-        .atm-card { 
-            background: linear-gradient(145deg, #1e293b, #0f172a); 
-            padding: 25px; border-radius: 30px; text-align: center; 
-            border: 1px solid rgba(212, 255, 0, 0.2); 
-            box-shadow: 0 0 20px rgba(212, 255, 0, 0.05), 0 15px 35px rgba(0,0,0,0.4);
-        }
-
+        .atm-card { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 25px; border-radius: 30px; text-align: center; border: 1px solid rgba(212, 255, 0, 0.2); }
         .timer-wrap { width: 60px; height: 60px; border: 3px solid #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-top-color: var(--p); }
         #timer { font-weight: 800; font-size: 20px; color: var(--p); }
-
         #qG { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .opt-btn { width: 100%; padding: 16px 8px; border-radius: 18px; border: 1px solid #2a344d; background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; cursor: pointer; }
-        
         .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); color: #000; font-weight: 800; margin-top: 20px; font-size: 15px; cursor: pointer; }
-        .btn-back { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid #2a344d; background: transparent; color: var(--text); margin-top: 10px; cursor: pointer; margin-bottom: 40px; }
-
         #regView { display: none; text-align: center; padding-top: 50px; }
         .input-group input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #2a344d; background: var(--card); color: #fff; text-align: center; outline: none; }
     </style>
@@ -44,51 +32,51 @@
 
 <div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000;">
     <h2 style="color:var(--p); letter-spacing: 2px;">POWER STAR</h2>
-    <p style="font-size: 12px; color: var(--text);">Syncing System...</p>
+    <p style="font-size: 12px; color: var(--text);">Synchronizing Data...</p>
 </div>
 
 <div class="app-container">
     <div id="regView">
-        <h2 style="margin-bottom:20px;">Welcome Back</h2>
+        <h2 style="margin-bottom:20px;">Secure Login</h2>
         <div class="input-group">
-            <input type="text" id="loginID" placeholder="Enter Wallet ID">
+            <input type="text" id="loginID" placeholder="Enter Approved ID">
         </div>
-        <button class="btn-main" onclick="onLogin()">Start Now</button>
+        <button class="btn-main" onclick="onLogin()">Access Dashboard</button>
     </div>
 
     <div id="dashS" style="display:none;">
         <div class="stat-grid">
-            <div class="stat-box"><small>Wallet</small><h3 id="mB">0.00</h3></div>
+            <div class="stat-box"><small>Balance</small><h3 id="mB">0.00</h3></div>
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
-            <div class="stat-box"><small>Bonus</small><h3 id="mC">0.00</h3></div>
+            <div class="stat-box"><small>Team Bonus</small><h3 id="mC">0.00</h3></div>
         </div>
         
         <div class="atm-card">
             <div class="timer-wrap"><span id="timer">30s</span></div>
             <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px; color: var(--text);">
-                <span>EARNED: <b id="tE" style="color:var(--p)">0.00</b></span>
-                <span>TASKS: <b id="pgr">0/200</b></span>
+                <span>EARNING: <b id="tE" style="color:var(--p)">0.00</b></span>
+                <span>PROGRESS: <b id="pgr">0/200</b></span>
             </div>
             <div id="qT" style="font-size:18px; font-weight:700; min-height:45px; margin-bottom:15px;">Loading...</div>
             <div id="qG"></div>
-            <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">CONTINUE</button>
+            <button id="nB" class="btn-main" style="display:none; background:#fff;" onclick="nextQ()">NEXT TASK</button>
         </div>
 
         <div id="ad-container" style="margin: 20px 0; text-align: center; min-height: 250px;"></div>
 
-        <button class="btn-main" onclick="claim()">CLAIM TO WALLET (Min 10)</button>
-        <button class="btn-back" onclick="window.location.href='https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/dashboard.html'">Back</button>
+        <button class="btn-main" onclick="claim()">CLAIM NOW (Min 10)</button>
+        <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:var(--text); margin-top:20px; width:100%; cursor:pointer;">Logout Device</button>
     </div>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwKGJu4Ubg_81BpzenzT7ACVPUNLhqzHjTBU-3xZtIEzgdAS-7PR0NMqLvJjuon2u-XXw/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwCbuJwoen6Q0pTnLbkXOdNjWRlwpYw42PZB_NQkHqjmsQPrRo_0VOD-aeGt1rtG7YY/exec";
     
     let u = { 
         id: localStorage.getItem("psID"), 
         e: parseFloat(localStorage.getItem("psEarned")) || 0, 
         r: 0.40, pnl: 0.20, lim: 200, 
-        solved: parseInt(localStorage.getItem("psSolved")) || 0 
+        solved: 0 
     };
     
     let qs = [], cur, sel = null, timerInt;
@@ -103,7 +91,7 @@
 
     async function onLogin() {
         const id = document.getElementById("loginID").value.trim();
-        if(!id) return Swal.fire("Error", "ID Required", "error");
+        if(!id) return;
         localStorage.setItem("psID", id);
         u.id = id;
         syncUser();
@@ -118,18 +106,15 @@
                 document.getElementById("mR").innerText = res.approvedReferrals || "0";
                 document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
                 
-                // --- DAILY REFRESH ---
-                let today = new Date().toDateString();
-                if(localStorage.getItem("psLastDate") !== today) {
-                    u.solved = 0;
-                    localStorage.setItem("psSolved", 0);
-                    localStorage.setItem("psLastDate", today);
-                } else {
-                    u.solved = (res.solved !== undefined) ? parseInt(res.solved) : u.solved;
-                }
-                localStorage.setItem("psSolved", u.solved);
+                // براہ راست اسکرپٹ سے ٹاسک کاؤنٹ لینا (No Local Reset)
+                u.solved = parseInt(res.solved) || 0;
+                
+                // لیول لاجک
+                let refs = parseInt(res.approvedReferrals || 0);
+                if(refs <= 5) { u.r=0.40; u.pnl=0.20; u.lim=200; }
+                else if(refs <= 10) { u.r=0.50; u.pnl=0.25; u.lim=250; }
+                else { u.r=0.60; u.pnl=0.30; u.lim=300; }
 
-                setupLevel(parseInt(res.approvedReferrals || 0));
                 document.getElementById("tE").innerText = u.e.toFixed(2);
                 document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
                 
@@ -145,12 +130,6 @@
         } catch(e) { showLogin(); }
     }
 
-    function setupLevel(refs) {
-        if(refs <= 5) { u.r=0.40; u.pnl=0.20; u.lim=200; }
-        else if(refs <= 10) { u.r=0.50; u.pnl=0.25; u.lim=250; }
-        else { u.r=0.60; u.pnl=0.30; u.lim=300; }
-    }
-
     async function loadQuiz() {
         try {
             let r = await fetch(GAS_URL + "?getQuiz=true");
@@ -160,14 +139,17 @@
     }
 
     function nextQ() {
-        if(u.solved >= u.lim) return Swal.fire("Limit", "Daily tasks completed!", "success");
+        if(u.solved >= u.lim) return Swal.fire("Daily Limit", "Limit reached! Come back tomorrow.", "info");
         clearInterval(timerInt); sel = null;
         document.getElementById("nB").style.display="none";
+
         let availableQs = qs.filter(q => !usedQs.includes(q.q));
         if(availableQs.length === 0) { usedQs = []; availableQs = qs; }
+        
         cur = availableQs[Math.floor(Math.random() * availableQs.length)];
         usedQs.push(cur.q);
         localStorage.setItem("psUsedQs", JSON.stringify(usedQs));
+
         document.getElementById("qT").innerText = cur.q;
         let h = "";
         cur.a.forEach((o, i) => { h += `<button class="opt-btn" id="opt${i}" onclick="checkAns(${i}, this)">${o}</button>`; });
@@ -187,7 +169,6 @@
         if(sel !== null) return; 
         clearInterval(timerInt); sel = i; 
         u.solved++;
-        localStorage.setItem("psSolved", u.solved);
         let correctIdx = parseInt(cur.c) - 1;
         if(i === correctIdx) {
             b.style.background = "var(--success)"; u.e += u.r;
@@ -203,7 +184,6 @@
     function handlePenalty() {
         u.solved++; u.e -= u.pnl; if(u.e < 0) u.e = 0;
         localStorage.setItem("psEarned", u.e);
-        localStorage.setItem("psSolved", u.solved);
         updateUIAndSync();
     }
 
@@ -211,29 +191,30 @@
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
         document.getElementById("nB").style.display = "block";
+        // اسکرپٹ کے کالم 9 میں ٹاسک سیو کرنا
         fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "syncProgress", id: u.id, solved: u.solved }) });
     }
 
     async function claim() {
-        if(u.e < 10) return Swal.fire("Min Claim", "Minimum 10 PKR Required", "warning");
-        Swal.fire({title: 'Processing...', didOpen: () => Swal.showLoading()});
+        if(u.e < 10) return Swal.fire("Minimum 10 PKR Required");
+        Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
         try {
             let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e.toFixed(2) }) });
             let res = await r.json();
             if(res.result === "success") {
                 u.e = 0; 
                 localStorage.setItem("psEarned", 0);
-                location.reload();
+                location.reload(); // ری لوڈ ہونے پر اسکرپٹ سے تازہ ڈیٹا (بشمول ٹاسک کاؤنٹ جو اب 0 نہیں ہوگا) ملے گا۔
             }
-        } catch(e) { Swal.fire("Error", "Server Issue", "error"); }
+        } catch(e) { Swal.fire("Error", "Server Error", "error"); }
     }
 
     function loadBannerAd() {
         const adCont = document.getElementById("ad-container");
-        const script = document.createElement("script");
-        script.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
         const config = document.createElement("script");
         config.innerHTML = `atOptions = { 'key' : '577f75aa7d65a7ccebfa35e124c256c4', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };`;
+        const script = document.createElement("script");
+        script.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
         adCont.appendChild(config); adCont.appendChild(script);
     }
 </script>
