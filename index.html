@@ -102,153 +102,89 @@
     <p style="font-size: 12px; color: #94a3b8; margin-top: 15px;">ویڈیو بند نہ کریں ورنہ ٹائمر رک جائے گا</p>
 </div>
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUl3YWJiOtYYeHiKsHt40SNwAe_NV0EoPRKr2uPJnvwa3xmVUNUtNNCYLeNf5G9nj4/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzu6ktgy0mcF0VnQgF-4UDsQdvcL_KJ7MUm4fl0rbQHFexZSkpdqPNBLK0vevwyon5V/exec";
     const user = JSON.parse(localStorage.getItem("ps_user"));
-    
-    let completedList = JSON.parse(localStorage.getItem("ps_done_tasks")) || [];
-    let allEnginesData = { m: [] };
+
+    let currentTasks = [];
     let isPaused = false;
     let isProcessing = false;
-    let requiredTime = 30; // 30 Seconds Timer
 
+    // ٹیب چیکر
     window.onblur = () => { isPaused = true; };
     window.onfocus = () => { isPaused = false; };
 
     async function loadTasks() {
-        if (!user) return;
+        if (!user || !user.user_id) return;
         try {
-            const res = await fetch(`${SCRIPT_URL}?action=loadTasks&t=${new Date().getTime()}`);
-            allEnginesData = await res.json();
+            const res = await fetch(`${SCRIPT_URL}?action=loadTasks&uid=${user.user_id}`);
+            const data = await res.json();
+            currentTasks = data.m || [];
             
-            let videoTasks = allEnginesData.m || [];
-            let totalVal = videoTasks.reduce((s, t) => s + parseFloat(t.price), 0);
-            document.getElementById('price-m').innerText = `Earn Total: Rs. ${totalVal}`;
+            // UI اپ ڈیٹ
+            let priceSpan = document.getElementById('price-m');
+            let startBtn = document.getElementById('btn-m');
             
-            updateEngineUI('m');
-        } catch (e) { console.error("Load Error"); }
-    }
-
-    async function runEngine(type) {
-        if (type !== 'm' || isProcessing) return;
-
-        let tasks = allEnginesData.m || [];
-        let nextTask = tasks.find(t => !completedList.includes(t.tid));
-
-        if (!nextTask) return Swal.fire("ٹاسک مکمل 💯", "آج کے ٹاسک ختم ہو چکے ہیں۔", "info");
-
-        let finalLink = nextTask.link;
-
-        // --- یوٹیوب لنک فکسنگ لاجک ---
-        if (finalLink.includes("youtube.com") || finalLink.includes("youtu.be")) {
-            let videoId = "";
-            if (finalLink.includes("v=")) {
-                videoId = finalLink.split('v=')[1].split('&')[0];
+            if (currentTasks.length > 0) {
+                let total = currentTasks.reduce((s, t) => s + parseFloat(t.price), 0);
+                priceSpan.innerText = `Rs. ${total} Available`;
+                startBtn.style.display = "block";
             } else {
-                videoId = finalLink.split('/').pop().split('?')[0];
+                priceSpan.innerText = "All Tasks Completed ✅";
+                startBtn.style.display = "none";
+                document.getElementById('bar-m').style.width = "100%";
             }
-            finalLink = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-        } 
-        // --- ڈراپ باکس لنک فکسنگ لاجک ---
-        else if (finalLink.includes("dropbox.com")) { 
-            finalLink = finalLink.replace("dl=0", "raw=1").replace("www.dropbox.com", "dl.dropboxusercontent.com");
-        }
-
-        let videoWin = window.open(finalLink, '_blank');
-        
-        if (!videoWin) {
-            return Swal.fire("Pop-up Blocked!", "براہ کرم پاپ اپ الاؤ کریں تاکہ ویڈیو چل سکے۔", "error");
-        }
-
-        // ٹائمر اوورلے دکھائیں
-        document.getElementById('loading-overlay').style.display = 'flex';
-        startTimer(nextTask);
+        } catch (e) { console.error("Network Error"); }
     }
 
-    function startTimer(task) {
-        let elapsed = 0;
-        let oBar = document.getElementById('overlayBar');
+    async function runEngine() {
+        if (isProcessing || currentTasks.length === 0) return;
         
-        // ٹائمر کو ری سیٹ کرنا ہر بار نئے ٹاسک پر
-        oBar.style.width = '0%'; 
+        let task = currentTasks[0];
+        let link = task.link;
+
+        // پروفیشنل لنک فلٹر
+        if (link.includes("youtube.com") || link.includes("youtu.be")) {
+            let id = link.includes("v=") ? link.split("v=")[1].split("&")[0] : link.split("/").pop();
+            link = `https://www.youtube.com/embed/${id}?autoplay=1`;
+        } else if (link.includes("dropbox.com")) {
+            link = link.replace("dl=0", "raw=1");
+        }
+
+        let win = window.open(link, '_blank');
+        if (!win) return Swal.fire("Pop-up!", "Please allow pop-ups", "error");
+
+        document.getElementById('loading-overlay').style.display = 'flex';
         
+        let timeLeft = 30;
         let timer = setInterval(async () => {
             if (!isPaused) {
-                elapsed++;
-                let progress = (elapsed / requiredTime) * 100;
-                oBar.style.width = progress + '%';
-                document.querySelector('.loading-text').innerHTML = `تصدیق ہو رہی ہے... ${requiredTime - elapsed}s`;
+                timeLeft--;
+                let prog = ((30 - timeLeft) / 30) * 100;
+                document.getElementById('overlayBar').style.width = prog + "%";
+                document.querySelector('.loading-text').innerText = `Verifying... ${timeLeft}s`;
 
-                if (elapsed >= requiredTime) {
+                if (timeLeft <= 0) {
                     clearInterval(timer);
-                    // 30 سیکنڈ مکمل ہونے پر بیلنس اپ ڈیٹ کال کریں
-                    if (!isProcessing) finalizeTask(task);
+                    await finalize(task);
                 }
-            } else {
-                document.querySelector('.loading-text').innerHTML = `<span style="color:red">ٹائمر رک گیا!</span><br><small>واپس ویڈیو پر جائیں</small>`;
             }
         }, 1000);
     }
 
-    async function finalizeTask(task) {
-        if (isProcessing) return;
+    async function finalize(task) {
         isProcessing = true;
-
         try {
             const res = await fetch(`${SCRIPT_URL}?action=updateBalance&uid=${user.user_id}&amount=${task.price}&tid=${task.tid}`);
             const result = await res.json();
-            
             if (result.status === "Success") {
-                completedList.push(task.tid);
-                localStorage.setItem("ps_done_tasks", JSON.stringify(completedList));
-                
-                // اوورلے چھپائیں
-                document.getElementById('loading-overlay').style.display = 'none';
-                
-                // کامیابی کا میسج
-                await Swal.fire({
-                    title: "ٹاسک مکمل ✅",
-                    text: `Rs. ${task.price} آپ کے اکاؤنٹ (F Column) میں جمع کر دیے گئے ہیں۔`,
-                    icon: "success",
-                    confirmButtonColor: "#d4ff00",
-                    confirmButtonText: "بہت اچھا"
-                });
-
-                updateEngineUI('m'); // UI کو فوری اپ ڈیٹ کریں
-            } else {
-                throw new Error(result.msg || "Server Error");
+                await Swal.fire("Done!", "Amount Added to Wallet", "success");
+                location.reload(); 
             }
-        } catch (e) { 
-            document.getElementById('loading-overlay').style.display = 'none';
-            Swal.fire("ایرر", "تصدیق نہیں ہو سکی: " + e.message, "error"); 
-        } finally { 
-            isProcessing = false; 
-        }
-    }
-
-    function updateEngineUI(type) {
-        let tasks = allEnginesData[type] || [];
-        let done = tasks.filter(t => completedList.includes(t.tid)).length;
-        let total = tasks.length;
-        
-        document.getElementById(`text-m`).innerText = `Progress: ${done}/${total} Tasks`;
-        document.getElementById(`bar-m`).style.width = (total > 0 ? (done/total*100) : 0) + '%';
-
-        let btn = document.getElementById('btn-m');
-        if (done >= total && total > 0) {
-            btn.innerText = "Completed ✅";
-            btn.style.background = "#2d3548";
-            btn.style.color = "#64748b";
-            btn.style.pointerEvents = "none";
-            btn.onclick = null;
-        } else {
-            btn.innerText = "Start";
-            btn.style.background = "var(--accent)";
-            btn.style.color = "#000";
-            btn.style.pointerEvents = "auto";
-        }
+        } catch (e) { Swal.fire("Error", "Server Busy", "error"); }
+        isProcessing = false;
     }
 
     window.onload = loadTasks;
-</script>        
+</script>    
 </body>
 </html>
