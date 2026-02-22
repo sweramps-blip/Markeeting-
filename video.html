@@ -2,71 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Power Star | Simple Ad System</title>
+    <title>Power Star | Pro Video System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
-        .box { border: 2px solid #333; padding: 30px; border-radius: 15px; max-width: 450px; margin: 50px auto; background: #111; }
-        .btn { background: #ff9800; color: #000; padding: 15px 25px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 18px; }
-        #timer { font-size: 24px; color: #ffeb3b; margin-top: 20px; display: none; }
-        #video-container { display: none; }
-        iframe { width: 100%; max-width: 600px; height: 350px; border-radius: 10px; }
+        body { background: #0a0e1a; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
+        .main-box { background: #161b2d; border: 2px solid #2a3142; padding: 30px; border-radius: 15px; max-width: 550px; margin: 40px auto; position: relative; }
+        .btn { background: #ff9800; color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        
+        /* Close Icon and Timer Style */
+        #timer-container { display: none; position: relative; margin: 20px 0; }
+        .close-icon { position: absolute; top: -15px; right: 5px; font-size: 28px; color: #ff4444; font-weight: bold; }
+        #timer-display { font-size: 60px; color: #ffeb3b; font-weight: bold; margin: 10px 0; }
+
+        #video-section { display: none; }
+        iframe { width: 100%; height: 320px; border-radius: 10px; border: 2px solid #333; }
+        
+        .next-btn { display: none; background: #4caf50; margin-top: 20px; width: 100%; color: white; }
     </style>
 </head>
 <body>
 
-    <div id="ad-box" class="box">
-        <h2 id="title">Video 1 Unlock Karain</h2>
-        <button id="unlock-btn" class="btn" onclick="startProcess()">WATCH AD & UNLOCK</button>
-        <div id="timer">Video Loading in: <span id="count">30</span>s</div>
-    </div>
+    <div class="main-box">
+        <h2 id="heading">Video 1 Unlock Karain</h2>
+        
+        <div id="start-box">
+            <p style="color:#aaa;">Video dekhne ke liye neechay click karain.</p>
+            <button class="btn" onclick="startAdProcess()">WATCH AD & UNLOCK</button>
+        </div>
 
-    <div id="video-container">
-        <iframe id="my-player" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        <br><br>
-        <button class="btn" style="background:#4caf50;" onclick="goBackToAd()">Video Dekh Li (Next Video)</button>
+        <div id="timer-container">
+            <div class="close-icon"><i class="fas fa-times-circle"></i></div>
+            <div id="timer-display">30</div>
+            <p style="color:#ffeb3b;">Ad Loading... Please Wait</p>
+        </div>
+
+        <div id="video-section">
+            <iframe id="vid-frame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            
+            <button id="next-video-btn" class="btn next-btn" onclick="goToNextStep()">
+                NEXT VIDEO <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
     </div>
 
     <script>
-        const vids = ["FUwkXDdakn8", "GBXBH4uqbAo", "nkkmQzxytw4", "sTqo8B2OCLo"];
-        let current = 0;
-        const link = "https://www.effectivegatecpm.com/fgnsd0zn?key=040535026948793c010dcd8d1c86e224";
+        // Apki Video IDs aur apka NAYA Link
+        const videos = ["FUwkXDdakn8", "GBXBH4uqbAo", "nkkmQzxytw4", "sTqo8B2OCLo"];
+        let currentIdx = 0;
+        const myLink = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 
-        function startProcess() {
-            window.open(link, "_blank"); // Ad open
-            document.getElementById("unlock-btn").style.display = "none";
-            document.getElementById("timer").style.display = "block";
+        function startAdProcess() {
+            // 1. Naya Link open karein
+            window.open(myLink, "_blank");
+
+            // 2. Button hide karein aur Timer dikhayein
+            document.getElementById("start-box").style.display = "none";
+            document.getElementById("timer-container").style.display = "block";
             
-            let time = 30;
-            let interval = setInterval(() => {
-                time--;
-                document.getElementById("count").innerText = time;
-                if(time <= 0) {
-                    clearInterval(interval);
+            let timeLeft = 30;
+            let timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer-display").innerText = timeLeft;
+                
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
                     showVideo();
                 }
             }, 1000);
         }
 
         function showVideo() {
-            document.getElementById("ad-box").style.display = "none";
-            document.getElementById("video-container").style.display = "block";
-            document.getElementById("my-player").src = "https://www.youtube.com/embed/" + vids[current] + "?autoplay=1";
+            document.getElementById("timer-container").style.display = "none";
+            document.getElementById("video-section").style.display = "block";
+            document.getElementById("heading").innerText = "Watching Video " + (currentIdx + 1);
+            
+            // Video load karein
+            const frame = document.getElementById("vid-frame");
+            frame.src = "https://www.youtube.com/embed/" + videos[currentIdx] + "?autoplay=1";
+
+            // 10 second baad 'Next Video' button show hoga
+            setTimeout(() => {
+                document.getElementById("next-video-btn").style.display = "block";
+            }, 10000); 
         }
 
-        function goBackToAd() {
-            current++;
-            if(current < vids.length) {
-                document.getElementById("video-container").style.display = "none";
-                document.getElementById("ad-box").style.display = "block";
-                document.getElementById("unlock-btn").style.display = "inline-block";
-                document.getElementById("timer").style.display = "none";
-                document.getElementById("count").innerText = "30";
-                document.getElementById("title").innerText = "Video " + (current + 1) + " Unlock Karain";
-                document.getElementById("my-player").src = "";
+        function goToNextStep() {
+            currentIdx++;
+            if(currentIdx < videos.length) {
+                // Reset for next video
+                document.getElementById("video-section").style.display = "none";
+                document.getElementById("next-video-btn").style.display = "none";
+                document.getElementById("start-box").style.display = "block";
+                document.getElementById("heading").innerText = "Video " + (currentIdx + 1) + " Unlock Karain";
+                document.getElementById("timer-display").innerText = "30";
+                document.getElementById("vid-frame").src = "";
             } else {
-                alert("Tamam videos khatam!");
+                // End of videos
+                document.getElementById("video-section").style.display = "none";
+                document.getElementById("heading").innerText = "All Tasks Completed!";
+                document.getElementById("start-box").innerHTML = "<h3 style='color:#4caf50;'>Shukriya! Apne aaj ki sari videos dekh li hain.</h3>";
             }
         }
     </script>
+
 </body>
 </html>
