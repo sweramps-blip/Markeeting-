@@ -2,22 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Power Star | Pro Video System</title>
+    <title>Power Star | Fixed System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background: #0a0e1a; color: #fff; font-family: sans-serif; text-align: center; padding: 20px; }
         .main-box { background: #161b2d; border: 2px solid #2a3142; padding: 30px; border-radius: 15px; max-width: 550px; margin: 40px auto; position: relative; }
-        .btn { background: #ff9800; color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        .btn { background: #ff9800; color: #000; padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; width: 80%; }
         
-        /* Close Icon and Timer Style */
-        #timer-container { display: none; position: relative; margin: 20px 0; }
-        .close-icon { position: absolute; top: -15px; right: 5px; font-size: 28px; color: #ff4444; font-weight: bold; }
+        #timer-container { display: none; margin: 20px 0; position: relative; }
+        .close-icon { font-size: 30px; color: #ff4444; margin-bottom: 10px; cursor: pointer; }
         #timer-display { font-size: 60px; color: #ffeb3b; font-weight: bold; margin: 10px 0; }
 
         #video-section { display: none; }
         iframe { width: 100%; height: 320px; border-radius: 10px; border: 2px solid #333; }
-        
-        .next-btn { display: none; background: #4caf50; margin-top: 20px; width: 100%; color: white; }
+        .next-btn { display: none; background: #4caf50; margin-top: 20px; color: white; }
     </style>
 </head>
 <body>
@@ -33,12 +31,11 @@
         <div id="timer-container">
             <div class="close-icon"><i class="fas fa-times-circle"></i></div>
             <div id="timer-display">30</div>
-            <p style="color:#ffeb3b;">Ad Loading... Please Wait</p>
+            <p style="color:#ffeb3b;">Ad is Loading... Wait for Timer to reach 0</p>
         </div>
 
         <div id="video-section">
             <iframe id="vid-frame" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            
             <button id="next-video-btn" class="btn next-btn" onclick="goToNextStep()">
                 NEXT VIDEO <i class="fas fa-arrow-right"></i>
             </button>
@@ -46,32 +43,35 @@
     </div>
 
     <script>
-        // Apki Video IDs aur apka NAYA Link
         const videos = ["FUwkXDdakn8", "GBXBH4uqbAo", "nkkmQzxytw4", "sTqo8B2OCLo"];
         let currentIdx = 0;
         const myLink = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 
         function startAdProcess() {
-            // 1. Naya Link open karein
+            // 1. Ad open karein
             window.open(myLink, "_blank");
 
-            // 2. Button hide karein aur Timer dikhayein
+            // 2. Button hide aur Timer show karein
             document.getElementById("start-box").style.display = "none";
             document.getElementById("timer-container").style.display = "block";
             
+            // 3. Timer logic (isay browser stop nahi kar sakay ga)
             let timeLeft = 30;
-            let timer = setInterval(() => {
+            const timerDisplay = document.getElementById("timer-display");
+            
+            const countdown = setInterval(() => {
                 timeLeft--;
-                document.getElementById("timer-display").innerText = timeLeft;
+                timerDisplay.innerText = timeLeft;
                 
                 if(timeLeft <= 0) {
-                    clearInterval(timer);
+                    clearInterval(countdown);
                     showVideo();
                 }
             }, 1000);
         }
 
         function showVideo() {
+            // Screen update
             document.getElementById("timer-container").style.display = "none";
             document.getElementById("video-section").style.display = "block";
             document.getElementById("heading").innerText = "Watching Video " + (currentIdx + 1);
@@ -80,16 +80,16 @@
             const frame = document.getElementById("vid-frame");
             frame.src = "https://www.youtube.com/embed/" + videos[currentIdx] + "?autoplay=1";
 
-            // 10 second baad 'Next Video' button show hoga
+            // Next button 10 sec baad dikhayen
             setTimeout(() => {
                 document.getElementById("next-video-btn").style.display = "block";
-            }, 10000); 
+            }, 10000);
         }
 
         function goToNextStep() {
             currentIdx++;
             if(currentIdx < videos.length) {
-                // Reset for next video
+                // Reset setup
                 document.getElementById("video-section").style.display = "none";
                 document.getElementById("next-video-btn").style.display = "none";
                 document.getElementById("start-box").style.display = "block";
@@ -97,13 +97,12 @@
                 document.getElementById("timer-display").innerText = "30";
                 document.getElementById("vid-frame").src = "";
             } else {
-                // End of videos
                 document.getElementById("video-section").style.display = "none";
-                document.getElementById("heading").innerText = "All Tasks Completed!";
-                document.getElementById("start-box").innerHTML = "<h3 style='color:#4caf50;'>Shukriya! Apne aaj ki sari videos dekh li hain.</h3>";
+                document.getElementById("heading").innerText = "All Tasks Done!";
+                document.getElementById("start-box").innerHTML = "<h3>Good Job! Sari videos khatam ho gayin.</h3>";
+                document.getElementById("start-box").style.display = "block";
             }
         }
     </script>
-
 </body>
 </html>
