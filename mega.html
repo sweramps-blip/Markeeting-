@@ -1,155 +1,196 @@
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Power Star | Reward System</title>
+    <title>Power Star | Final Elite</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --bg: #000; --accent: #f59e0b; --p: #f59e0b; --success: #22c55e; }
-        body { background: var(--bg); color: white; font-family: 'Outfit'; margin: 0; text-align: center; overflow: hidden; }
+        :root { --bg: #000; --accent: #f59e0b; --success: #22c55e; }
+        body { background: var(--bg); color: white; font-family: 'Outfit'; margin: 0; text-align: center; overflow-x: hidden; user-select: none; }
+        
+        /* Loader */
         #loader { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; }
-        #regView { display:none; padding: 100px 20px; }
-        .btn-main { width: 90%; padding: 18px; border-radius: 20px; border: none; background: var(--p); font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        
+        /* Header Stats: My Coins, Level, and My Team Commission */
         .stats-header { display: flex; justify-content: space-around; padding: 15px; background: #050505; border-bottom: 1px solid #222; }
-        .stat-value { font-size: 18px; font-weight: 800; color: var(--accent); display: block; }
-        #grid { display: grid; gap: 5px; margin: 15px auto; width: 95vw; max-width: 400px; touch-action: none; }
-        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; }
-        .cell.active { background: var(--accent); color: #000; }
-        .cell.found { background: #064e3b; color: var(--success); }
-        .hints-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; max-width: 400px; margin: 0 auto; }
-        .hint-tag { background: #111; padding: 8px; border-radius: 5px; font-size: 10px; border: 1px solid #333; color: #777; }
-        .hint-tag.done { color: var(--success); text-decoration: line-through; opacity: 0.6; }
+        .stat-item { flex: 1; }
+        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; display: block; }
+        .stat-value { font-size: 18px; font-weight: 800; color: var(--accent); }
+
+        /* Game Board */
+        .board-container { background: #111; padding: 10px; border-radius: 15px; border: 1px solid #333; display: inline-block; margin-top: 15px; width: 95vw; max-width: 400px; }
+        #grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; touch-action: none; }
+        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; color: #555; }
+        .cell.active { background: var(--accent) !important; color: #000 !important; }
+        .cell.found { background: #064e3b !important; color: var(--success) !important; }
+
+        /* Beautiful Hints Box (Instructions) */
+        .hints-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 15px; max-width: 400px; margin: 0 auto; }
+        .hint-tag { background: #0f0c05; border: 1px solid #2b220a; color: #555; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .hint-tag.done { color: var(--success); background: #061a0e; text-decoration: line-through; border-color: var(--success); }
+
+        .btn-main { width: 90%; padding: 18px; border-radius: 20px; border: none; background: var(--accent); font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 15px; color: #000; }
+        
+        /* Ad Overlay */
+        #adOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:9999; display:none; flex-direction:column; align-items:center; justify-content:center; }
     </style>
 </head>
 <body onmouseup="endSelection()" ontouchend="endSelection()">
 
 <div id="loader"><h2>POWER STAR</h2><p>Synchronizing...</p></div>
 
-<div id="regView">
-    <h2 style="color:var(--p)">Enter Approved ID</h2>
-    <input type="text" id="loginID" placeholder="ID HERE" style="width:80%; padding:15px; border-radius:10px; border:1px solid #333; background:#111; color:#fff; text-align:center;">
-    <button class="btn-main" onclick="onLogin()">Access Game</button>
+<div id="adOverlay">
+    <div style="color:#888; font-size:12px;">AD VERIFICATION</div>
+    <div id="countdown" style="font-size:60px; font-weight:800; color:var(--accent);">30</div>
+    <div id="closeAdBtn" style="display:none;" class="btn-main" onclick="claimAdBonus()">CLAIM 40 COINS</div>
 </div>
 
 <div id="dashS" style="display:none;">
     <div class="stats-header">
-        <div><small>COINS</small><span id="balance" class="stat-value">0</span></div>
-        <div><small>LEVEL</small><span id="levelDisplay" class="stat-value">1</span></div>
+        <div class="stat-item"><span class="stat-label">My Coins</span><span id="balance" class="stat-value">0</span></div>
+        <div class="stat-item"><span class="stat-label">Level</span><span id="levelDisplay" class="stat-value">1</span></div>
+        <div class="stat-item"><span class="stat-label">My Team Comm</span><span id="teamCommission" class="stat-value">0</span></div>
     </div>
 
-    <div id="grid"></div>
+    <div class="board-container"><div id="grid"></div></div>
     <div class="hints-grid" id="hintsList"></div>
     
-    <button class="btn-main" onclick="openDirectLink()" style="background:#fff; color:#000;">Claim Bonus Coins</button>
-    <br>
-    <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:gray; font-size:11px; margin-top:20px;">Logout</button>
+    <button class="btn-main" onclick="handleAdClick()">Claim Bonus Coins</button>
+    <p style="font-size:10px; color:gray; margin-top:10px;">ID: <span id="userIdDisplay"></span></p>
 </div>
+
 <script>
-    // --- آپ کی گوگل اسکرپٹ کا یو آر ایل ---
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6qpU1imi9WDIY2Cm3KN4XLz0E6iR2li7CJWBzqIjKJyFtXZ7StDKGnbv4GeTwcp9P/exec"; 
-    
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6qpU1imi9WDIY2Cm3KN4XLz0E6iR2li7CJWBzqIjKJyFtXZ7StDKGnbv4GeTwcp9P/exec";
+    const AD_LINK = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
+
     let u = { id: localStorage.getItem('sm_id') };
     let dictionary = [], currentLevelWords = [], isSelecting = false, selectedCells = [], foundWords = [];
-    let balance = parseInt(localStorage.getItem('sm_balance')) || 0;
-    let currentLevel = parseInt(localStorage.getItem('sm_level')) || 1;
-    let totalTeamComm = parseInt(localStorage.getItem('sm_team_comm')) || 0;
-    const size = 8;
+    let balance = 0, currentLevel = 1, teamComm = 0;
 
-    // 1. شروعات: آئی ڈی چیک کریں یا لاگ ان دکھائیں
-    window.onload = () => { 
-        if(!u.id) {
-            showLoginView(); 
-        } else {
-            verifyExistingUser();
-        }
-    };
+    window.onload = () => { if(!u.id) showLogin(); else verifyUser(); };
 
-    function showLoginView() {
-        // یہاں ہم یوزر کو رجسٹریشن/لاگ ان والا انٹرفیس دکھائیں گے
+    function showLogin() {
+        document.getElementById("loader").style.display="none";
         Swal.fire({
             title: 'Enter Approved ID',
             input: 'text',
-            inputPlaceholder: 'Your Secure ID',
-            allowOutsideClick: false,
-            confirmButtonText: 'Access Game',
-            confirmButtonColor: '#f59e0b',
             background: '#121212',
-            color: '#fff'
-        }).then((result) => {
-            if (result.value) {
-                u.id = result.value.trim().toUpperCase();
-                verifyExistingUser();
-            }
-        });
+            color: '#fff',
+            confirmButtonColor: '#f59e0b',
+            allowOutsideClick: false
+        }).then(res => { if(res.value) { u.id = res.value.toUpperCase(); verifyUser(); } });
     }
 
-    // 2. آئی ڈی رجسٹریشن لاجک (Check ID Action)
-    async function verifyExistingUser() {
+    async function verifyUser() {
         try {
             const r = await fetch(SCRIPT_URL + "?action=checkID&id=" + u.id);
             const res = await r.json();
             if(res.status === "Approved") {
                 localStorage.setItem('sm_id', u.id);
-                loadWordsFromSheet(); // آئی ڈی صحیح ہو تو الفاظ اٹھائیں
-            } else {
-                Swal.fire("Denied", "ID not found or not approved", "error").then(() => showLoginView());
-            }
+                balance = res.balance || 0;
+                currentLevel = res.level || 1;
+                teamComm = res.teamCommission || 0; // یوزر کا اپنا ٹیم کمیشن
+                
+                document.getElementById("userIdDisplay").innerText = u.id;
+                document.getElementById("loader").style.display="none";
+                document.getElementById("dashS").style.display="block";
+                loadWords();
+            } else { showLogin(); }
+        } catch(e) { showLogin(); }
+    }
+
+    async function loadWords() {
+        try {
+            const r = await fetch(SCRIPT_URL + "?action=getWords");
+            dictionary = await r.json();
+            initLevel();
         } catch(e) {
-            Swal.fire("Error", "Connection failed", "error");
-        }
-    }
-
-    // 3. ورڈ اٹھانے کی سیٹنگ (Get Words Action)
-    async function loadWordsFromSheet() {
-        try {
-            const resp = await fetch(SCRIPT_URL + "?action=getWords");
-            dictionary = await resp.json();
-            // صرف وہ الفاظ لیں جو 3 سے 6 حرفی ہوں (تاکہ گرڈ میں فٹ آئیں)
-            dictionary = dictionary.filter(w => w.length >= 3 && w.length <= 6);
-            initLevel();
-        } catch (e) {
-            console.log("Sheet empty, using backup");
-            dictionary = ["GOLD", "STAR", "ELITE", "POWER", "COIN"];
+            dictionary = ["STAR", "POWER", "GOLD", "ELITE", "COIN", "KING"];
             initLevel();
         }
     }
 
-    // 4. گیم اور کمیشن کی سیٹنگ (POST logic)
-    async function levelComplete() {
+    function initLevel() {
+        foundWords = [];
+        currentLevelWords = dictionary.sort(() => 0.5 - Math.random()).slice(0, 6);
+        document.getElementById("balance").innerText = balance;
+        document.getElementById("levelDisplay").innerText = currentLevel;
+        document.getElementById("teamCommission").innerText = teamComm;
+        document.getElementById("hintsList").innerHTML = currentLevelWords.map(w => `<div class="hint-tag" id="hint-${w}">${w}</div>`).join("");
+        generateGrid();
+    }
+
+    function generateGrid() {
+        const g = document.getElementById("grid"); g.innerHTML = "";
+        for(let i=0; i<64; i++) {
+            let c = document.createElement("div");
+            c.className = "cell";
+            c.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+            
+            const start = () => { isSelecting = true; selectedCells = [c]; c.classList.add("active"); };
+            const move = (e) => {
+                if(isSelecting) {
+                    let t = e.type.includes('touch') ? e.touches[0] : e;
+                    let el = document.elementFromPoint(t.clientX, t.clientY);
+                    if(el && el.classList.contains('cell') && !selectedCells.includes(el)) {
+                        el.classList.add("active");
+                        selectedCells.push(el);
+                    }
+                }
+            };
+            c.onmousedown = start; c.onmouseover = move;
+            c.ontouchstart = (e) => { e.preventDefault(); start(); };
+            c.ontouchmove = move;
+            g.appendChild(c);
+        }
+    }
+
+    async function endSelection() {
+        if(!isSelecting) return;
+        isSelecting = false;
+        let word = selectedCells.map(c => c.textContent).join("");
+        if(currentLevelWords.includes(word) && !foundWords.includes(word)) {
+            foundWords.push(word);
+            document.getElementById("hint-" + word).classList.add("done");
+            selectedCells.forEach(c => { c.classList.remove("active"); c.classList.add("found"); });
+            if(foundWords.length === 6) {
+                balance += 40; currentLevel++;
+                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ username: u.id, level: currentLevel, earned: 40, action: "levelComplete" }) });
+                Swal.fire("Level Up!", "+40 Coins Added", "success").then(() => initLevel());
+            }
+        } else { selectedCells.forEach(c => c.classList.remove("active")); }
+        selectedCells = [];
+    }
+
+    // --- Adsterra Logic ---
+    function handleAdClick() {
+        window.open(AD_LINK, '_blank');
+        document.getElementById("adOverlay").style.display = "flex";
+        let timeLeft = 30;
+        let timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("countdown").innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById("countdown").style.display = "none";
+                document.getElementById("closeAdBtn").style.display = "block";
+            }
+        }, 1000);
+    }
+
+    async function claimAdBonus() {
+        document.getElementById("adOverlay").style.display = "none";
+        document.getElementById("countdown").style.display = "block";
+        document.getElementById("closeAdBtn").style.display = "none";
         balance += 40;
-        currentLevel++;
-        localStorage.setItem('sm_balance', balance);
-        localStorage.setItem('sm_level', currentLevel);
-        
-        // کمیشن ٹوسٹ دکھائیں
-        showCommissionEffect();
-
-        // شیٹ میں ڈیٹا بھیجیں (doPost)
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({
-                    username: u.id,
-                    earned: 40,
-                    level: currentLevel,
-                    action: "updateStats"
-                })
-            });
-        } catch(e) { console.log("Sync failed"); }
-
-        Swal.fire("Level Complete!", "+40 Coins added", "success").then(() => initLevel());
+        document.getElementById("balance").innerText = balance;
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ username: u.id, earned: 40, action: "adBonus" }) });
+        Swal.fire("Bonus", "40 Coins Added!", "success");
     }
-
-    // باقی فنکشنز (generateMatrix, endSelection وغیرہ) وہی رہیں گے جو آپ کے ڈیزائن میں تھے
 </script>
-    
 </body>
 </html>
-Ye code ap ny bheja Hy game Khraab Nechy Sy instructions ka beautiful box dya Wo gaib opr Sy team commission gaib ye ki Hy mhrbaani or madad ap ny
-    
