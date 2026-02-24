@@ -48,9 +48,9 @@
     <br>
     <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:gray; font-size:11px; margin-top:20px;">Logout</button>
 </div>
-
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwL7A7WvGYTPv9ZDzpo0mf8yiU102E7RqmsYpBOpnBjKV4GgZvQHsGgSAcOjouXxq4/exec";
+    // --- آپ کا نیا والا لنک یہاں ڈال دیا ہے ---
+    const GAS_URL = "https://script.google.com/macros/s/AKfycby6qpU1imi9WDIY2Cm3KN4XLz0E6iR2li7CJWBzqIjKJyFtXZ7StDKGnbv4GeTwcp9P/exec";
     const DIRECT_LINK = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 
     let u = { id: localStorage.getItem("sm_id") }, dictionary = [], currentLevelWords = [], foundWords = [], selectedCells = [], isSelecting = false;
@@ -58,25 +58,58 @@
 
     window.onload = () => { if(!u.id) showLogin(); else syncUser(); };
 
-    function showLogin() { document.getElementById("loader").style.display="none"; document.getElementById("regView").style.display="block"; }
+    function showLogin() { 
+        document.getElementById("loader").style.display="none"; 
+        document.getElementById("regView").style.display="block"; 
+        document.getElementById("dashS").style.display="none";
+    }
+
+    // ✅ یہ فنکشن پہلے غائب تھا، اب اسے شامل کر دیا ہے
+    async function onLogin() {
+        let idBox = document.getElementById("loginID").value.trim();
+        if(!idBox) { 
+            Swal.fire("Error", "Please enter your ID", "warning"); 
+            return; 
+        }
+        
+        document.getElementById("loader").style.display="flex"; // لوڈنگ دکھائیں
+        document.getElementById("regView").style.display="none";
+        u.id = idBox;
+        syncUser(); // آئی ڈی چیک کرنے کے لیے بھیجیں
+    }
 
     async function syncUser() {
         try {
             let r = await fetch(GAS_URL + "?action=checkID&id=" + u.id);
             let res = await r.json();
             if(res.status === "Approved") {
+                localStorage.setItem("sm_id", u.id); // آئی ڈی کو موبائل میں سیو کر لیں
                 document.getElementById("loader").style.display="none";
                 document.getElementById("regView").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadWords();
-            } else { showLogin(); }
-        } catch(e) { showLogin(); }
+            } else { 
+                Swal.fire("Access Denied", "آپ کی آئی ڈی منظور شدہ نہیں ہے", "error");
+                showLogin(); 
+            }
+        } catch(e) { 
+            console.error(e);
+            Swal.fire("Error", "سرور سے رابطہ نہیں ہو سکا", "error");
+            showLogin(); 
+        }
     }
 
     async function loadWords() {
-        let r = await fetch(GAS_URL + "?action=getWords");
-        dictionary = await r.json();
-        initLevel();
+        try {
+            let r = await fetch(GAS_URL + "?action=getWords");
+            dictionary = await r.json();
+            if(!dictionary || dictionary.length === 0) throw "Empty";
+            initLevel();
+        } catch(e) {
+            // اگر شیٹ سے الفاظ نہ آئیں تو یہ بیک اپ الفاظ
+            dictionary = ["POWER", "STAR", "GAME", "COINS", "LEVEL", "BONUS"];
+            initLevel();
+        }
     }
 
     function initLevel() {
@@ -93,9 +126,8 @@
     }
 
     function generateMatrix() {
-        const g = document.getElementById("grid"); g.innerHTML = "";
-        let matrix = Array(size).fill().map(() => Array(size).fill(''));
-        // Matrix Logic Same as before...
+        const g = document.getElementById("grid"); 
+        g.innerHTML = "";
         for(let r=0; r<size; r++) {
             for(let c=0; c<size; c++) {
                 let cell = document.createElement("div");
@@ -107,16 +139,14 @@
         }
     }
 
-    // --- اہم ٹائمر والا فنکشن (JavaScript) ---
     function openDirectLink() {
         window.open(DIRECT_LINK, '_blank');
-
         let adOverlay = document.createElement("div");
         adOverlay.style = "position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;";
         adOverlay.innerHTML = `
             <div id="countdown" style="font-size:60px; font-weight:800; color:#f59e0b;">30</div>
             <p>VERIFYING AD VIEW...</p>
-            <div id="closeBtn" style="display:none; position:absolute; top:30px; right:30px; font-size:35px; cursor:pointer; background:#fff; color:#000; width:50px; height:50px; border-radius:50%; align-items:center; justify-content:center; display:none; font-weight:bold;">❌</div>
+            <div id="closeBtn" style="display:none; position:absolute; top:30px; right:30px; font-size:35px; cursor:pointer; background:#fff; color:#000; width:50px; height:50px; border-radius:50%; align-items:center; justify-content:center; font-weight:bold;">❌</div>
         `;
         document.body.appendChild(adOverlay);
 
@@ -137,5 +167,6 @@
         }, 1000);
     }
 </script>
+
 </body>
 </html>
