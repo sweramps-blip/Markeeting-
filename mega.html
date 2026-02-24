@@ -1,171 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Power Star | Final Solution</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        :root { --bg: #000; --accent: #f59e0b; --success: #22c55e; }
-        body { background: var(--bg); color: white; font-family: 'Outfit'; margin: 0; text-align: center; overflow: hidden; user-select: none; touch-action: none; }
-        #loader { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; }
-        .stats-header { display: flex; justify-content: space-around; padding: 15px; background: #050505; border-bottom: 1px solid #222; }
-        .stat-value { font-size: 18px; font-weight: 800; color: var(--accent); display: block; }
-        .board-container { background: #111; padding: 10px; border-radius: 15px; border: 1px solid #333; display: inline-block; margin-top: 15px; width: 95vw; max-width: 400px; }
-        #grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; touch-action: none; position: relative; }
-        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; color: #555; pointer-events: none; }
-        .cell.active { background: var(--accent) !important; color: #000 !important; }
-        .cell.found { background: #064e3b !important; color: var(--success) !important; }
-        .hints-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 15px; max-width: 400px; margin: 0 auto; }
-        .hint-tag { background: #0f0c05; border: 1px solid #2b220a; color: #555; padding: 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-        .hint-tag.done { color: var(--success); background: #061a0e; text-decoration: line-through; border-color: var(--success); }
-        .btn-main { width: 90%; padding: 18px; border-radius: 20px; border: none; background: var(--accent); font-weight: 800; font-size: 16px; margin-top: 15px; color:#000; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Power Star | Anti-Cheat & Secure Auth</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ============================================================
+   YOUR ORIGINAL PREMIUM DESIGN (CV AUTH)
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Outfit', sans-serif; background: #0a0e1a; color: #fff; overflow-x: hidden; touch-action: none; }
+
+/* Background Glow (Your Style) */
+body::before {
+  content: ""; position: fixed; top: -10%; left: -10%; width: 50%; height: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+  filter: blur(80px); z-index: -1;
+}
+
+#loader { position: fixed; inset: 0; background: #0a0e1a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
+
+/* Secure Dashboard */
+.dashboard-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; background: rgba(255, 255, 255, 0.02); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); }
+.stat-box { background: rgba(255, 255, 255, 0.03); padding: 15px 5px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center; box-shadow: inset 0 0 10px rgba(255,255,255,0.02); }
+.stat-box label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 5px; }
+.stat-box span { font-size: 20px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 10px rgba(245,158,11,0.3); }
+
+/* Anti-Cheat Grid Engine */
+.game-container { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+.grid-shield { background: linear-gradient(145deg, rgba(245,158,11,0.1), transparent); padding: 12px; border-radius: 28px; border: 1px solid rgba(245,158,11,0.15); width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+#grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+.cell { aspect-ratio: 1; background: #151b2c; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 700; font-size: 19px; color: #4e5d78; border: 1px solid rgba(255,255,255,0.03); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; }
+.cell.active { background: #f59e0b !important; color: #000 !important; transform: scale(1.15); z-index: 50; box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+.cell.found { background: #10b981 !important; color: #fff !important; border-color: #10b981; animation: pop 0.3s ease-out; }
+
+@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+/* Word List */
+.word-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; width: 100%; max-width: 420px; }
+.word-pill { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px 5px; border-radius: 14px; font-size: 11px; font-weight: 600; text-align: center; color: #64748b; transition: 0.3s; }
+.word-pill.done { color: #10b981; border-color: #10b981; text-decoration: line-through; background: rgba(16, 185, 129, 0.1); box-shadow: 0 0 15px rgba(16,185,129,0.1); }
+
+.claim-button { width: 90%; max-width: 420px; padding: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 22px; color: #000; font-weight: 800; font-size: 17px; margin-top: 10px; cursor: pointer; box-shadow: 0 12px 30px rgba(245,158,11,0.25); display: block; margin-left: auto; margin-right: auto; }
+</style>
 </head>
-<body>
+<body onpointerup="stopSelect()">
 
-<div id="loader"><h2>POWER STAR</h2><p>Establishing Secure Sync...</p></div>
+<script type='text/javascript' src='//pl25754406.highrevenuegate.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js'></script>
 
-<div id="dashS" style="display:none;">
-    <div class="stats-header">
-        <div><small style="color:gray">COINS</small><span id="balance" class="stat-value">0</span></div>
-        <div><small style="color:gray">LEVEL</small><span id="levelDisplay" class="stat-value">1</span></div>
-        <div><small style="color:gray">TEAM COMM</small><span id="teamCommission" class="stat-value">0</span></div>
+<div id="loader">
+  <div style="font-size: 32px; font-weight: 800; color: #f59e0b; letter-spacing: 5px;">POWER STAR</div>
+  <p style="color: #4e5d78; margin-top: 15px; font-weight: 500;">SECURE AUTHENTICATION...</p>
+</div>
+
+<div id="gameUI" style="display: none;">
+  <div class="dashboard-bar">
+    <div class="stat-box"><label>Balance</label><span id="bVal">0</span></div>
+    <div class="stat-box"><label>Level</label><span id="lVal">1</span></div>
+    <div class="stat-box"><label>Team</label><span id="tVal">0</span></div>
+  </div>
+
+  <div class="game-container">
+    <div class="grid-shield">
+      <div id="grid" onpointerdown="startSelect(event)" onpointermove="moveSelect(event)"></div>
     </div>
-    <div class="board-container">
-        <div id="grid" onpointerdown="startS(event)" onpointermove="moveS(event)" onpointerup="endS()"></div>
-    </div>
-    <div class="hints-grid" id="hintsList"></div>
-    <button class="btn-main" onclick="handleAd()">Claim Bonus Coins</button>
+  </div>
+
+  <div class="word-list" id="wList"></div>
+  <button class="claim-button" onclick="claimBonus()">CLAIM DAILY BONUS</button>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6qpU1imi9WDIY2Cm3KN4XLz0E6iR2li7CJWBzqIjKJyFtXZ7StDKGnbv4GeTwcp9P/exec";
-    const AD_LINK = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
+const DB_URL = "https://script.google.com/macros/s/AKfycby6qpU1imi9WDIY2Cm3KN4XLz0E6iR2li7CJWBzqIjKJyFtXZ7StDKGnbv4GeTwcp9P/exec";
+const AD_URL = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 
-    let u = { id: localStorage.getItem('sm_id') };
-    let currentLevelWords = [], isSelecting = false, selectedCells = [], foundWords = [];
-    let balance = 0, currentLevel = 1, teamComm = 0;
+let user = { id: localStorage.getItem('sm_id') };
+let stats = { coins: 0, lvl: 1, team: 0 };
+let targets = [], foundCount = 0, dragging = false, selection = [];
 
-    window.onload = () => { if(!u.id) showLogin(); else verify(); };
+window.onload = () => { if(!user.id) auth(); else connect(); };
 
-    function showLogin() {
-        document.getElementById("loader").style.display="none";
-        Swal.fire({ title: 'Enter ID', input: 'text', background: '#121212', color: '#fff', confirmButtonColor: '#f59e0b', allowOutsideClick: false })
-        .then(res => { if(res.value) { u.id = res.value.toUpperCase(); verify(); } });
-    }
+function auth() {
+  document.getElementById("loader").style.display = "none";
+  Swal.fire({
+    title: 'ENTER SECURE ID',
+    input: 'text',
+    background: '#0a0e1a',
+    color: '#fff',
+    confirmButtonColor: '#f59e0b',
+    allowOutsideClick: false,
+    customClass: { popup: 'my-swal' }
+  }).then(res => { if(res.value) { user.id = res.value.toUpperCase(); connect(); } });
+}
 
-    async function verify() {
-        try {
-            const r = await fetch(SCRIPT_URL + "?action=checkID&id=" + u.id);
-            const res = await r.json();
-            if(res.status === "Approved") {
-                localStorage.setItem('sm_id', u.id);
-                balance = parseInt(res.balance) || 0;
-                currentLevel = parseInt(res.level) || 1;
-                teamComm = parseInt(res.teamCommission) || 0;
-                document.getElementById("loader").style.display="none";
-                document.getElementById("dashS").style.display="block";
-                loadLevel();
-            } else { showLogin(); }
-        } catch(e) { showLogin(); }
-    }
+async function connect() {
+  try {
+    const r = await fetch(DB_URL + "?action=checkID&id=" + user.id);
+    const d = await r.json();
+    if(d.status === "Approved") {
+      localStorage.setItem('sm_id', user.id);
+      stats.coins = parseInt(d.balance); stats.lvl = parseInt(d.level); stats.team = parseInt(d.teamCommission);
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("gameUI").style.display = "block";
+      syncUI();
+      loadGame();
+    } else auth();
+  } catch(e) { auth(); }
+}
 
-    async function loadLevel() {
-        try {
-            const r = await fetch(SCRIPT_URL + "?action=getWords");
-            let all = await r.json();
-            currentLevelWords = all.sort(() => 0.5 - Math.random()).slice(0, 6).map(w => w.toUpperCase());
-            render();
-        } catch(e) { render(); }
-    }
+async function loadGame() {
+  const r = await fetch(DB_URL + "?action=getWords");
+  const list = await r.json();
+  targets = list.sort(() => 0.5 - Math.random()).slice(0, 6).map(w => w.toUpperCase());
+  buildBoard();
+}
 
-    function render() {
-        foundWords = [];
-        document.getElementById("balance").innerText = balance;
-        document.getElementById("levelDisplay").innerText = currentLevel;
-        document.getElementById("teamCommission").innerText = teamComm;
-        document.getElementById("hintsList").innerHTML = currentLevelWords.map(w => `<div class="hint-tag" id="hint-${w}">${w}</div>`).join("");
-        genGrid();
-    }
+function buildBoard() {
+  foundCount = 0;
+  document.getElementById("wList").innerHTML = targets.map(w => `<div class="word-pill" id="wp-${w}">${w}</div>`).join("");
+  const g = document.getElementById("grid"); g.innerHTML = "";
+  let matrix = Array(64).fill(null);
 
-    function genGrid() {
-        const g = document.getElementById("grid"); g.innerHTML = "";
-        let matrix = Array(64).fill(null);
-        currentLevelWords.forEach(word => {
-            let placed = false;
-            while (!placed) {
-                let isH = Math.random() > 0.5;
-                let r = Math.floor(Math.random() * 8), c = Math.floor(Math.random() * (8 - word.length));
-                let start = isH ? (r * 8 + c) : (c * 8 + r);
-                let can = true;
-                for (let i = 0; i < word.length; i++) {
-                    let p = isH ? (start + i) : (start + i * 8);
-                    if (matrix[p] !== null) { can = false; break; }
-                }
-                if (can) {
-                    for (let i = 0; i < word.length; i++) {
-                        let p = isH ? (start + i) : (start + i * 8);
-                        matrix[p] = word[i];
-                    }
-                    placed = true;
-                }
-            }
-        });
-        matrix.forEach((char, i) => {
-            let d = document.createElement("div");
-            d.className = "cell"; d.textContent = char || "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 26)];
-            g.appendChild(d);
-        });
+  // High-Capacity Word Injection
+  targets.forEach(word => {
+    let success = false;
+    while(!success) {
+      let h = Math.random() > 0.5, row = Math.floor(Math.random()*8), col = Math.floor(Math.random()*(8-word.length));
+      let start = h ? (row*8+col) : (col*8+row), can = true;
+      for(let i=0; i<word.length; i++) {
+        let p = h ? (start+i) : (start+i*8);
+        if(matrix[p]) { can = false; break; }
+      }
+      if(can) {
+        for(let i=0; i<word.length; i++) matrix[h?(start+i):(start+i*8)] = word[i];
+        success = true;
+      }
     }
+  });
 
-    // --- سلیکشن کا پتھر پر لکیر لاجک ---
-    function startS(e) { 
-        isSelecting = true; 
-        selectedCells = []; 
-        processPoint(e); 
-    }
-    function moveS(e) { 
-        if (isSelecting) processPoint(e); 
-    }
-    function processPoint(e) {
-        let el = document.elementFromPoint(e.clientX, e.clientY);
-        if (el && el.classList.contains('cell') && !selectedCells.includes(el)) {
-            el.classList.add("active");
-            selectedCells.push(el);
-        }
-    }
-    async function endS() {
-        if (!isSelecting) return;
-        isSelecting = false;
-        let word = selectedCells.map(c => c.textContent).join("");
-        if (currentLevelWords.includes(word) && !foundWords.includes(word)) {
-            foundWords.push(word);
-            document.getElementById("hint-" + word).classList.add("done");
-            selectedCells.forEach(c => { c.classList.remove("active"); c.classList.add("found"); });
-            if (foundWords.length === 6) {
-                balance += 40; currentLevel++;
-                await sync("levelComplete", 40);
-                Swal.fire("Next!", "+40 Coins", "success").then(() => loadLevel());
-            }
-        } else { selectedCells.forEach(c => c.classList.remove("active")); }
-        selectedCells = [];
-    }
+  matrix.forEach(char => {
+    let d = document.createElement("div"); d.className = "cell";
+    d.textContent = char || "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+    g.appendChild(d);
+  });
+}
 
-    function handleAd() {
-        window.open(AD_LINK, '_blank');
-        Swal.fire({ title: 'Ad Verification', html: 'Claim in <b>30</b>s', timer: 30000, timerProgressBar: true, showConfirmButton: false });
-        setTimeout(async () => {
-            balance += 40; await sync("adBonus", 40);
-            location.reload();
-        }, 30500);
-    }
+// --- Secure Selection Logic ---
+function startSelect(e) { dragging = true; selection = []; handleSelect(e); }
+function moveSelect(e) { if(dragging) handleSelect(e); }
+function handleSelect(e) {
+  let el = document.elementFromPoint(e.clientX, e.clientY);
+  if(el && el.classList.contains('cell') && !selection.includes(el)) {
+    el.classList.add("active"); selection.push(el);
+  }
+}
 
-    async function sync(act, earn) {
-        try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ username: u.id, earned: earn, level: currentLevel, action: act }) }); } catch(e) {}
+async function stopSelect() {
+  if(!dragging) return; dragging = false;
+  let word = selection.map(s => s.textContent).join("");
+  if(targets.includes(word)) {
+    let el = document.getElementById("wp-"+word);
+    if(el && !el.classList.contains('done')) {
+      el.classList.add('done');
+      selection.forEach(s => { s.classList.remove("active"); s.classList.add("found"); });
+      foundCount++;
+      if(foundCount === 6) {
+        stats.coins += 40; stats.lvl++; syncUI();
+        await fetch(DB_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({username:user.id, earned:40, action:'update'}) });
+        Swal.fire("SUCCESS!", "Level Complete: +40 Coins", "success").then(loadGame);
+      }
     }
+  } else selection.forEach(s => s.classList.remove("active"));
+  selection = [];
+}
+
+function syncUI() {
+  document.getElementById("bVal").innerText = stats.coins;
+  document.getElementById("lVal").innerText = stats.lvl;
+  document.getElementById("tVal").innerText = stats.team;
+}
+
+function claimBonus() {
+  window.open(AD_URL, '_blank');
+  Swal.fire({ title: 'VERIFYING AD', html: 'Claiming in 30s...', timer: 30000, timerProgressBar: true, showConfirmButton: false });
+  setTimeout(async () => {
+    stats.coins += 40; syncUI();
+    await fetch(DB_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({username:user.id, earned:40, action:'adBonus'}) });
+    location.reload();
+  }, 30500);
+}
 </script>
 </body>
 </html>
