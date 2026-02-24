@@ -2,65 +2,43 @@
 <html lang="en">
 <head>
     <script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Power Star | Final Elite</title>
+    <title>Power Star | Final Fixed</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --bg: #000; --accent: #f59e0b; --success: #22c55e; }
         body { background: var(--bg); color: white; font-family: 'Outfit'; margin: 0; text-align: center; overflow-x: hidden; user-select: none; }
-        
-        /* Loader */
         #loader { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; }
-        
-        /* Header Stats: My Coins, Level, and My Team Commission */
         .stats-header { display: flex; justify-content: space-around; padding: 15px; background: #050505; border-bottom: 1px solid #222; }
-        .stat-item { flex: 1; }
-        .stat-label { font-size: 10px; color: #888; text-transform: uppercase; display: block; }
-        .stat-value { font-size: 18px; font-weight: 800; color: var(--accent); }
-
-        /* Game Board */
-        .board-container { background: #111; padding: 10px; border-radius: 15px; border: 1px solid #333; display: inline-block; margin-top: 15px; width: 95vw; max-width: 400px; }
+        .stat-value { font-size: 18px; font-weight: 800; color: var(--accent); display: block; }
+        .board-container { background: #111; padding: 10px; border-radius: 15px; border: 1px solid #333; display: inline-block; margin: 15px 0; width: 95vw; max-width: 400px; }
         #grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; touch-action: none; }
-        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; color: #555; }
+        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; color: #555; transition: 0.2s; }
         .cell.active { background: var(--accent) !important; color: #000 !important; }
-        .cell.found { background: #064e3b !important; color: var(--success) !important; }
-
-        /* Beautiful Hints Box (Instructions) */
-        .hints-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 15px; max-width: 400px; margin: 0 auto; }
-        .hint-tag { background: #0f0c05; border: 1px solid #2b220a; color: #555; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .cell.found { background: #064e3b !important; color: var(--success) !important; border-color: var(--success); }
+        .hints-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; max-width: 400px; margin: 0 auto; }
+        .hint-tag { background: #0f0c05; border: 1px solid #2b220a; color: #555; padding: 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
         .hint-tag.done { color: var(--success); background: #061a0e; text-decoration: line-through; border-color: var(--success); }
-
-        .btn-main { width: 90%; padding: 18px; border-radius: 20px; border: none; background: var(--accent); font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 15px; color: #000; }
-        
-        /* Ad Overlay */
-        #adOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:9999; display:none; flex-direction:column; align-items:center; justify-content:center; }
+        .btn-main { width: 90%; padding: 18px; border-radius: 20px; border: none; background: var(--accent); font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 15px; }
     </style>
 </head>
 <body onmouseup="endSelection()" ontouchend="endSelection()">
 
-<div id="loader"><h2>POWER STAR</h2><p>Synchronizing...</p></div>
-
-<div id="adOverlay">
-    <div style="color:#888; font-size:12px;">AD VERIFICATION</div>
-    <div id="countdown" style="font-size:60px; font-weight:800; color:var(--accent);">30</div>
-    <div id="closeAdBtn" style="display:none;" class="btn-main" onclick="claimAdBonus()">CLAIM 40 COINS</div>
-</div>
+<div id="loader"><h2>POWER STAR</h2><p>Syncing Data...</p></div>
 
 <div id="dashS" style="display:none;">
     <div class="stats-header">
-        <div class="stat-item"><span class="stat-label">My Coins</span><span id="balance" class="stat-value">0</span></div>
-        <div class="stat-item"><span class="stat-label">Level</span><span id="levelDisplay" class="stat-value">1</span></div>
-        <div class="stat-item"><span class="stat-label">My Team Comm</span><span id="teamCommission" class="stat-value">0</span></div>
+        <div><small style="color:gray">COINS</small><span id="balance" class="stat-value">0</span></div>
+        <div><small style="color:gray">LEVEL</small><span id="levelDisplay" class="stat-value">1</span></div>
+        <div><small style="color:gray">TEAM COMM</small><span id="teamCommission" class="stat-value">0</span></div>
     </div>
 
     <div class="board-container"><div id="grid"></div></div>
     <div class="hints-grid" id="hintsList"></div>
     
-    <button class="btn-main" onclick="handleAdClick()">Claim Bonus Coins</button>
-    <p style="font-size:10px; color:gray; margin-top:10px;">ID: <span id="userIdDisplay"></span></p>
+    <button class="btn-main" onclick="handleAdClaim()">Claim Bonus Coins</button>
 </div>
 
 <script>
@@ -93,9 +71,7 @@
                 localStorage.setItem('sm_id', u.id);
                 balance = res.balance || 0;
                 currentLevel = res.level || 1;
-                teamComm = res.teamCommission || 0; // یوزر کا اپنا ٹیم کمیشن
-                
-                document.getElementById("userIdDisplay").innerText = u.id;
+                teamComm = res.teamCommission || 0;
                 document.getElementById("loader").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadWords();
@@ -106,17 +82,18 @@
     async function loadWords() {
         try {
             const r = await fetch(SCRIPT_URL + "?action=getWords");
-            dictionary = await r.json();
-            initLevel();
+            let allWords = await r.json();
+            // 600 الفاظ میں سے رینڈم 6 اٹھانا
+            currentLevelWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 6).map(w => w.toUpperCase());
+            initGame();
         } catch(e) {
-            dictionary = ["STAR", "POWER", "GOLD", "ELITE", "COIN", "KING"];
-            initLevel();
+            currentLevelWords = ["GOLD", "STAR", "POWER", "KING", "ELITE", "COIN"];
+            initGame();
         }
     }
 
-    function initLevel() {
+    function initGame() {
         foundWords = [];
-        currentLevelWords = dictionary.sort(() => 0.5 - Math.random()).slice(0, 6);
         document.getElementById("balance").innerText = balance;
         document.getElementById("levelDisplay").innerText = currentLevel;
         document.getElementById("teamCommission").innerText = teamComm;
@@ -125,71 +102,108 @@
     }
 
     function generateGrid() {
-        const g = document.getElementById("grid"); g.innerHTML = "";
-        for(let i=0; i<64; i++) {
-            let c = document.createElement("div");
-            c.className = "cell";
-            c.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+        const g = document.getElementById("grid");
+        g.innerHTML = "";
+        let matrix = Array(64).fill(null);
+
+        // الفاظ کو گرڈ میں چھپانا (Correct Algorithm)
+        currentLevelWords.forEach(word => {
+            let placed = false;
+            while (!placed) {
+                let isH = Math.random() > 0.5;
+                let r = Math.floor(Math.random() * 8);
+                let c = Math.floor(Math.random() * (8 - word.length));
+                let start = isH ? (r * 8 + c) : (c * 8 + r);
+                let can = true;
+                for (let i = 0; i < word.length; i++) {
+                    let p = isH ? (start + i) : (start + i * 8);
+                    if (matrix[p] !== null) { can = false; break; }
+                }
+                if (can) {
+                    for (let i = 0; i < word.length; i++) {
+                        let p = isH ? (start + i) : (start + i * 8);
+                        matrix[p] = word[i];
+                    }
+                    placed = true;
+                }
+            }
+        });
+
+        matrix.forEach(char => {
+            let d = document.createElement("div");
+            d.className = "cell";
+            d.textContent = char || "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random() * 26)];
             
-            const start = () => { isSelecting = true; selectedCells = [c]; c.classList.add("active"); };
-            const move = (e) => {
-                if(isSelecting) {
+            const startS = () => { isSelecting = true; selectedCells = [d]; d.classList.add("active"); };
+            const moveS = (e) => {
+                if (isSelecting) {
                     let t = e.type.includes('touch') ? e.touches[0] : e;
                     let el = document.elementFromPoint(t.clientX, t.clientY);
-                    if(el && el.classList.contains('cell') && !selectedCells.includes(el)) {
+                    if (el && el.classList.contains('cell') && !selectedCells.includes(el)) {
                         el.classList.add("active");
                         selectedCells.push(el);
                     }
                 }
             };
-            c.onmousedown = start; c.onmouseover = move;
-            c.ontouchstart = (e) => { e.preventDefault(); start(); };
-            c.ontouchmove = move;
-            g.appendChild(c);
-        }
+            d.onmousedown = startS; d.onmouseover = moveS;
+            d.ontouchstart = (e) => { e.preventDefault(); startS(); };
+            d.ontouchmove = moveS;
+            g.appendChild(d);
+        });
     }
 
     async function endSelection() {
-        if(!isSelecting) return;
+        if (!isSelecting) return;
         isSelecting = false;
         let word = selectedCells.map(c => c.textContent).join("");
-        if(currentLevelWords.includes(word) && !foundWords.includes(word)) {
+        if (currentLevelWords.includes(word) && !foundWords.includes(word)) {
             foundWords.push(word);
             document.getElementById("hint-" + word).classList.add("done");
             selectedCells.forEach(c => { c.classList.remove("active"); c.classList.add("found"); });
-            if(foundWords.length === 6) {
-                balance += 40; currentLevel++;
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ username: u.id, level: currentLevel, earned: 40, action: "levelComplete" }) });
-                Swal.fire("Level Up!", "+40 Coins Added", "success").then(() => initLevel());
+            
+            // صرف تب کوائنز ملیں گے جب تمام 6 الفاظ مل جائیں
+            if (foundWords.length === 6) {
+                balance += 40; 
+                currentLevel++;
+                await syncData("levelComplete", 40);
+                Swal.fire("Next Level!", "+40 Coins Added", "success").then(() => loadWords());
             }
-        } else { selectedCells.forEach(c => c.classList.remove("active")); }
+        } else {
+            selectedCells.forEach(c => c.classList.remove("active"));
+        }
         selectedCells = [];
     }
 
-    // --- Adsterra Logic ---
-    function handleAdClick() {
+    function handleAdClaim() {
         window.open(AD_LINK, '_blank');
-        document.getElementById("adOverlay").style.display = "flex";
-        let timeLeft = 30;
-        let timer = setInterval(() => {
-            timeLeft--;
-            document.getElementById("countdown").innerText = timeLeft;
-            if(timeLeft <= 0) {
-                clearInterval(timer);
-                document.getElementById("countdown").style.display = "none";
-                document.getElementById("closeAdBtn").style.display = "block";
-            }
-        }, 1000);
+        Swal.fire({
+            title: 'Verifying Ad...',
+            html: 'Claim button will appear in <b>30</b> seconds.',
+            timer: 30000,
+            timerProgressBar: true,
+            didOpen: () => { Swal.showLoading(); },
+            allowOutsideClick: false
+        }).then(async () => {
+            balance += 40;
+            await syncData("adBonus", 40);
+            Swal.fire("Success", "40 Bonus Coins Added!", "success").then(() => location.reload());
+        });
     }
 
-    async function claimAdBonus() {
-        document.getElementById("adOverlay").style.display = "none";
-        document.getElementById("countdown").style.display = "block";
-        document.getElementById("closeAdBtn").style.display = "none";
-        balance += 40;
-        document.getElementById("balance").innerText = balance;
-        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ username: u.id, earned: 40, action: "adBonus" }) });
-        Swal.fire("Bonus", "40 Coins Added!", "success");
+    async function syncData(act, earn) {
+        // ڈیٹا بھیجنے کا درست طریقہ تاکہ کالم خالی نہ رہیں
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    username: u.id,
+                    earned: earn,
+                    level: currentLevel,
+                    action: act
+                })
+            });
+        } catch(e) {}
     }
 </script>
 </body>
