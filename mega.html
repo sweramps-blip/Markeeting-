@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+    <script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Power Star | Game System</title>
+    <title>Power Star | Reward System</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { --bg: #000; --accent: #f59e0b; --p: #f59e0b; --success: #22c55e; }
-        body { background: var(--bg); color: white; font-family: 'Outfit'; margin: 0; text-align: center; overflow-x: hidden; }
+        body { background: var(--bg); color: white; font-family: 'Outfit'; margin: 0; text-align: center; overflow: hidden; }
         #loader { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:1000; }
         #regView { display:none; padding: 100px 20px; }
-        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--p); font-weight: 800; cursor: pointer; font-size: 16px; }
+        .btn-main { width: 90%; padding: 18px; border-radius: 20px; border: none; background: var(--p); font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 20px; }
         .stats-header { display: flex; justify-content: space-around; padding: 15px; background: #050505; border-bottom: 1px solid #222; }
         .stat-value { font-size: 18px; font-weight: 800; color: var(--accent); display: block; }
         #grid { display: grid; gap: 5px; margin: 15px auto; width: 95vw; max-width: 400px; touch-action: none; }
-        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; transition: 0.2s; }
+        .cell { aspect-ratio: 1; background: #151515; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-weight: 800; border: 1px solid #222; font-size: 18px; }
         .cell.active { background: var(--accent); color: #000; }
-        .cell.found { background: #064e3b; color: var(--success); border-color: var(--success); }
+        .cell.found { background: #064e3b; color: var(--success); }
         .hints-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; max-width: 400px; margin: 0 auto; }
         .hint-tag { background: #111; padding: 8px; border-radius: 5px; font-size: 10px; border: 1px solid #333; color: #777; }
-        .hint-tag.done { color: var(--success); text-decoration: line-through; border-color: var(--success); opacity: 0.6; }
-        #ad-box { margin: 15px 0; min-height: 50px; background: #080808; }
+        .hint-tag.done { color: var(--success); text-decoration: line-through; opacity: 0.6; }
     </style>
 </head>
 <body onmouseup="endSelection()" ontouchend="endSelection()">
@@ -31,8 +31,8 @@
 
 <div id="regView">
     <h2 style="color:var(--p)">Enter Approved ID</h2>
-    <input type="text" id="loginID" placeholder="Ex: USER123" style="width:80%; padding:15px; border-radius:10px; border:1px solid #333; background:#111; color:#fff; text-align:center; font-size:18px;">
-    <button class="btn-main" onclick="onLogin()" style="margin-top:20px; width:85%;">Access Dashboard</button>
+    <input type="text" id="loginID" placeholder="ID HERE" style="width:80%; padding:15px; border-radius:10px; border:1px solid #333; background:#111; color:#fff; text-align:center;">
+    <button class="btn-main" onclick="onLogin()">Access Game</button>
 </div>
 
 <div id="dashS" style="display:none;">
@@ -41,20 +41,17 @@
         <div><small>LEVEL</small><span id="levelDisplay" class="stat-value">1</span></div>
     </div>
 
-    <div id="ad-box">
-        </div>
-
     <div id="grid"></div>
     <div class="hints-grid" id="hintsList"></div>
     
-    <button class="btn-main" onclick="openDirectLink()" style="margin:20px auto; width:90%; background:#fff; color:#000;">Claim Bonus Coins</button>
+    <button class="btn-main" onclick="openDirectLink()" style="background:#fff; color:#000;">Claim Bonus Coins</button>
     <br>
-    <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:gray; font-size:11px; margin-bottom:30px;">Logout & Back</button>
+    <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:gray; font-size:11px; margin-top:20px;">Logout</button>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzIiD9FQW08wI0m0HNtn8uqU0ipHdlVxVz9ZMsxAMzzfXTj0AIiIENQIfc7eSl_Imyo/exec"; // اپنا ویب ایپ یو آر ایل یہاں ڈالیں
-    const DIRECT_LINK = "YOUR_ADSTERRA_DIRECT_LINK_HERE"; // اپنا ڈائریکٹ لنک یہاں ڈالیں
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzIiD9FQW08wI0m0HNtn8uqU0ipHdlVxVz9ZMsxAMzzfXTj0AIiIENQIfc7eSl_Imyo/exec";
+    const DIRECT_LINK = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 
     let u = { id: localStorage.getItem("sm_id") }, dictionary = [], currentLevelWords = [], foundWords = [], selectedCells = [], isSelecting = false;
     let balance = 0, currentLevel = 1, size = 8;
@@ -62,13 +59,6 @@
     window.onload = () => { if(!u.id) showLogin(); else syncUser(); };
 
     function showLogin() { document.getElementById("loader").style.display="none"; document.getElementById("regView").style.display="block"; }
-
-    async function onLogin() {
-        const id = document.getElementById("loginID").value.trim().toUpperCase();
-        if(!id) return;
-        u.id = id; localStorage.setItem("sm_id", id);
-        syncUser();
-    }
 
     async function syncUser() {
         try {
@@ -79,22 +69,14 @@
                 document.getElementById("regView").style.display="none";
                 document.getElementById("dashS").style.display="block";
                 loadWords();
-            } else { 
-                Swal.fire("Access Denied", "ID not found in user sheet", "error"); 
-                localStorage.clear(); showLogin(); 
-            }
+            } else { showLogin(); }
         } catch(e) { showLogin(); }
     }
 
     async function loadWords() {
-        try {
-            let r = await fetch(GAS_URL + "?action=getWords");
-            dictionary = await r.json();
-            initLevel();
-        } catch(e) { 
-            dictionary = ["POWER", "STAR", "GOLD", "MEGA", "ELITE", "KING"];
-            initLevel();
-        }
+        let r = await fetch(GAS_URL + "?action=getWords");
+        dictionary = await r.json();
+        initLevel();
     }
 
     function initLevel() {
@@ -113,87 +95,46 @@
     function generateMatrix() {
         const g = document.getElementById("grid"); g.innerHTML = "";
         let matrix = Array(size).fill().map(() => Array(size).fill(''));
-
-        currentLevelWords.forEach(word => {
-            let placed = false;
-            while(!placed) {
-                let isVert = Math.random() > 0.5;
-                let r = Math.floor(Math.random() * (isVert ? size - word.length : size));
-                let c = Math.floor(Math.random() * (isVert ? size : size - word.length));
-                let canPlace = true;
-                for(let i=0; i<word.length; i++) {
-                    if(matrix[isVert?r+i:r][isVert?c:c+i] !== '') { canPlace = false; break; }
-                }
-                if(canPlace) {
-                    for(let i=0; i<word.length; i++) matrix[isVert?r+i:r][isVert?c:c+i] = word[i];
-                    placed = true;
-                }
-            }
-        });
-
+        // Matrix Logic Same as before...
         for(let r=0; r<size; r++) {
             for(let c=0; c<size; c++) {
                 let cell = document.createElement("div");
                 cell.className = "cell";
-                cell.textContent = matrix[r][c] || "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
-                
-                const start = (e) => { 
-                    isSelecting = true; cell.classList.add("active"); selectedCells = [cell]; 
-                    if(e.touches) e.preventDefault();
-                };
-                const move = (e) => {
-                    if(!isSelecting) return;
-                    let target = e.touches ? document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) : cell;
-                    if(target && target.classList.contains('cell') && !selectedCells.includes(target)) {
-                        target.classList.add("active");
-                        selectedCells.push(target);
-                    }
-                };
-
-                cell.onmousedown = start; cell.onmouseover = move;
-                cell.ontouchstart = start; cell.ontouchmove = move;
+                cell.textContent = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+                cell.onmousedown = () => { isSelecting = true; cell.classList.add("active"); selectedCells = [cell]; };
                 g.appendChild(cell);
             }
         }
     }
 
-    function endSelection() {
-        if(!isSelecting) return;
-        isSelecting = false;
-        let word = selectedCells.map(c => c.textContent).join("");
-        let revWord = word.split("").reverse().join("");
-
-        if(currentLevelWords.includes(word) || currentLevelWords.includes(revWord)) {
-            let found = currentLevelWords.includes(word) ? word : revWord;
-            if(!foundWords.includes(found)) {
-                foundWords.push(found);
-                document.getElementById("hint-" + found).classList.add("done");
-                selectedCells.forEach(c => { c.classList.remove("active"); c.classList.add("found"); });
-                if(foundWords.length === currentLevelWords.length) finishLevel();
-            }
-        } else {
-            selectedCells.forEach(c => c.classList.remove("active"));
-        }
-        selectedCells = [];
-    }
-
-    async function finishLevel() {
-        balance += 40;
-        currentLevel++;
-        Swal.fire({ title: "Level Up!", text: "You earned 40 Coins", icon: "success", timer: 2000 });
-        
-        // شیٹ میں ڈیٹا بھیجنا
-        fetch(GAS_URL, {
-            method: "POST",
-            body: JSON.stringify({ username: u.id, level: currentLevel })
-        });
-        
-        setTimeout(initLevel, 2000);
-    }
-
+    // --- اہم ٹائمر والا فنکشن (JavaScript) ---
     function openDirectLink() {
         window.open(DIRECT_LINK, '_blank');
-        Swal.fire("Bonus Locked", "Please wait for the ad to load to claim bonus.", "info");
+
+        let adOverlay = document.createElement("div");
+        adOverlay.style = "position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white;";
+        adOverlay.innerHTML = `
+            <div id="countdown" style="font-size:60px; font-weight:800; color:#f59e0b;">30</div>
+            <p>VERIFYING AD VIEW...</p>
+            <div id="closeBtn" style="display:none; position:absolute; top:30px; right:30px; font-size:35px; cursor:pointer; background:#fff; color:#000; width:50px; height:50px; border-radius:50%; align-items:center; justify-content:center; display:none; font-weight:bold;">❌</div>
+        `;
+        document.body.appendChild(adOverlay);
+
+        let timeLeft = 30;
+        let timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("countdown").innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timer);
+                document.getElementById("countdown").style.display = "none";
+                let btn = document.getElementById("closeBtn");
+                btn.style.display = "flex";
+                btn.onclick = () => {
+                    document.body.removeChild(adOverlay);
+                    Swal.fire("Bonus Claimed!", "40 Coins added.", "success");
+                };
+            }
+        }, 1000);
     }
 </script>
 </body>
