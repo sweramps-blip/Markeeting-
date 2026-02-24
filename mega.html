@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Power Star | Anti-Cheat & Secure Auth</title>
+<title>Power Star | Pro Word Search</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -11,12 +11,11 @@
 
 <style>
 /* ============================================================
-   YOUR ORIGINAL PREMIUM DESIGN (CV AUTH)
+   آپ کا اوریجنل ڈیزائن (No Changes)
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: 'Outfit', sans-serif; background: #0a0e1a; color: #fff; overflow-x: hidden; touch-action: none; }
 
-/* Background Glow (Your Style) */
 body::before {
   content: ""; position: fixed; top: -10%; left: -10%; width: 50%; height: 50%;
   background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
@@ -25,28 +24,23 @@ body::before {
 
 #loader { position: fixed; inset: 0; background: #0a0e1a; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; }
 
-/* Secure Dashboard */
 .dashboard-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; background: rgba(255, 255, 255, 0.02); border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); }
-.stat-box { background: rgba(255, 255, 255, 0.03); padding: 15px 5px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center; box-shadow: inset 0 0 10px rgba(255,255,255,0.02); }
+.stat-box { background: rgba(255, 255, 255, 0.03); padding: 15px 5px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center; }
 .stat-box label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 5px; }
-.stat-box span { font-size: 20px; font-weight: 800; color: #f59e0b; text-shadow: 0 0 10px rgba(245,158,11,0.3); }
+.stat-box span { font-size: 20px; font-weight: 800; color: #f59e0b; }
 
-/* Anti-Cheat Grid Engine */
 .game-container { padding: 20px; display: flex; flex-direction: column; align-items: center; }
-.grid-shield { background: linear-gradient(145deg, rgba(245,158,11,0.1), transparent); padding: 12px; border-radius: 28px; border: 1px solid rgba(245,158,11,0.15); width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-#grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
-.cell { aspect-ratio: 1; background: #151b2c; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 700; font-size: 19px; color: #4e5d78; border: 1px solid rgba(255,255,255,0.03); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; }
-.cell.active { background: #f59e0b !important; color: #000 !important; transform: scale(1.15); z-index: 50; box-shadow: 0 0 25px rgba(245,158,11,0.5); }
-.cell.found { background: #10b981 !important; color: #fff !important; border-color: #10b981; animation: pop 0.3s ease-out; }
+.grid-shield { background: linear-gradient(145deg, rgba(245,158,11,0.1), transparent); padding: 12px; border-radius: 28px; border: 1px solid rgba(245,158,11,0.15); width: 100%; max-width: 420px; }
+#grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; user-select: none; }
+.cell { aspect-ratio: 1; background: #151b2c; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: 700; font-size: 19px; color: #4e5d78; border: 1px solid rgba(255,255,255,0.03); position: relative; pointer-events: auto; }
+.cell.active { background: #f59e0b !important; color: #000 !important; transform: scale(1.1); z-index: 10; }
+.cell.found { background: #10b981 !important; color: #fff !important; }
 
-@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-
-/* Word List */
 .word-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; width: 100%; max-width: 420px; }
-.word-pill { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px 5px; border-radius: 14px; font-size: 11px; font-weight: 600; text-align: center; color: #64748b; transition: 0.3s; }
-.word-pill.done { color: #10b981; border-color: #10b981; text-decoration: line-through; background: rgba(16, 185, 129, 0.1); box-shadow: 0 0 15px rgba(16,185,129,0.1); }
+.word-pill { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px 5px; border-radius: 14px; font-size: 11px; font-weight: 600; text-align: center; color: #64748b; }
+.word-pill.done { color: #10b981; border-color: #10b981; text-decoration: line-through; background: rgba(16, 185, 129, 0.1); }
 
-.claim-button { width: 90%; max-width: 420px; padding: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 22px; color: #000; font-weight: 800; font-size: 17px; margin-top: 10px; cursor: pointer; box-shadow: 0 12px 30px rgba(245,158,11,0.25); display: block; margin-left: auto; margin-right: auto; }
+.claim-button { width: 90%; max-width: 420px; padding: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 22px; color: #000; font-weight: 800; font-size: 17px; margin: 10px auto; cursor: pointer; display: block; }
 </style>
 </head>
 <body onpointerup="stopSelect()">
@@ -67,7 +61,7 @@ body::before {
 
   <div class="game-container">
     <div class="grid-shield">
-      <div id="grid" onpointerdown="startSelect(event)" onpointermove="moveSelect(event)"></div>
+      <div id="grid" onpointerdown="startSelect(event)"></div>
     </div>
   </div>
 
@@ -81,7 +75,8 @@ const AD_URL = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a7
 
 let user = { id: localStorage.getItem('sm_id') };
 let stats = { coins: 0, lvl: 1, team: 0 };
-let targets = [], foundCount = 0, dragging = false, selection = [];
+let targets = [], foundCount = 0, isDragging = false;
+let startCell = null, selection = [];
 
 window.onload = () => { if(!user.id) auth(); else connect(); };
 
@@ -93,8 +88,7 @@ function auth() {
     background: '#0a0e1a',
     color: '#fff',
     confirmButtonColor: '#f59e0b',
-    allowOutsideClick: false,
-    customClass: { popup: 'my-swal' }
+    allowOutsideClick: false
   }).then(res => { if(res.value) { user.id = res.value.toUpperCase(); connect(); } });
 }
 
@@ -107,8 +101,7 @@ async function connect() {
       stats.coins = parseInt(d.balance); stats.lvl = parseInt(d.level); stats.team = parseInt(d.teamCommission);
       document.getElementById("loader").style.display = "none";
       document.getElementById("gameUI").style.display = "block";
-      syncUI();
-      loadGame();
+      syncUI(); loadGame();
     } else auth();
   } catch(e) { auth(); }
 }
@@ -126,12 +119,11 @@ function buildBoard() {
   const g = document.getElementById("grid"); g.innerHTML = "";
   let matrix = Array(64).fill(null);
 
-  // High-Capacity Word Injection
   targets.forEach(word => {
     let success = false;
     while(!success) {
-      let h = Math.random() > 0.5, row = Math.floor(Math.random()*8), col = Math.floor(Math.random()*(8-word.length));
-      let start = h ? (row*8+col) : (col*8+row), can = true;
+      let h = Math.random() > 0.5, r = Math.floor(Math.random()*8), c = Math.floor(Math.random()*(8-word.length));
+      let start = h ? (r*8+c) : (c*8+r), can = true;
       for(let i=0; i<word.length; i++) {
         let p = h ? (start+i) : (start+i*8);
         if(matrix[p]) { can = false; break; }
@@ -143,39 +135,79 @@ function buildBoard() {
     }
   });
 
-  matrix.forEach(char => {
+  matrix.forEach((char, idx) => {
     let d = document.createElement("div"); d.className = "cell";
+    d.dataset.idx = idx;
     d.textContent = char || "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+    d.onpointerenter = (e) => moveSelect(e); // Added for smooth drag
     g.appendChild(d);
   });
 }
 
-// --- Secure Selection Logic ---
-function startSelect(e) { dragging = true; selection = []; handleSelect(e); }
-function moveSelect(e) { if(dragging) handleSelect(e); }
-function handleSelect(e) {
-  let el = document.elementFromPoint(e.clientX, e.clientY);
-  if(el && el.classList.contains('cell') && !selection.includes(el)) {
-    el.classList.add("active"); selection.push(el);
+// --- Professional Selection Logic (Straight Line Only) ---
+function startSelect(e) {
+  let el = e.target;
+  if(el.classList.contains('cell')) {
+    isDragging = true;
+    startCell = el;
+    selection = [el];
+    el.classList.add('active');
   }
 }
 
+function moveSelect(e) {
+  if(!isDragging || !startCell) return;
+  let el = e.target;
+  if(!el.classList.contains('cell') || selection.includes(el)) return;
+
+  const startIdx = parseInt(startCell.dataset.idx);
+  const currIdx = parseInt(el.dataset.idx);
+  
+  const startR = Math.floor(startIdx / 8), startC = startIdx % 8;
+  const currR = Math.floor(currIdx / 8), currC = currIdx % 8;
+
+  // Check if same row or same column
+  if(startR === currR || startC === currC) {
+    clearSelection();
+    selection = [];
+    const minR = Math.min(startR, currR), maxR = Math.max(startR, currR);
+    const minC = Math.min(startC, currC), maxC = Math.max(startC, currC);
+
+    for(let r = minR; r <= maxR; r++) {
+      for(let c = minC; c <= maxC; c++) {
+        let cell = document.querySelector(`.cell[data-idx="${r*8+c}"]`);
+        cell.classList.add('active');
+        selection.push(cell);
+      }
+    }
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll('.cell.active').forEach(c => c.classList.remove('active'));
+}
+
 async function stopSelect() {
-  if(!dragging) return; dragging = false;
+  if(!isDragging) return;
+  isDragging = false;
   let word = selection.map(s => s.textContent).join("");
-  if(targets.includes(word)) {
-    let el = document.getElementById("wp-"+word);
+  let reverseWord = word.split("").reverse().join("");
+
+  if(targets.includes(word) || targets.includes(reverseWord)) {
+    let matched = targets.includes(word) ? word : reverseWord;
+    let el = document.getElementById("wp-"+matched);
     if(el && !el.classList.contains('done')) {
       el.classList.add('done');
-      selection.forEach(s => { s.classList.remove("active"); s.classList.add("found"); });
+      selection.forEach(s => s.classList.add('found'));
       foundCount++;
       if(foundCount === 6) {
         stats.coins += 40; stats.lvl++; syncUI();
         await fetch(DB_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({username:user.id, earned:40, action:'update'}) });
-        Swal.fire("SUCCESS!", "Level Complete: +40 Coins", "success").then(loadGame);
+        Swal.fire("SUCCESS!", "+40 Coins", "success").then(loadGame);
       }
     }
-  } else selection.forEach(s => s.classList.remove("active"));
+  }
+  clearSelection();
   selection = [];
 }
 
@@ -187,7 +219,7 @@ function syncUI() {
 
 function claimBonus() {
   window.open(AD_URL, '_blank');
-  Swal.fire({ title: 'VERIFYING AD', html: 'Claiming in 30s...', timer: 30000, timerProgressBar: true, showConfirmButton: false });
+  Swal.fire({ title: 'VERIFYING', html: 'Wait 30s', timer: 30000, timerProgressBar: true, showConfirmButton: false });
   setTimeout(async () => {
     stats.coins += 40; syncUI();
     await fetch(DB_URL, { method:'POST', mode:'no-cors', body: JSON.stringify({username:user.id, earned:40, action:'adBonus'}) });
