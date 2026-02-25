@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Video Page</title>
+
+<style>
+body {
+    margin:0;
+    font-family: Arial;
+}
+
+#videoSection {
+    display:none;
+    padding:10px;
+}
+
+#adOverlay {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    z-index:9999;
+}
+
+#adOverlay iframe {
+    width:100%;
+    height:100%;
+    border:none;
+}
+
+#closeBtn {
+    position:absolute;
+    top:15px;
+    right:20px;
+    background:red;
+    color:white;
+    padding:8px 12px;
+    cursor:not-allowed;
+    font-weight:bold;
+    border-radius:5px;
+    opacity:0.6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Ad Section -->
+<div id="adOverlay">
+    <div id="closeBtn">Wait 20s</div>
+    <iframe src="https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b"></iframe>
+</div>
+
+<!-- YouTube Video Section -->
+<div id="videoSection">
+    <iframe width="100%" height="315"
+    src="https://www.youtube.com/embed/8gW6Td2384M"
+    frameborder="0" allowfullscreen>
+    </iframe>
+</div>
+
+<script>
+let seconds = 20;
+let closeBtn = document.getElementById("closeBtn");
+
+let timer = setInterval(function(){
+    seconds--;
+    closeBtn.innerHTML = "Wait " + seconds + "s";
+
+    if(seconds <= 0){
+        clearInterval(timer);
+        closeBtn.innerHTML = "❌ Close";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.style.opacity = "1";
+
+        closeBtn.onclick = function(){
+            document.getElementById("adOverlay").style.display = "none";
+            document.getElementById("videoSection").style.display = "block";
+        }
+    }
+
+},1000);
+</script>
+
+</body>
+</html>
