@@ -196,17 +196,75 @@
     }
 
     async function claim() {
-        if(u.e < 10) return Swal.fire("Minimum 10 PKR Required");
-        Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
-        try {
-            let r = await fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "updateBalance", id: u.id, amount: u.e.toFixed(2) }) });
-            let res = await r.json();
-            if(res.result === "success") {
-                u.e = 0; 
-                localStorage.setItem("psEarned", 0);
-                location.reload(); // ری لوڈ ہونے پر اسکرپٹ سے تازہ ڈیٹا (بشمول ٹاسک کاؤنٹ جو اب 0 نہیں ہوگا) ملے گا۔
+    if(u.e < 10) return Swal.fire("Minimum 10 PKR Required");
+
+    // Open Ad in New Tab
+    window.open(ANDS_LINK, "_blank");
+
+    // 30 sec wait (no timer)
+    Swal.fire({
+        title: "Please Wait...",
+        html: "Do not close this page.",
+        timer: 30000,
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    // After 30 sec reverse timer start
+    setTimeout(() => {
+
+        let reverse = 30;
+
+        Swal.fire({
+            title: "Stay On Ad Page",
+            html: `<b id="revTimer">${reverse}</b> seconds remaining`,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                let interval = setInterval(() => {
+                    reverse--;
+                    document.getElementById("revTimer").innerText = reverse;
+
+                    if(reverse <= 0) {
+                        clearInterval(interval);
+
+                        Swal.fire({
+                            title: "Now You Can Claim",
+                            confirmButtonText: "Close & Claim",
+                            allowOutsideClick: false
+                        }).then(async () => {
+
+                            Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
+
+                            try {
+                                let r = await fetch(GAS_URL, {
+                                    method: "POST",
+                                    body: JSON.stringify({
+                                        type: "updateBalance",
+                                        id: u.id,
+                                        amount: u.e.toFixed(2)
+                                    })
+                                });
+
+                                let res = await r.json();
+                                if(res.result === "success") {
+                                    u.e = 0;
+                                    localStorage.setItem("psEarned", 0);
+                                    location.reload();
+                                }
+
+                            } catch(e) {
+                                Swal.fire("Error", "Server Error", "error");
+                            }
+
+                        });
+                    }
+
+                }, 1000);
             }
-        } catch(e) { Swal.fire("Error", "Server Error", "error"); }
+        });
+
+    }, 30000);
     }
 
     function loadBannerAd() {
