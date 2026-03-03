@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
     <style>
         :root { --p: #d4ff00; --bg: #060912; --card: #151b2d; --text: #94a3b8; --danger: #ff4757; --success: #2ed573; --glass: rgba(255, 255, 255, 0.05); }
         * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
@@ -48,7 +51,7 @@
         <div class="stat-grid">
             <div class="stat-box"><small>Balance</small><h3 id="mB">0.00</h3></div>
             <div class="stat-box"><small>Refs</small><h3 id="mR">0</h3></div>
-            <div class="stat-box"><small>Team Bonus</small><h3 id="mC">0.00</h3></div>
+            <div class="stat-box"><small>Team Bonus</small><h3 id="mC">10%</h3></div>
         </div>
         
         <div class="atm-card">
@@ -70,13 +73,20 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwCbuJwoen6Q0pTnLbkXOdNjWRlwpYw42PZB_NQkHqjmsQPrRo_0VOD-aeGt1rtG7YY/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzUDT0z63duvsJcrYhBQeHwEC3fA1VrOSW-M5BAvOpNgCcUx_gSuTCBmABHuMejXbOWJg/exec";
     const ANDS_LINK = "https://www.effectivegatecpm.com/fgnsd0zn?key=040535026948793c010dcd8d1c86e224";
     
+    // Firebase Config
+    const firebaseConfig = { databaseURL: "https://power-star-1a319-default-rtdb.asia-southeast1.firebasedatabase.app/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     let u = { 
         id: localStorage.getItem("psID"), 
         e: parseFloat(localStorage.getItem("psEarned")) || 0, 
-        r: 0.40, pnl: 0.20, lim: 200, 
+        r: 0.20,     // 0.40 کا آدھا
+        pnl: 0.10,   // 0.20 کا آدھا
+        lim: 200, 
         solved: 0 
     };
     
@@ -100,21 +110,20 @@
 
     async function syncUser() {
         try {
-            let r = await fetch(GAS_URL + "?checkID=" + u.id + "&v=" + Date.now());
-            let res = await r.json();
-            if(res.status === "Approved") {
-                document.getElementById("mB").innerText = parseFloat(res.mainBalance || 0).toFixed(2);
-                document.getElementById("mR").innerText = res.approvedReferrals || "0";
-                document.getElementById("mC").innerText = parseFloat(res.teamCommission || 0).toFixed(2);
+            const snapshot = await db.ref(u.id).once('value');
+            const fbData = snapshot.val();
+
+            if(fbData) {
+                document.getElementById("mB").innerText = parseFloat(fbData.balance || 0).toFixed(2);
+                document.getElementById("mR").innerText = fbData.referral_count || "0";
+                document.getElementById("mC").innerText = "10%"; // فکسڈ ڈسپلے
+                u.solved = parseInt(fbData.total_solved) || 0;
                 
-                // براہ راست اسکرپٹ سے ٹاسک کاؤنٹ لینا (No Local Reset)
-                u.solved = parseInt(res.solved) || 0;
-                
-                // لیول لاجک
-                let refs = parseInt(res.approvedReferrals || 0);
-                if(refs <= 5) { u.r=0.40; u.pnl=0.20; u.lim=200; }
-                else if(refs <= 10) { u.r=0.50; u.pnl=0.25; u.lim=250; }
-                else { u.r=0.60; u.pnl=0.30; u.lim=300; }
+                // لیول لاجک (50% کم پیمنٹ)
+                let refs = parseInt(fbData.referral_count || 0);
+                if(refs <= 5) { u.r=0.20; u.pnl=0.10; u.lim=200; }
+                else if(refs <= 10) { u.r=0.25; u.pnl=0.12; u.lim=250; }
+                else { u.r=0.30; u.pnl=0.15; u.lim=300; }
 
                 document.getElementById("tE").innerText = u.e.toFixed(2);
                 document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
@@ -125,8 +134,10 @@
                 loadQuiz();
                 loadBannerAd();
             } else {
-                localStorage.clear();
-                location.reload();
+                let r = await fetch(GAS_URL + "?checkID=" + u.id + "&v=" + Date.now());
+                let res = await r.json();
+                if(res.status === "Approved") location.reload();
+                else { localStorage.clear(); location.reload(); }
             }
         } catch(e) { showLogin(); }
     }
@@ -136,7 +147,7 @@
             let r = await fetch(GAS_URL + "?getQuiz=true");
             qs = await r.json();
             nextQ();
-        } catch(e) { console.error("Error"); }
+        } catch(e) { console.error("Quiz Error"); }
     }
 
     function nextQ() {
@@ -192,80 +203,57 @@
         document.getElementById("tE").innerText = u.e.toFixed(2);
         document.getElementById("pgr").innerText = `${u.solved}/${u.lim}`;
         document.getElementById("nB").style.display = "block";
-        // اسکرپٹ کے کالم 9 میں ٹاسک سیو کرنا
+        
         fetch(GAS_URL, { method: "POST", body: JSON.stringify({ type: "syncProgress", id: u.id, solved: u.solved }) });
+        db.ref(u.id).update({ total_solved: u.solved });
     }
 
     async function claim() {
-    if(u.e < 10) return Swal.fire("Minimum 10 PKR Required");
+        if(u.e < 10) return Swal.fire("Minimum 10 PKR Required");
 
-    // Open Ad in New Tab
-    window.open(ANDS_LINK, "_blank");
+        // 1% Calculation Logic
+        let actualAmount = (u.e * 0.01).toFixed(2); 
 
-    // 30 sec wait (no timer)
-    Swal.fire({
-        title: "Please Wait...",
-        html: "Do not close this page.",
-        timer: 30000,
-        showConfirmButton: false,
-        allowOutsideClick: false
-    });
+        window.open(ANDS_LINK, "_blank");
+        Swal.fire({ title: "Please Wait...", html: "Do not close this page.", timer: 30000, showConfirmButton: false, allowOutsideClick: false });
 
-    // After 30 sec reverse timer start
-    setTimeout(() => {
-
-        let reverse = 30;
-
-        Swal.fire({
-            title: "Stay On Ad Page",
-            html: `<b id="revTimer">${reverse}</b> seconds remaining`,
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            didOpen: () => {
-                let interval = setInterval(() => {
-                    reverse--;
-                    document.getElementById("revTimer").innerText = reverse;
-
-                    if(reverse <= 0) {
-                        clearInterval(interval);
-
-                        Swal.fire({
-                            title: "Now You Can Claim",
-                            confirmButtonText: "Close & Claim",
-                            allowOutsideClick: false
-                        }).then(async () => {
-
-                            Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
-
-                            try {
-                                let r = await fetch(GAS_URL, {
-                                    method: "POST",
-                                    body: JSON.stringify({
-                                        type: "updateBalance",
-                                        id: u.id,
-                                        amount: u.e.toFixed(2)
-                                    })
-                                });
-
-                                let res = await r.json();
-                                if(res.result === "success") {
-                                    u.e = 0;
-                                    localStorage.setItem("psEarned", 0);
-                                    location.reload();
-                                }
-
-                            } catch(e) {
-                                Swal.fire("Error", "Server Error", "error");
-                            }
-
-                        });
-                    }
-
-                }, 1000);
-            }
-        });
-
-    }, 30000);
+        setTimeout(() => {
+            let reverse = 30;
+            Swal.fire({
+                title: "Stay On Ad Page",
+                html: `<b id="revTimer">${reverse}</b> seconds remaining`,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    let interval = setInterval(async () => {
+                        reverse--;
+                        if(document.getElementById("revTimer")) document.getElementById("revTimer").innerText = reverse;
+                        if(reverse <= 0) {
+                            clearInterval(interval);
+                            Swal.fire({ title: "Now You Can Claim", confirmButtonText: "Close & Claim", allowOutsideClick: false }).then(async () => {
+                                Swal.fire({title: 'Claiming...', didOpen: () => Swal.showLoading()});
+                                try {
+                                    let r = await fetch(GAS_URL, { 
+                                        method: "POST", 
+                                        body: JSON.stringify({ 
+                                            type: "updateBalance", 
+                                            id: u.id, 
+                                            amount: actualAmount 
+                                        }) 
+                                    });
+                                    let res = await r.json();
+                                    if(res.result === "success") {
+                                        u.e = 0;
+                                        localStorage.setItem("psEarned", 0);
+                                        location.reload();
+                                    }
+                                } catch(e) { Swal.fire("Error", "Server Error", "error"); }
+                            });
+                        }
+                    }, 1000);
+                }
+            });
+        }, 30000);
     }
 
     function loadBannerAd() {
