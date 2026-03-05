@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Earning Engines | Power Star</title>
+
+<!-- Popunder Ad -->
+<script type="text/javascript" src="//pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{--bg:#0a0e1a;--card:#1a1f35;--gold:#fbbf24;--ac:#d4ff00;--border:#2d3548;--sub:#94a3b8;--green:#22c55e;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif;}
+body{background:var(--bg);color:#fff;padding:16px;padding-bottom:70px;min-height:100vh;}
+
+.nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.back-btn{background:none;border:1px solid var(--border);color:#fff;padding:9px 16px;border-radius:10px;font-size:13px;text-decoration:none;display:flex;align-items:center;gap:8px;font-weight:600;}
+
+/* USER BAR */
+.user-bar{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.ub-left .ub-name{font-size:14px;font-weight:700;}
+.ub-left .ub-id{font-size:11px;color:var(--sub);margin-top:2px;}
+.ub-bal{font-size:20px;font-weight:800;color:var(--gold);}
+.ub-lbl{font-size:10px;color:var(--sub);text-align:right;}
+
+/* COMMISSION BANNER */
+.comm-banner{background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(212,255,0,0.08));border:1px solid rgba(251,191,36,0.3);border-radius:16px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+.comm-left small{font-size:10px;color:var(--sub);text-transform:uppercase;font-weight:700;letter-spacing:.5px;}
+.comm-left .comm-val{font-size:22px;font-weight:800;color:var(--gold);}
+.comm-left .comm-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+.comm-note{font-size:10px;color:rgba(255,255,255,0.4);text-align:right;max-width:110px;line-height:1.4;}
+
+/* RATE PILLS */
+.rate-row{display:flex;gap:8px;margin-bottom:18px;}
+.pill{flex:1;background:rgba(212,255,0,0.07);border:1px solid rgba(212,255,0,0.2);border-radius:14px;padding:12px 6px;text-align:center;}
+.pill-val{font-size:16px;font-weight:800;color:var(--ac);}
+.pill-lbl{font-size:10px;color:var(--sub);margin-top:3px;font-weight:600;text-transform:uppercase;}
+
+.sec-title{font-size:16px;font-weight:800;margin-bottom:14px;}
+
+/* TASK CARDS */
+.task-card{background:var(--card);border-radius:20px;padding:18px;margin-bottom:16px;border:1px solid var(--border);}
+.task-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.task-icon{width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.task-info{flex:1;}
+.task-info h3{font-size:15px;font-weight:700;margin-bottom:3px;}
+.task-rate{font-size:12px;color:var(--ac);font-weight:700;}
+.task-sub{font-size:11px;color:var(--sub);margin-top:2px;}
+.btn-start{background:var(--ac);color:#000;border:none;padding:11px 18px;border-radius:12px;font-weight:800;cursor:pointer;font-size:13px;white-space:nowrap;font-family:'Outfit',sans-serif;}
+.btn-start:active{transform:scale(.95);}
+.btn-start:disabled{background:#2d3548;color:#64748b;cursor:not-allowed;}
+
+/* PROGRESS */
+.prog-bg{background:#0a0e1a;height:5px;border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--ac);box-shadow:0 0 8px var(--ac);transition:width .5s ease;width:0%;}
+.task-foot{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:var(--sub);}
+
+/* VIDEO LIST */
+.video-list{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
+.vid-item{display:flex;align-items:center;gap:12px;padding:11px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;}
+.vid-num{width:30px;height:30px;border-radius:8px;background:rgba(212,255,0,0.1);border:1px solid rgba(212,255,0,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--ac);flex-shrink:0;}
+.vid-title{flex:1;font-size:13px;font-weight:600;}
+.vid-earn{font-size:12px;font-weight:800;color:var(--gold);}
+
+/* AD BOX */
+.ad-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:16px;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;}
+.ad-label{font-size:10px;color:var(--sub);text-transform:uppercase;font-weight:700;margin-bottom:8px;display:block;}
+
+/* BOTTOM BTN */
+.btn-next{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#d4ff00,#a2c100);color:#000;padding:16px;border-radius:16px;font-weight:800;font-size:16px;width:100%;margin-top:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+
+/* OVERLAY */
+.overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,9,18,0.97);z-index:999;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;}
+.ov-title{font-size:22px;font-weight:800;color:var(--gold);margin-bottom:8px;}
+.ov-sub{font-size:13px;color:var(--sub);margin-bottom:28px;}
+.ov-num{font-size:64px;font-weight:900;color:var(--ac);margin-bottom:12px;line-height:1;}
+.ov-bar-bg{width:85%;background:#1e293b;height:10px;border-radius:10px;overflow:hidden;margin:0 auto;}
+.ov-bar-fill{width:0%;height:100%;background:var(--ac);transition:width .4s;}
+.ov-warn{font-size:11px;color:var(--red);margin-top:18px;font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- AUTH GUARD -->
+<script>
+(function(){
+  var u = localStorage.getItem("psUser") || localStorage.getItem("ps_user");
+  if (!u || localStorage.getItem("psLoggedIn") !== "true") {
+    window.location.replace("https://sweramps-blip.github.io/Markeeting-/auth.html");
+    return;
+  }
+  try { window.CU = JSON.parse(u); } catch(e) { window.CU = {}; }
+})();
+</script>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="https://sweramps-blip.github.io/Markeeting-/dashboard.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back
+  </a>
+  <span style="font-size:12px;color:var(--green);font-weight:700;">⚡ Server Active</span>
+</div>
+
+<!-- USER BAR -->
+<div class="user-bar">
+  <div class="ub-left">
+    <div class="ub-name" id="u-name">Loading...</div>
+    <div class="ub-id"   id="u-id">PS####</div>
+  </div>
+  <div>
+    <div class="ub-bal">Rs. <span id="u-bal">0.00</span></div>
+    <div class="ub-lbl">Live Balance</div>
+  </div>
+</div>
+
+<!-- COMMISSION BANNER -->
+<div class="comm-banner">
+  <div class="comm-left">
+    <small>Your Commission</small>
+    <div class="comm-val">Rs. <span id="comm-disp">0.00</span></div>
+    <div class="comm-sub">10% of total earnings</div>
+  </div>
+  <div class="comm-note">Commission is added to your balance on each claim</div>
+</div>
+
+<!-- AD BANNER 1 -->
+<div class="ad-box">
+  <div>
+    <span class="ad-label">Advertisement</span>
+    <div id="ad-top"></div>
+  </div>
+</div>
+
+<!-- RATE PILLS -->
+<div class="rate-row">
+  <div class="pill"><div class="pill-val" id="r-video">Rs. 30</div><div class="pill-lbl">Daily Earning</div></div>
+  <div class="pill"><div class="pill-val" id="r-quiz">Rs. 0.30</div><div class="pill-lbl">Quiz Correct</div></div>
+  <div class="pill"><div class="pill-val" id="r-limit">20</div><div class="pill-lbl">Daily Videos</div></div>
+</div>
+
+<div class="sec-title">🎯 Earning Engines</div>
+
+<!-- VIDEO CARD -->
+<div class="task-card">
+  <div class="task-top">
+    <div class="task-icon" style="color:#ff0000;"><i class="fab fa-youtube"></i></div>
+    <div class="task-info">
+      <h3>Watch Videos</h3>
+      <div class="task-rate" id="price-m">Loading...</div>
+      <div class="task-sub"  id="prog-text">0/0 completed today</div>
+    </div>
+    <button id="btn-m" class="btn-start" onclick="startNextVideo()">Start</button>
+  </div>
+  <div class="prog-bg"><div class="prog-fill" id="bar-m"></div></div>
+  <div class="task-foot">
+    <span id="text-m">Loading...</span>
+    <span id="text-rate">Rs. 1.50 per video</span>
+  </div>
+  <div class="video-list" id="video-list"></div>
+</div>
+
+<!-- QUIZ CARD -->
+<div class="task-card">
+  <div class="task-top">
+    <div class="task-icon" style="color:#00d4ff;"><i class="fas fa-brain"></i></div>
+    <div class="task-info">
+      <h3>Quiz Competition</h3>
+      <div class="task-rate">Rs. <span id="q-rate">0.30</span> per correct answer</div>
+      <div class="task-sub">Wrong = Rs. <span id="q-penalty">0.10</span> | Daily: <span id="q-limit">200</span> Qs</div>
+    </div>
+    <button class="btn-start" onclick="location.href='eran.html'">Start</button>
+  </div>
+  <div class="prog-bg"><div class="prog-fill" style="width:0%"></div></div>
+  <div class="task-foot"><span>Live Competition</span><span>High Rates</span></div>
+</div>
+
+<!-- AD BANNER 2 (Middle) -->
+<div class="ad-box">
+  <div>
+    <span class="ad-label">Advertisement</span>
+    <div id="ad-mid"></div>
+  </div>
+</div>
+
+<button class="btn-next" onclick="location.href='https://sweramps-blip.github.io/Markeeting-/dashboard.html'">
+  GO TO DASHBOARD <i class="fas fa-arrow-right"></i>
+</button>
+
+<!-- WATCH OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="ov-title">⏳ Video Dekh Rahe Hain</div>
+  <div class="ov-sub">Tab band ya switch na karein — timer rok jayega</div>
+  <div class="ov-num" id="ov-num">30</div>
+  <div class="ov-bar-bg"><div class="ov-bar-fill" id="ov-bar"></div></div>
+  <div class="ov-warn"><i class="fas fa-exclamation-triangle"></i> Tab switch hone se timer pause hoga</div>
+</div>
+
+<script>
+var GAS       = "https://script.google.com/macros/s/AKfycbziDqfhlmwfiu1ef6fUH-Tro_bSYifwZFW6H5992P8oFfS9mFwolQQpF9RA9NkLUe6-ZQ/exec";
+var UID       = (window.CU && window.CU.user_id) ? window.CU.user_id : (localStorage.getItem("psID") || "");
+var tasks     = [];
+var isPaused  = false;
+var isRunning = false;
+var videoRate = 1.50;
+var commShow  = 0.10;  // 10% dikhao
+var timerID   = null;
+
+window.onblur  = function() { isPaused = true;  };
+window.onfocus = function() { isPaused = false; };
+
+window.onload = function() {
+  // Show user info instantly
+  document.getElementById("u-name").innerText = (window.CU && window.CU.name)    ? window.CU.name    : "User";
+  document.getElementById("u-id").innerText   = (window.CU && window.CU.user_id) ? window.CU.user_id : UID;
+  var bal = parseFloat((window.CU && window.CU.balance) ? window.CU.balance : 0);
+  document.getElementById("u-bal").innerText   = bal.toFixed(2);
+  document.getElementById("comm-disp").innerText = (bal * commShow).toFixed(2);
+
+  loadBannerAds();
+  loadRates();
+  loadTasks();
+};
+
+// ── ADS ───────────────────────────────────────────────
+function loadBannerAds() {
+  // Top ad
+  var s1 = document.createElement("script");
+  s1.innerHTML = "atOptions = {'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':50,'width':300,'params':{}};";
+  var s2 = document.createElement("script");
+  s2.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
+  document.getElementById("ad-top").appendChild(s1);
+  document.getElementById("ad-top").appendChild(s2);
+
+  // Mid ad — same unit
+  var s3 = document.createElement("script");
+  s3.innerHTML = "atOptions = {'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':50,'width':300,'params':{}};";
+  var s4 = document.createElement("script");
+  s4.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
+  document.getElementById("ad-mid").appendChild(s3);
+  document.getElementById("ad-mid").appendChild(s4);
+}
+
+// ── LOAD RATES ────────────────────────────────────────
+function loadRates() {
+  fetch(GAS + "?type=get_earning_rates")
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status !== "success") return;
+      videoRate = parseFloat(data.video_rate      || 1.50);
+      commShow  = parseFloat(data.commission_show || 0.10);
+
+      document.getElementById("r-video").innerText   = "Rs. " + (videoRate * 20).toFixed(0);  // 20 vids daily
+      document.getElementById("r-quiz").innerText    = "Rs. " + parseFloat(data.quiz_correct  || 0.30).toFixed(2);
+      document.getElementById("r-limit").innerText   = data.video_daily_lim || 20;
+      document.getElementById("text-rate").innerText = "Rs. " + videoRate.toFixed(2) + " per video";
+      document.getElementById("q-rate").innerText    = parseFloat(data.quiz_correct  || 0.30).toFixed(2);
+      document.getElementById("q-penalty").innerText = parseFloat(data.quiz_wrong    || 0.10).toFixed(2);
+      document.getElementById("q-limit").innerText   = data.quiz_daily_lim || 200;
+
+      // Update commission display
+      var bal = parseFloat(document.getElementById("u-bal").innerText || 0);
+      document.getElementById("comm-disp").innerText = (bal * commShow).toFixed(2);
+    })
+    .catch(function() {});
+}
+
+// ── LOAD TASKS ────────────────────────────────────────
+function loadTasks() {
+  document.getElementById("price-m").innerText = "Loading...";
+  fetch(GAS + "?type=get_tasks&userId=" + encodeURIComponent(UID))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status !== "success") {
+        document.getElementById("price-m").innerText = "Error loading tasks";
+        return;
+      }
+      tasks = data.tasks || [];
+      var done  = data.today_done  || 0;
+      var limit = data.daily_limit || 20;
+      var pct   = limit > 0 ? Math.round((done / limit) * 100) : 0;
+
+      document.getElementById("bar-m").style.width   = pct + "%";
+      document.getElementById("prog-text").innerText = done + "/" + limit + " completed today";
+      document.getElementById("text-m").innerText    = "Progress: " + done + "/" + limit;
+
+      if (tasks.length === 0) {
+        document.getElementById("price-m").innerText = "All tasks completed ✅";
+        document.getElementById("btn-m").disabled    = true;
+        document.getElementById("btn-m").innerText   = "Done";
+        document.getElementById("video-list").innerHTML = "";
+        return;
+      }
+
+      document.getElementById("btn-m").disabled  = false;
+      document.getElementById("btn-m").innerText = "Start";
+      document.getElementById("price-m").innerText = tasks.length + " tasks — Rs. " + (tasks.length * videoRate).toFixed(2) + " available";
+
+      var html = "";
+      for (var i = 0; i < tasks.length; i++) {
+        var t = tasks[i];
+        html += '<div class="vid-item" id="vi-' + t.tid + '">'
+              + '<div class="vid-num">' + (i + 1) + '</div>'
+              + '<div class="vid-title">' + esc(t.title || ("Video " + (i + 1))) + '</div>'
+              + '<div class="vid-earn" id="ve-' + t.tid + '">+Rs. ' + videoRate.toFixed(2) + '</div>'
+              + '</div>';
+      }
+      document.getElementById("video-list").innerHTML = html;
+    })
+    .catch(function() {
+      document.getElementById("price-m").innerText = "Connection failed";
+    });
+}
+
+// ── START VIDEO ───────────────────────────────────────
+function startNextVideo() {
+  if (isRunning || tasks.length === 0) return;
+  var task = tasks[0];
+  var link = task.link || "";
+
+  if (link.indexOf("youtube.com") !== -1 || link.indexOf("youtu.be") !== -1) {
+    var vid = (link.indexOf("v=") !== -1) ? link.split("v=")[1].split("&")[0] : link.split("/").pop();
+    link = "https://www.youtube.com/embed/" + vid + "?autoplay=1";
+  } else if (link.indexOf("dropbox.com") !== -1) {
+    link = link.replace("dl=0", "raw=1");
+  }
+
+  var win = window.open(link, "_blank");
+  if (!win) {
+    Swal.fire({ title:"Pop-up Blocked!", text:"Browser mein pop-ups allow karein", icon:"warning" });
+    return;
+  }
+
+  document.getElementById("overlay").style.display = "flex";
+  document.getElementById("btn-m").disabled = true;
+  isRunning = true;
+  isPaused  = false;
+
+  var timeLeft = 30;
+  document.getElementById("ov-num").innerText   = timeLeft;
+  document.getElementById("ov-bar").style.width = "0%";
+
+  timerID = setInterval(function() {
+    if (isPaused) return;
+    timeLeft--;
+    document.getElementById("ov-num").innerText   = timeLeft;
+    document.getElementById("ov-bar").style.width = ((30 - timeLeft) / 30 * 100) + "%";
+    if (timeLeft <= 0) {
+      clearInterval(timerID);
+      document.getElementById("overlay").style.display = "none";
+      finalizeVideo(task);
+    }
+  }, 1000);
+}
+
+// ── FINALIZE VIDEO ────────────────────────────────────
+function finalizeVideo(task) {
+  Swal.fire({ title:"Crediting...", allowOutsideClick:false, didOpen:function() { Swal.showLoading(); } });
+  fetch(GAS, {
+    method: "POST",
+    body  : JSON.stringify({ action:"video_complete", user_id:UID, tid:task.tid })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    isRunning = false;
+    document.getElementById("btn-m").disabled = false;
+
+    if (data.status === "success") {
+      var newBal = parseFloat(data.new_balance || 0);
+      document.getElementById("u-bal").innerText   = newBal.toFixed(2);
+      document.getElementById("comm-disp").innerText = (newBal * commShow).toFixed(2);
+
+      // Update localStorage
+      var cu = window.CU || {};
+      cu.balance = newBal;
+      window.CU  = cu;
+      localStorage.setItem("psUser",  JSON.stringify(cu));
+      localStorage.setItem("ps_user", JSON.stringify(cu));
+
+      // Mark item visually done
+      var vi    = document.getElementById("vi-"   + task.tid);
+      var veEl  = document.getElementById("ve-"   + task.tid);
+      if (vi)   { vi.style.opacity = "0.5"; }
+      if (veEl) { veEl.innerHTML = '<i class="fas fa-check-circle" style="color:#22c55e;font-size:16px;"></i>'; }
+
+      tasks.splice(0, 1);
+
+      Swal.fire({
+        title: "+Rs. " + parseFloat(data.earned || videoRate).toFixed(2) + " Credited! ✅",
+        text : "New Balance: Rs. " + newBal.toFixed(2),
+        icon : "success", timer:2000, showConfirmButton:false
+      });
+      setTimeout(loadTasks, 2200);
+
+    } else if (data.message === "Daily limit reached.") {
+      Swal.fire({ title:"Limit!", text:"Aaj ke sab tasks ho gaye. Kal ayen!", icon:"info" });
+      loadTasks();
+    } else {
+      Swal.fire({ title:"Error", text:data.message || "Server error", icon:"error" });
+    }
+  })
+  .catch(function() {
+    isRunning = false;
+    document.getElementById("btn-m").disabled = false;
+    Swal.fire({ title:"Error", text:"Connection failed", icon:"error" });
+  });
+}
+
+function esc(s) {
+  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+</script>
+</body>
+</html>
