@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Quiz | Power Star</title>
+
+<!-- Popunder Ad -->
+<script type="text/javascript" src="//pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{--p:#d4ff00;--bg:#060912;--card:#151b2d;--sub:#94a3b8;--danger:#ff4757;--success:#2ed573;--gold:#fbbf24;--red:#ef4444;}
+*{box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:#fff;padding:14px;min-height:100vh;}
+.app{max-width:500px;margin:0 auto;padding-bottom:50px;}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.back-btn{background:none;border:1px solid #2a344d;color:#fff;padding:8px 14px;border-radius:10px;font-size:13px;cursor:pointer;font-weight:600;font-family:'Outfit',sans-serif;text-decoration:none;display:flex;align-items:center;gap:6px;}
+
+/* STATS */
+.stat-grid{display:flex;gap:8px;margin-bottom:16px;}
+.stat-box{background:var(--card);padding:12px 8px;border-radius:16px;flex:1;text-align:center;border:1px solid rgba(255,255,255,0.05);}
+.stat-box small{font-size:10px;color:var(--sub);text-transform:uppercase;font-weight:700;display:block;margin-bottom:3px;}
+.stat-box h3{font-size:15px;font-weight:800;color:#fff;}
+
+/* COMMISSION CARD */
+.comm-card{background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(212,255,0,0.06));border:1px solid rgba(251,191,36,0.3);border-radius:18px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.cc-left small{font-size:10px;color:var(--sub);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.cc-left .cc-val{font-size:24px;font-weight:800;color:var(--gold);}
+.cc-left .cc-note{font-size:11px;color:var(--sub);margin-top:2px;}
+.btn-claim{background:linear-gradient(135deg,var(--gold),#d97706);color:#000;border:none;padding:12px 20px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-claim:active{transform:scale(.95);}
+.btn-claim:disabled{background:#2a344d;color:#64748b;cursor:not-allowed;}
+
+/* AD BOX */
+.ad-box{background:var(--card);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:10px;margin-bottom:14px;text-align:center;min-height:60px;display:flex;align-items:center;justify-content:center;}
+.ad-label{font-size:10px;color:var(--sub);text-transform:uppercase;font-weight:700;display:block;margin-bottom:6px;}
+
+/* QUIZ CARD */
+.quiz-card{background:linear-gradient(145deg,#1e293b,#0f172a);padding:22px;border-radius:26px;text-align:center;border:1px solid rgba(212,255,0,0.15);}
+.timer-ring{width:64px;height:64px;border:3px solid #1e293b;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border-top-color:var(--p);transition:border-top-color .3s;}
+.timer-ring.danger{border-top-color:var(--danger);}
+.timer-ring span{font-weight:800;font-size:20px;color:var(--p);}
+.meta-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:14px;color:var(--sub);}
+.meta-row b{color:var(--p);}
+.question-text{font-size:17px;font-weight:700;min-height:50px;margin-bottom:16px;line-height:1.5;}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.opt-btn{width:100%;padding:16px 8px;border-radius:16px;border:1.5px solid #2a344d;background:rgba(255,255,255,0.03);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:.2s;font-family:'Outfit',sans-serif;line-height:1.3;}
+.opt-btn:active{transform:scale(.97);}
+.opt-correct{background:rgba(46,213,115,0.2)!important;border-color:var(--success)!important;color:var(--success)!important;}
+.opt-wrong{background:rgba(255,71,87,0.2)!important;border-color:var(--danger)!important;color:var(--danger)!important;}
+.btn-next{width:100%;padding:16px;border-radius:18px;border:none;background:rgba(255,255,255,0.08);color:#fff;font-weight:800;font-size:15px;cursor:pointer;margin-top:4px;font-family:'Outfit',sans-serif;display:none;}
+.btn-next:active{transform:scale(.97);}
+.result-flash{padding:10px;border-radius:12px;font-size:14px;font-weight:800;margin-bottom:10px;display:none;}
+.rf-correct{background:rgba(46,213,115,0.15);color:var(--success);border:1px solid rgba(46,213,115,0.3);}
+.rf-wrong{background:rgba(255,71,87,0.15);color:var(--danger);border:1px solid rgba(255,71,87,0.3);}
+.rf-timeout{background:rgba(251,191,36,0.15);color:var(--gold);border:1px solid rgba(251,191,36,0.3);}
+
+/* LOADER */
+#loader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;}
+#loader h2{color:var(--p);letter-spacing:2px;margin-bottom:8px;}
+#loader p{font-size:12px;color:var(--sub);}
+
+/* LIMIT SCREEN */
+#limit-screen{display:none;text-align:center;padding:40px 20px;}
+#limit-screen h2{font-size:24px;font-weight:800;color:var(--gold);margin-bottom:12px;}
+#limit-screen p{color:var(--sub);font-size:14px;line-height:1.6;}
+.btn-main{width:100%;padding:16px;border-radius:18px;border:none;background:var(--p);color:#000;font-weight:800;font-size:15px;cursor:pointer;margin-top:16px;font-family:'Outfit',sans-serif;}
+</style>
+</head>
+<body>
+
+<!-- AUTH GUARD -->
+<script>
+(function(){
+  var u = localStorage.getItem("psUser") || localStorage.getItem("ps_user");
+  if (!u || localStorage.getItem("psLoggedIn") !== "true") {
+    window.location.replace("https://sweramps-blip.github.io/Markeeting-/auth.html");
+    return;
+  }
+  try { window.CU = JSON.parse(u); } catch(e) { window.CU = {}; }
+})();
+</script>
+
+<div id="loader">
+  <h2>⚡ QUIZ</h2>
+  <p>Loading questions...</p>
+</div>
+
+<div class="app">
+  <div class="top-bar">
+    <a href="index.html" class="back-btn">← Back</a>
+    <span style="font-size:11px;color:#22c55e;font-weight:700;">⚡ Power Star Quiz</span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-grid">
+    <div class="stat-box"><small>Balance</small><h3 id="mB">0.00</h3></div>
+    <div class="stat-box"><small>Today</small><h3 id="mS">0</h3></div>
+    <div class="stat-box"><small>Session</small><h3 id="mE" style="color:var(--p)">+0.00</h3></div>
+    <div class="stat-box"><small>Limit</small><h3 id="mL">200</h3></div>
+  </div>
+
+  <!-- COMMISSION CARD -->
+  <div class="comm-card">
+    <div class="cc-left">
+      <small>Referral Commission (10%)</small>
+      <div class="cc-val">Rs. <span id="comm-disp">0.00</span></div>
+      <div class="cc-note">Quiz + Referral — Claim when Rs. 10</div>
+    </div>
+    <button class="btn-claim" id="btn-claim" onclick="startClaim()" disabled>Claim</button>
+  </div>
+
+  <!-- AD TOP -->
+  <div class="ad-box">
+    <div>
+      <span class="ad-label">Advertisement</span>
+      <div id="ad-top"></div>
+    </div>
+  </div>
+
+  <!-- QUIZ CARD -->
+  <div class="quiz-card" id="quiz-card">
+    <div class="timer-ring" id="timerWrap">
+      <span id="timer">30</span>
+    </div>
+    <div class="meta-row">
+      <span>Correct: <b id="rRate">+Rs.0.30</b></span>
+      <span>Wrong: <b style="color:var(--danger)" id="rPenalty">-Rs.0.10</b></span>
+      <span>Q: <b id="qNum">1</b></span>
+    </div>
+    <div class="result-flash" id="result-flash"></div>
+    <div class="question-text" id="qT">Loading question...</div>
+    <div class="options-grid" id="qG"></div>
+    <button class="btn-next" id="nB" onclick="nextQ()">NEXT QUESTION →</button>
+  </div>
+
+  <!-- AD MID -->
+  <div class="ad-box" style="margin-top:16px;">
+    <div>
+      <span class="ad-label">Advertisement</span>
+      <div id="ad-mid"></div>
+    </div>
+  </div>
+
+  <!-- LIMIT SCREEN -->
+  <div id="limit-screen">
+    <div style="font-size:56px;margin-bottom:16px;">🎉</div>
+    <h2>Daily Limit Complete!</h2>
+    <p>Aaj ke tamam <span id="ls-count">200</span> questions ho gaye.<br>Kal wapas ayen!</p>
+    <p style="margin-top:12px;color:var(--gold);font-size:18px;font-weight:800;">
+      Session Earning: Rs. <span id="ls-earn">0.00</span>
+    </p>
+    <button class="btn-main" onclick="location.href='index.html'">Back to Engines</button>
+  </div>
+</div>
+
+<!-- AD OVERLAY (30s timer) -->
+<div id="ad-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,9,18,0.98);z-index:2000;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;">
+  <div style="font-size:20px;font-weight:800;color:var(--gold);margin-bottom:8px;">⏳ Please Wait</div>
+  <div style="font-size:13px;color:var(--sub);margin-bottom:28px;">Ad dekh rahe hain... band na karein</div>
+  <div id="ao-num" style="font-size:68px;font-weight:900;color:var(--p);line-height:1;margin-bottom:14px;">30</div>
+  <div style="width:85%;background:#1e293b;height:10px;border-radius:10px;overflow:hidden;margin:0 auto 24px;">
+    <div id="ao-bar" style="width:0%;height:100%;background:var(--p);transition:width .4s;"></div>
+  </div>
+  <button id="ao-btn" onclick="finalizeClaim()" style="display:none;background:linear-gradient(135deg,var(--gold),#d97706);color:#000;border:none;padding:16px 48px;border-radius:16px;font-weight:800;font-size:16px;cursor:pointer;font-family:'Outfit',sans-serif;">
+    ✅ Claim Now
+  </button>
+</div>
+
+<script>
+var GAS          = "https://script.google.com/macros/s/AKfycbziDqfhlmwfiu1ef6fUH-Tro_bSYifwZFW6H5992P8oFfS9mFwolQQpF9RA9NkLUe6-ZQ/exec";
+var AD_URL       = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
+var UID          = (window.CU && window.CU.user_id) ? window.CU.user_id : (localStorage.getItem("psID") || "");
+
+var allQuestions = [];
+var usedQs       = JSON.parse(localStorage.getItem("psUsedQs") || "[]");
+var currentQ     = null;
+var answered     = false;
+var timerID      = null;
+var adTimerID    = null;
+var quizCount    = 0;
+var dailyLimit   = 200;
+var correctRate  = 0.30;
+var wrongPenalty = 0.10;
+var commShowPct  = 0.10;   // 10% dikhao user ko
+var commRealPct  = 0.02;   // 2% actually add hoga
+var sessionEarn  = 0;      // quiz ki 100% earning
+var balance      = parseFloat((window.CU && window.CU.balance) ? window.CU.balance : 0);
+
+window.onload = function() {
+  document.getElementById("mB").innerText = balance.toFixed(2);
+  updateCommCard();
+  loadBannerAds();
+  loadQuiz();
+};
+
+// ── COMMISSION CARD UPDATE ────────────────────────────
+// User ko: Quiz earning + 10% referral dikhao
+// Claim button: sirf tab active jab sessionEarn >= 10
+function updateCommCard() {
+  var refShown = Math.round(balance * commShowPct * 100) / 100;  // 10% shown
+  var total    = Math.round((Math.max(0, sessionEarn) + refShown) * 100) / 100;
+  document.getElementById("comm-disp").innerText = total.toFixed(2);
+
+  var btn = document.getElementById("btn-claim");
+  if (sessionEarn >= 10) {
+    btn.disabled = false;
+    btn.style.background = "linear-gradient(135deg,var(--gold),#d97706)";
+  } else {
+    btn.disabled = true;
+    btn.style.background = "";
+  }
+}
+
+// ── ADS ───────────────────────────────────────────────
+function loadBannerAds() {
+  var s1 = document.createElement("script");
+  s1.innerHTML = "atOptions = {'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':50,'width':300,'params':{}};";
+  var s2 = document.createElement("script");
+  s2.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
+  document.getElementById("ad-top").appendChild(s1);
+  document.getElementById("ad-top").appendChild(s2);
+
+  var s3 = document.createElement("script");
+  s3.innerHTML = "atOptions = {'key':'577f75aa7d65a7ccebfa35e124c256c4','format':'iframe','height':50,'width':300,'params':{}};";
+  var s4 = document.createElement("script");
+  s4.src = "//www.highperformanceformat.com/577f75aa7d65a7ccebfa35e124c256c4/invoke.js";
+  document.getElementById("ad-mid").appendChild(s3);
+  document.getElementById("ad-mid").appendChild(s4);
+}
+
+// ── LOAD QUIZ ─────────────────────────────────────────
+function loadQuiz() {
+  fetch(GAS + "?type=get_quiz")
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById("loader").style.display = "none";
+      if (data.status !== "success" || !data.questions || data.questions.length === 0) {
+        document.getElementById("qT").innerText = "No questions available.";
+        return;
+      }
+      allQuestions = data.questions;
+      correctRate  = parseFloat(data.correct_rate    || 0.30);
+      wrongPenalty = parseFloat(data.wrong_penalty   || 0.10);
+      dailyLimit   = parseInt(data.daily_limit       || 200);
+      commShowPct  = parseFloat(data.commission_show || 0.10);
+      commRealPct  = parseFloat(data.commission_real || 0.02);
+
+      document.getElementById("rRate").innerText    = "+Rs." + correctRate.toFixed(2);
+      document.getElementById("rPenalty").innerText = "-Rs." + wrongPenalty.toFixed(2);
+      document.getElementById("mL").innerText       = dailyLimit;
+      updateCommCard();
+      nextQ();
+    })
+    .catch(function() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("qT").innerText = "Connection failed. Refresh karein.";
+    });
+}
+
+// ── NEXT QUESTION ─────────────────────────────────────
+function nextQ() {
+  if (quizCount >= dailyLimit) { showLimitScreen(); return; }
+  clearInterval(timerID);
+  answered = false;
+
+  document.getElementById("nB").style.display           = "none";
+  document.getElementById("result-flash").style.display = "none";
+  document.getElementById("timerWrap").classList.remove("danger");
+
+  var available = allQuestions.filter(function(q) { return usedQs.indexOf(q.q) === -1; });
+  if (available.length === 0) {
+    usedQs = [];
+    localStorage.setItem("psUsedQs", "[]");
+    available = allQuestions;
+  }
+  currentQ = available[Math.floor(Math.random() * available.length)];
+  usedQs.push(currentQ.q);
+  localStorage.setItem("psUsedQs", JSON.stringify(usedQs));
+
+  document.getElementById("qT").innerText   = currentQ.q;
+  document.getElementById("qNum").innerText = quizCount + 1;
+
+  var html = "";
+  var opts = currentQ.a || [];
+  for (var i = 0; i < opts.length; i++) {
+    html += '<button class="opt-btn" id="opt' + i + '" onclick="checkAns(' + i + ')">' + esc(opts[i]) + '</button>';
+  }
+  document.getElementById("qG").innerHTML = html;
+  startTimer();
+}
+
+// ── TIMER ─────────────────────────────────────────────
+function startTimer() {
+  var t = 30;
+  document.getElementById("timer").innerText = t;
+  timerID = setInterval(function() {
+    t--;
+    document.getElementById("timer").innerText = t;
+    if (t <= 5) { document.getElementById("timerWrap").classList.add("danger"); }
+    if (t <= 0) { clearInterval(timerID); handleTimeout(); }
+  }, 1000);
+}
+
+// ── CHECK ANSWER ──────────────────────────────────────
+function checkAns(i) {
+  if (answered) return;
+  clearInterval(timerID);
+  answered = true;
+  var correctIdx = parseInt(currentQ.c || "1") - 1;
+  var isCorrect  = (i === correctIdx);
+  var btn = document.getElementById("opt" + i);
+  if (btn) { btn.classList.add(isCorrect ? "opt-correct" : "opt-wrong"); }
+  if (!isCorrect) {
+    var cb = document.getElementById("opt" + correctIdx);
+    if (cb) { cb.classList.add("opt-correct"); }
+  }
+  submitAnswer(isCorrect, false);
+}
+
+// ── TIMEOUT ───────────────────────────────────────────
+function handleTimeout() {
+  if (answered) return;
+  answered = true;
+  var cb = document.getElementById("opt" + (parseInt(currentQ.c || "1") - 1));
+  if (cb) { cb.classList.add("opt-correct"); }
+  submitAnswer(false, true);
+}
+
+// ── SUBMIT ANSWER ─────────────────────────────────────
+function submitAnswer(isCorrect, isTimeout) {
+  quizCount++;
+  document.getElementById("mS").innerText = quizCount;
+
+  // Quiz earning = 100% full
+  var change  = isCorrect ? correctRate : -wrongPenalty;
+  sessionEarn = Math.round((sessionEarn + change) * 100) / 100;
+  balance     = Math.max(0, Math.round((balance + change) * 100) / 100);
+
+  document.getElementById("mB").innerText = balance.toFixed(2);
+  updateCommCard();
+
+  var earnEl = document.getElementById("mE");
+  earnEl.innerText   = (sessionEarn >= 0 ? "+" : "") + sessionEarn.toFixed(2);
+  earnEl.style.color = sessionEarn >= 0 ? "var(--p)" : "var(--danger)";
+
+  var flash = document.getElementById("result-flash");
+  flash.style.display = "block";
+  if (isTimeout) {
+    flash.className = "result-flash rf-timeout";
+    flash.innerText = "⏰ Time up! -Rs." + wrongPenalty.toFixed(2);
+  } else if (isCorrect) {
+    flash.className = "result-flash rf-correct";
+    flash.innerText = "✅ Correct! +Rs." + correctRate.toFixed(2);
+  } else {
+    flash.className = "result-flash rf-wrong";
+    flash.innerText = "❌ Wrong! -Rs." + wrongPenalty.toFixed(2);
+  }
+
+  document.getElementById("nB").style.display = "block";
+
+  // GAS ko silently batao
+  fetch(GAS, {
+    method: "POST",
+    body  : JSON.stringify({ action:"quiz_answer", user_id:UID, correct:isCorrect })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.status === "success" || data.status === "limit") {
+      balance = parseFloat(data.new_balance || balance);
+      document.getElementById("mB").innerText = balance.toFixed(2);
+      updateCommCard();
+      var cu = window.CU || {};
+      cu.balance = balance;
+      window.CU  = cu;
+      localStorage.setItem("psUser",  JSON.stringify(cu));
+      localStorage.setItem("ps_user", JSON.stringify(cu));
+      if (data.status === "limit") {
+        document.getElementById("nB").onclick = showLimitScreen;
+      }
+    }
+  })
+  .catch(function() {});
+}
+
+// ── CLAIM STEP 1: Open ad + 30s timer ─────────────────
+function startClaim() {
+  if (sessionEarn < 10) {
+    Swal.fire({ title:"Minimum Rs. 10", text:"Quiz se Rs. 10 earn karo pehle", icon:"info" });
+    return;
+  }
+
+  // Open ad in new tab
+  window.open(AD_URL, "_blank");
+
+  // Show overlay
+  var overlay = document.getElementById("ad-overlay");
+  var aoBtn   = document.getElementById("ao-btn");
+  overlay.style.display = "flex";
+  aoBtn.style.display   = "none";
+
+  var t = 30;
+  document.getElementById("ao-num").innerText  = t;
+  document.getElementById("ao-bar").style.width = "0%";
+
+  adTimerID = setInterval(function() {
+    t--;
+    document.getElementById("ao-num").innerText   = t;
+    document.getElementById("ao-bar").style.width = ((30 - t) / 30 * 100) + "%";
+    if (t <= 0) {
+      clearInterval(adTimerID);
+      document.getElementById("ao-num").innerText  = "✅";
+      aoBtn.style.display = "block";
+    }
+  }, 1000);
+}
+
+// ── CLAIM STEP 2: Credit balance ──────────────────────
+function finalizeClaim() {
+  document.getElementById("ad-overlay").style.display = "none";
+  document.getElementById("btn-claim").disabled = true;
+
+  // Total to add:
+  // 1. Quiz earning = sessionEarn (100%)
+  // 2. Referral commission = balance * 2% (real, not shown)
+  var quizAmt   = Math.max(0, sessionEarn);
+  var refReal   = Math.round(balance * commRealPct * 100) / 100;
+  var totalAdd  = Math.round((quizAmt + refReal) * 100) / 100;
+
+  Swal.fire({ title:"Processing...", allowOutsideClick:false, didOpen:function(){ Swal.showLoading(); } });
+
+  fetch(GAS, {
+    method: "POST",
+    body  : JSON.stringify({
+      action  : "manual_credit",
+      key     : "",
+      user_id : UID,
+      amount  : totalAdd,
+      type    : "Claim",
+      note    : "Quiz+Commission claim"
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    // Whether server succeeds or fails, update locally
+    balance = parseFloat(data.new_balance || (balance + totalAdd));
+    balance = Math.round(balance * 100) / 100;
+    // Reset both balances to 0
+    sessionEarn = 0;
+    document.getElementById("mE").innerText = "+0.00";
+    document.getElementById("mB").innerText = balance.toFixed(2);
+    document.getElementById("comm-disp").innerText = "0.00";
+    document.getElementById("btn-claim").disabled = true;
+
+    // Update localStorage
+    var cu = window.CU || {};
+    cu.balance = balance;
+    window.CU  = cu;
+    localStorage.setItem("psUser",  JSON.stringify(cu));
+    localStorage.setItem("ps_user", JSON.stringify(cu));
+
+    // Swal — amount zahir nahi karna
+    Swal.fire({
+      title: "Claim Successful! ✅",
+      text : "Aapki earning balance mein add ho gayi!",
+      icon : "success",
+      timer: 2000,
+      showConfirmButton: false
+    });
+  })
+  .catch(function() {
+    // Even on error, add locally
+    balance = Math.round((balance + totalAdd) * 100) / 100;
+    sessionEarn = 0;
+    document.getElementById("mE").innerText = "+0.00";
+    document.getElementById("mB").innerText = balance.toFixed(2);
+    document.getElementById("comm-disp").innerText = "0.00";
+    var cu = window.CU || {};
+    cu.balance = balance;
+    window.CU  = cu;
+    localStorage.setItem("psUser",  JSON.stringify(cu));
+    localStorage.setItem("ps_user", JSON.stringify(cu));
+    Swal.fire({
+      title: "Claim Successful! ✅",
+      text : "Aapki earning balance mein add ho gayi!",
+      icon : "success",
+      timer: 2000,
+      showConfirmButton: false
+    });
+  });
+}
+
+// ── LIMIT SCREEN ──────────────────────────────────────
+function showLimitScreen() {
+  document.getElementById("quiz-card").style.display    = "none";
+  document.getElementById("limit-screen").style.display = "block";
+  document.getElementById("ls-count").innerText = dailyLimit;
+  document.getElementById("ls-earn").innerText  = sessionEarn.toFixed(2);
+}
+
+function esc(s) {
+  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+</script>
+</body>
+</html>
