@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Quiz | Power Star</title>
 
-<!-- Popunder Ad -->
+<!-- Popunder + Social Bar Ad -->
 <script type="text/javascript" src="//pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+<script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -108,9 +109,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:#fff;padding:14p
     <div class="cc-left">
       <small>Referral Commission (10%)</small>
       <div class="cc-val">Rs. <span id="comm-disp">0.00</span></div>
-      <div class="cc-note">Quiz + Referral — Claim when Rs. 10</div>
+      <div class="cc-note">Team members ki quiz earnings se</div>
     </div>
-    <button class="btn-claim" id="btn-claim" onclick="startClaim()" disabled>Claim</button>
+    <button class="btn-claim" id="btn-claim" onclick="startClaim()">Claim</button>
   </div>
 
   <!-- AD TOP -->
@@ -171,7 +172,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:#fff;padding:14p
 </div>
 
 <script>
-var GAS          = "https://script.google.com/macros/s/AKfycbyJHKwilJtUNTb3P1jAsDWmEzOYaWjq5J1GvRurs-2F1Vg2w9vyF8JOg8hmr4pEe7gvAA/exec";
+var GAS          = "https://script.google.com/macros/s/AKfycbziDqfhlmwfiu1ef6fUH-Tro_bSYifwZFW6H5992P8oFfS9mFwolQQpF9RA9NkLUe6-ZQ/exec";
 var AD_URL       = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 var UID          = (window.CU && window.CU.user_id) ? window.CU.user_id : (localStorage.getItem("psID") || "");
 
@@ -185,34 +186,31 @@ var quizCount    = 0;
 var dailyLimit   = 200;
 var correctRate  = 0.30;
 var wrongPenalty = 0.10;
-var commShowPct  = 0.10;   // 10% dikhao user ko
-var commRealPct  = 0.02;   // 2% actually add hoga
+var commRealPct  = 0.02;   // 2% actually add hoga claim pe
 var sessionEarn  = 0;      // quiz ki 100% earning
+var refCommission = 0;     // Firebase se team members ki commission
 var balance      = parseFloat((window.CU && window.CU.balance) ? window.CU.balance : 0);
 
 window.onload = function() {
   document.getElementById("mB").innerText = balance.toFixed(2);
-  updateCommCard();
   loadBannerAds();
+  loadRefCommission();   // Firebase se team commission fetch karo
   loadQuiz();
 };
 
-// ── COMMISSION CARD UPDATE ────────────────────────────
-// User ko: Quiz earning + 10% referral dikhao
-// Claim button: sirf tab active jab sessionEarn >= 10
-function updateCommCard() {
-  var refShown = Math.round(balance * commShowPct * 100) / 100;  // 10% shown
-  var total    = Math.round((Math.max(0, sessionEarn) + refShown) * 100) / 100;
-  document.getElementById("comm-disp").innerText = total.toFixed(2);
-
-  var btn = document.getElementById("btn-claim");
-  if (sessionEarn >= 10) {
-    btn.disabled = false;
-    btn.style.background = "linear-gradient(135deg,var(--gold),#d97706)";
-  } else {
-    btn.disabled = true;
-    btn.style.background = "";
-  }
+// ── LOAD REFERRAL COMMISSION FROM GAS/FIREBASE ────────
+function loadRefCommission() {
+  fetch(GAS + "?type=get_ref_commission&userId=" + encodeURIComponent(UID))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === "success") {
+        refCommission = parseFloat(data.commission || 0);
+      }
+      document.getElementById("comm-disp").innerText = refCommission.toFixed(2);
+    })
+    .catch(function() {
+      document.getElementById("comm-disp").innerText = refCommission.toFixed(2);
+    });
 }
 
 // ── ADS ───────────────────────────────────────────────
@@ -246,13 +244,11 @@ function loadQuiz() {
       correctRate  = parseFloat(data.correct_rate    || 0.30);
       wrongPenalty = parseFloat(data.wrong_penalty   || 0.10);
       dailyLimit   = parseInt(data.daily_limit       || 200);
-      commShowPct  = parseFloat(data.commission_show || 0.10);
       commRealPct  = parseFloat(data.commission_real || 0.02);
 
       document.getElementById("rRate").innerText    = "+Rs." + correctRate.toFixed(2);
       document.getElementById("rPenalty").innerText = "-Rs." + wrongPenalty.toFixed(2);
       document.getElementById("mL").innerText       = dailyLimit;
-      updateCommCard();
       nextQ();
     })
     .catch(function() {
@@ -341,7 +337,6 @@ function submitAnswer(isCorrect, isTimeout) {
   balance     = Math.max(0, Math.round((balance + change) * 100) / 100);
 
   document.getElementById("mB").innerText = balance.toFixed(2);
-  updateCommCard();
 
   var earnEl = document.getElementById("mE");
   earnEl.innerText   = (sessionEarn >= 0 ? "+" : "") + sessionEarn.toFixed(2);
@@ -372,7 +367,6 @@ function submitAnswer(isCorrect, isTimeout) {
     if (data.status === "success" || data.status === "limit") {
       balance = parseFloat(data.new_balance || balance);
       document.getElementById("mB").innerText = balance.toFixed(2);
-      updateCommCard();
       var cu = window.CU || {};
       cu.balance = balance;
       window.CU  = cu;
@@ -388,11 +382,6 @@ function submitAnswer(isCorrect, isTimeout) {
 
 // ── CLAIM STEP 1: Open ad + 30s timer ─────────────────
 function startClaim() {
-  if (sessionEarn < 10) {
-    Swal.fire({ title:"Minimum Rs. 10", text:"Quiz se Rs. 10 earn karo pehle", icon:"info" });
-    return;
-  }
-
   // Open ad in new tab
   window.open(AD_URL, "_blank");
 
@@ -403,7 +392,7 @@ function startClaim() {
   aoBtn.style.display   = "none";
 
   var t = 30;
-  document.getElementById("ao-num").innerText  = t;
+  document.getElementById("ao-num").innerText   = t;
   document.getElementById("ao-bar").style.width = "0%";
 
   adTimerID = setInterval(function() {
@@ -412,7 +401,7 @@ function startClaim() {
     document.getElementById("ao-bar").style.width = ((30 - t) / 30 * 100) + "%";
     if (t <= 0) {
       clearInterval(adTimerID);
-      document.getElementById("ao-num").innerText  = "✅";
+      document.getElementById("ao-num").innerText = "✅";
       aoBtn.style.display = "block";
     }
   }, 1000);
@@ -424,11 +413,11 @@ function finalizeClaim() {
   document.getElementById("btn-claim").disabled = true;
 
   // Total to add:
-  // 1. Quiz earning = sessionEarn (100%)
-  // 2. Referral commission = balance * 2% (real, not shown)
-  var quizAmt   = Math.max(0, sessionEarn);
-  var refReal   = Math.round(balance * commRealPct * 100) / 100;
-  var totalAdd  = Math.round((quizAmt + refReal) * 100) / 100;
+  // 1. Quiz earning = sessionEarn (100% full)
+  // 2. Referral commission = refCommission * commRealPct (2% actual)
+  var quizAmt  = Math.max(0, sessionEarn);
+  var refReal  = Math.round(refCommission * commRealPct * 100) / 100;
+  var totalAdd = Math.round((quizAmt + refReal) * 100) / 100;
 
   Swal.fire({ title:"Processing...", allowOutsideClick:false, didOpen:function(){ Swal.showLoading(); } });
 
@@ -445,51 +434,34 @@ function finalizeClaim() {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    // Whether server succeeds or fails, update locally
     balance = parseFloat(data.new_balance || (balance + totalAdd));
     balance = Math.round(balance * 100) / 100;
-    // Reset both balances to 0
-    sessionEarn = 0;
-    document.getElementById("mE").innerText = "+0.00";
-    document.getElementById("mB").innerText = balance.toFixed(2);
-    document.getElementById("comm-disp").innerText = "0.00";
-    document.getElementById("btn-claim").disabled = true;
-
-    // Update localStorage
-    var cu = window.CU || {};
-    cu.balance = balance;
-    window.CU  = cu;
-    localStorage.setItem("psUser",  JSON.stringify(cu));
-    localStorage.setItem("ps_user", JSON.stringify(cu));
-
-    // Swal — amount zahir nahi karna
-    Swal.fire({
-      title: "Claim Successful! ✅",
-      text : "Aapki earning balance mein add ho gayi!",
-      icon : "success",
-      timer: 2000,
-      showConfirmButton: false
-    });
+    afterClaim();
   })
   .catch(function() {
-    // Even on error, add locally
     balance = Math.round((balance + totalAdd) * 100) / 100;
-    sessionEarn = 0;
-    document.getElementById("mE").innerText = "+0.00";
-    document.getElementById("mB").innerText = balance.toFixed(2);
-    document.getElementById("comm-disp").innerText = "0.00";
-    var cu = window.CU || {};
-    cu.balance = balance;
-    window.CU  = cu;
-    localStorage.setItem("psUser",  JSON.stringify(cu));
-    localStorage.setItem("ps_user", JSON.stringify(cu));
-    Swal.fire({
-      title: "Claim Successful! ✅",
-      text : "Aapki earning balance mein add ho gayi!",
-      icon : "success",
-      timer: 2000,
-      showConfirmButton: false
-    });
+    afterClaim();
+  });
+}
+
+function afterClaim() {
+  sessionEarn   = 0;
+  refCommission = 0;
+  document.getElementById("mE").innerText        = "+0.00";
+  document.getElementById("mB").innerText        = balance.toFixed(2);
+  document.getElementById("comm-disp").innerText = "0.00";
+  document.getElementById("btn-claim").disabled  = false;
+
+  var cu = window.CU || {};
+  cu.balance = balance;
+  window.CU  = cu;
+  localStorage.setItem("psUser",  JSON.stringify(cu));
+  localStorage.setItem("ps_user", JSON.stringify(cu));
+
+  Swal.fire({
+    title: "Claim Successful! ✅",
+    text : "Aapki earning balance mein add ho gayi!",
+    icon : "success", timer:2000, showConfirmButton:false
   });
 }
 
