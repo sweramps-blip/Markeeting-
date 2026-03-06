@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Quiz | Power Star</title>
 
-<!-- Popunder + Social Bar Ad -->
-<script type="text/javascript" src="//pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
-<script src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
+<!-- Popunder + Social Bar Ad — async, body ke baad load honge -->
 
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -60,9 +58,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:#fff;padding:14p
 .rf-timeout{background:rgba(251,191,36,0.15);color:var(--gold);border:1px solid rgba(251,191,36,0.3);}
 
 /* LOADER */
-#loader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;}
-#loader h2{color:var(--p);letter-spacing:2px;margin-bottom:8px;}
-#loader p{font-size:12px;color:var(--sub);}
+#loader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;}
+#loader h2{color:var(--p);letter-spacing:2px;margin-bottom:12px;font-size:26px;}
+#loader p{font-size:14px;color:var(--sub);}
+.loader-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--p);margin:0 3px;animation:blink 1.2s infinite;}
+.loader-dot:nth-child(2){animation-delay:.25s;}
+.loader-dot:nth-child(3){animation-delay:.5s;}
+@keyframes blink{0%,80%,100%{opacity:.15;}40%{opacity:1;}}
 
 /* LIMIT SCREEN */
 #limit-screen{display:none;text-align:center;padding:40px 20px;}
@@ -87,7 +89,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:#fff;padding:14p
 
 <div id="loader">
   <h2>⚡ QUIZ</h2>
-  <p>Loading questions...</p>
+  <p>Loading<span class="loader-dot"></span><span class="loader-dot"></span><span class="loader-dot"></span></p>
 </div>
 
 <div class="app">
@@ -172,7 +174,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:#fff;padding:14p
 </div>
 
 <script>
-var GAS          = "https://script.google.com/macros/s/AKfycbxjftEjUcBbUcuGKSCCiNXYo4669R2TVl9mRiHT9MqAHmWhigq3-LoHG7FFIJI_QhI4YA/exec";
+var GAS          = "https://script.google.com/macros/s/AKfycbziDqfhlmwfiu1ef6fUH-Tro_bSYifwZFW6H5992P8oFfS9mFwolQQpF9RA9NkLUe6-ZQ/exec";
 var AD_URL       = "https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b";
 var UID          = (window.CU && window.CU.user_id) ? window.CU.user_id : (localStorage.getItem("psID") || "");
 
@@ -193,8 +195,18 @@ var balance      = parseFloat((window.CU && window.CU.balance) ? window.CU.balan
 
 window.onload = function() {
   document.getElementById("mB").innerText = balance.toFixed(2);
+  document.getElementById("loader").style.display = "none";  // hide immediately
+
+  // ── Ads async load — page block nahi hoga ────────────
+  setTimeout(function() {
+    var s1 = document.createElement("script");
+    s1.async = true;
+    s1.src   = "https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js";
+    document.body.appendChild(s1);
+  }, 500);
+
   loadBannerAds();
-  loadRefCommission();   // Firebase se team commission fetch karo
+  loadRefCommission();
   loadQuiz();
 };
 
@@ -477,5 +489,8 @@ function esc(s) {
   return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 </script>
+
+<!-- Ads load last — non-blocking -->
+<script async src="https://pl28713490.effectivegatecpm.com/50/e5/57/50e557cf9cc1005d7bf547336eed1e00.js"></script>
 </body>
 </html>
