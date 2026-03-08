@@ -1,0 +1,21 @@
+import telebot
+from telebot import types
+
+# Naya secure token
+TOKEN = "8692761604:AAExD3HxmBJPFqzi5YNIsbBn_cj3Tv6s0J8"
+bot = telebot.TeleBot(TOKEN)
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    markup = types.InlineKeyboardMarkup()
+    
+    # Aapka link yahan button mein add kar diya gaya hai
+    task_link = "https://sweramps-blip.github.io/Markeeting-/mega.html"
+    button = types.InlineKeyboardButton("Complete Daily Task 💰", url=task_link)
+    
+    markup.add(button)
+    
+    bot.reply_to(message, "Welcome to Power Star! Daily rewards hasil karne ke liye niche diye gaye button par click karein.", reply_markup=markup)
+
+print("Bot chal raha hai...")
+bot.polling()
