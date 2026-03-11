@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Star</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+text-align:center;
+background:#000;
+color:#fff;
+}
+
+#adbox{
+width:100%;
+height:300px;
+}
+
+#timer{
+font-size:22px;
+margin-top:10px;
+}
+
+#closeBtn{
+display:none;
+padding:12px 25px;
+font-size:18px;
+background:red;
+color:white;
+border:none;
+border-radius:5px;
+margin-top:15px;
+}
+
+#videoBox{
+display:none;
+width:100%;
+max-width:800px;
+margin:auto;
+margin-top:20px;
+}
+
+iframe{
+width:100%;
+height:420px;
+border:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- Ad -->
+<iframe id="adbox"
+src="https://www.effectivegatecpm.com/upkwe9r2?key=75595a960030d604a751407ff4d7266b">
+</iframe>
+
+<div id="timer">Ad closing in 10</div>
+
+<button id="closeBtn" onclick="showVideo()">Close Ad</button>
+
+<!-- Video -->
+<div id="videoBox">
+<iframe
+src="https://www.youtube.com/embed/V3wzFlZBP1g?autoplay=1">
+</iframe>
+</div>
+
+<script>
+
+var time = 10;
+
+var countdown = setInterval(function(){
+
+time--;
+
+document.getElementById("timer").innerHTML = "Ad closing in " + time;
+
+if(time <= 0){
+
+clearInterval(countdown);
+
+document.getElementById("timer").innerHTML = "Close ad and watch video";
+
+document.getElementById("closeBtn").style.display="inline-block";
+
+}
+
+},3000);
+
+function showVideo(){
+
+document.getElementById("adbox").style.display="none";
+
+document.getElementById("timer").style.display="none";
+
+document.getElementById("closeBtn").style.display="none";
+
+document.getElementById("videoBox").style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>
