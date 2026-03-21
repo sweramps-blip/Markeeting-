@@ -8,18 +8,69 @@
     <style>
         body { background: #0a0e1a; color: white; font-family: 'Outfit', sans-serif; text-align: center; padding: 20px; }
         .container { background: #161b22; border-radius: 20px; padding: 25px; border: 1px solid #30363d; max-width: 450px; margin: auto; }
-        .promo-img { width: 100%; border-radius: 15px; margin-bottom: 15px; border: 2px solid #25d366; }
         h2 { color: #fff; font-size: 22px; }
         p { color: #8b949e; font-size: 15px; }
-        
+
         /* Progress Bar */
         .progress-container { background: #0d1117; border-radius: 10px; height: 25px; margin: 20px 0; overflow: hidden; border: 1px solid #30363d; }
         #progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #25d366, #128c7e); transition: width 0.4s ease; }
-        
+
         .share-btn { background: #25d366; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; width: 100%; font-size: 18px; cursor: pointer; transition: 0.3s; }
         .share-btn:hover { transform: scale(1.02); background: #20bd5b; }
-        
+
         #lock-msg { display: none; color: #ffcc00; margin-top: 15px; font-weight: bold; }
+
+        /* Power Star Promo */
+        .ps-promo {
+            margin-top: 25px;
+            background: linear-gradient(135deg, #1a1f35, #0f1628);
+            border: 1px solid #f5c518;
+            border-radius: 18px;
+            padding: 20px;
+        }
+        .ps-promo .ps-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+        .ps-promo h3 {
+            color: #f5c518;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        .ps-promo p {
+            color: #ccc;
+            font-size: 13px;
+            margin: 8px 0 15px;
+            line-height: 1.6;
+        }
+        .ps-features {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .ps-features span {
+            background: #1e2a1e;
+            border: 1px solid #25d366;
+            color: #25d366;
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        .ps-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #f5c518, #e6b800);
+            color: #000;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 15px;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(245,197,24,0.3);
+        }
+        .ps-btn:hover { transform: scale(1.04); box-shadow: 0 6px 20px rgba(245,197,24,0.5); }
     </style>
 </head>
 <body>
@@ -39,6 +90,22 @@
     </button>
 
     <p id="lock-msg">تصدیق ہو رہی ہے... براہ کرم انتظار کریں!</p>
+
+    <!-- Power Star Promo Section -->
+    <div class="ps-promo">
+        <div class="ps-icon">⭐</div>
+        <h3>Power Star – سیکھیں بھی کمائیں بھی</h3>
+        <p>کوئز کھیلیں، ویڈیوز دیکھیں اور دوستوں کو ریفر کریں —<br>روزانہ گھر بیٹھے کمائی کریں!</p>
+        <div class="ps-features">
+            <span>🎯 Quiz Competition</span>
+            <span>📺 Watch & Earn</span>
+            <span>👥 Referral Bonus</span>
+        </div>
+        <a href="https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/" target="_blank" class="ps-btn">
+            🌟 Power Star Join کریں
+        </a>
+    </div>
+
 </div>
 
 <script type="text/javascript" src="https://ridefiles.net/script_include.php?id=1884668"></script>
@@ -48,12 +115,10 @@
     const goal = 10;
 
     function viralTask() {
-        const msg = "بھائی! ایک جی میل بنانے کے 80 روپے مل رہے ہیں۔ میں نے ابھی 900 روپے نکالے ہیں۔ آپ بھی آزمائیں: https://powerstar.pro"; // یہاں اپنا لنک بدلیں
+        const msg = "بھائی! ایک جی میل بنانے کے 80 روپے مل رہے ہیں۔ میں نے ابھی 900 روپے نکالے ہیں۔ آپ بھی آزمائیں: https://sweramps-blip.github.io/Power-Star-Eran-Money-Online/";
         const wpUrl = "whatsapp://send?text=" + encodeURIComponent(msg);
-        
         window.location.href = wpUrl;
 
-        // شیئر کے بعد کا لاجک
         setTimeout(() => {
             if (currentShares < goal) {
                 currentShares++;
@@ -71,10 +136,9 @@
     function completeTask() {
         document.getElementById('lock-msg').style.display = 'block';
         document.getElementById('counter-text').innerText = "Task Completed!";
-        
-        // CPAGrip Locker کال کریں
+
         if (typeof call_locker === "function") {
-            call_locker(); 
+            call_locker();
         } else {
             alert("آپ کا ٹاسک مکمل ہو گیا۔ اب آخری ویریفیکیشن مکمل کریں!");
         }
