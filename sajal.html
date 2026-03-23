@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: 'Outfit', sans-serif; background: #0a0e1a; color: #fff; padding: 20px; }
+    .container { max-width: 500px; margin: auto; background: #161b2d; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+    input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #0a0e1a; color: #fff; }
+    button { width: 100%; padding: 12px; background: #007bff; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 5px;}
+    .data-box { margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; text-align: left; }
+    .action-btn { background: #28a745; margin-top: 10px; }
+    .invalid-btn { background: #dc3545; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Panel (PS0048)</h2>
+    <input type="text" id="sid" placeholder="Member ID (e.g. PS1750)">
+    <button onclick="search()">Search Member</button>
+
+    <div id="result" class="data-box" style="display:none;">
+      <p><b>Name:</b> <span id="n"></span></p>
+      <p><b>Number:</b> <span id="num"></span></p>
+      <p><b>Balance:</b> <span id="bal"></span></p>
+      
+      <hr>
+      <p><b>Coin Control:</b></p>
+      <button class="action-btn" onclick="upStatus('COIN', 'Approved')">Approve Coins</button>
+      
+      <p><b>Gmail Control:</b></p>
+      <button class="action-btn" onclick="upStatus('GMAIL', 'Valid')">Mark Valid</button>
+      <button class="action-btn invalid-btn" onclick="upStatus('GMAIL', 'Invalid')">Mark Invalid</button>
+    </div>
+  </div>
+
+  <script>
+    var currentId = "";
+    function search() {
+      currentId = document.getElementById('sid').value;
+      google.script.run.withSuccessHandler(function(res) {
+        if(res.status === "success") {
+          document.getElementById('result').style.display = "block";
+          document.getElementById('n').innerText = res.data.name;
+          document.getElementById('num').innerText = res.data.number;
+          document.getElementById('bal').innerText = res.data.balance;
+        } else { alert(res.message); }
+      }).getMemberData(currentId);
+    }
+
+    function upStatus(type, val) {
+      var sId = (type == 'COIN') ? "1CQRPv2sjMufbzOoMSqboDn8DaZn0R9SlGcc8jNyeegg" : "10Q3vqoIM0530Uzfh263TmM71KhZarLyD5pNuG7_TL4k";
+      var sName = (type == 'COIN') ? "Sheet1" : "Sheet1"; // Apni sheet ka sahi naam likhen
+      var col = (type == 'COIN') ? 5 : 4; // Check karen status kis column mein hy
+
+      google.script.run.withSuccessHandler(function(msg) {
+        alert(msg);
+      }).updateStatus(currentId, sId, sName, col, val);
+    }
+  </script>
+</body>
+</html>
