@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Power Star — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* ═══ ROOT ═══ */
+:root{
+  --bg:#060b18;
+  --card:#0e1628;
+  --card2:#131c30;
+  --border:#1e2d4a;
+  --gold:#fbbf24;
+  --ac:#d4ff00;
+  --green:#22c55e;
+  --red:#ef4444;
+  --blue:#3b82f6;
+  --purple:#a855f7;
+  --sub:#64748b;
+  --text:#e2e8f0;
+  --glow:rgba(212,255,0,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif;}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ═══ GRID BG ═══ */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(212,255,0,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,255,0,0.03) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;
+}
+
+/* ═══ LOGIN SCREEN ═══ */
+#login-screen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);z-index:100;padding:20px;
+}
+.login-box{
+  width:100%;max-width:380px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:36px 28px;
+  position:relative;overflow:hidden;
+}
+.login-box::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(212,255,0,0.12),transparent 70%);
+  pointer-events:none;
+}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .star{font-size:44px;display:block;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(212,255,0,0.6));}
+.login-logo h1{font-size:22px;font-weight:900;color:#fff;}
+.login-logo h1 span{color:var(--ac);}
+.login-logo p{font-size:12px;color:var(--sub);margin-top:4px;}
+.login-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#ef4444;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;margin-bottom:24px;}
+.inp-group{margin-bottom:16px;}
+.inp-group label{display:block;font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;}
+.inp-group input{
+  width:100%;background:#080f1e;border:1px solid var(--border);
+  color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;font-family:'Outfit',sans-serif;
+  transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.inp-group input:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(212,255,0,0.08);}
+.btn-login{
+  width:100%;padding:14px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#d4ff00,#a2c100);
+  color:#000;font-weight:900;font-size:15px;cursor:pointer;
+  font-family:'Outfit',sans-serif;margin-top:8px;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 20px rgba(212,255,0,0.25);
+}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(212,255,0,0.35);}
+.btn-login:active{transform:scale(.97);}
+.login-err{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;
+  border-radius:10px;padding:10px 14px;font-size:12px;margin-top:12px;display:none;text-align:center;}
+
+/* ═══ MAIN APP ═══ */
+#main-app{display:none;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+.header{
+  background:rgba(14,22,40,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.hdr-left{display:flex;align-items:center;gap:12px;}
+.hdr-logo{font-size:20px;font-weight:900;color:#fff;}
+.hdr-logo span{color:var(--ac);}
+.hdr-badge{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);
+  color:#ef4444;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:800;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.hdr-uid{font-size:12px;color:var(--sub);font-weight:600;}
+.btn-logout{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);
+  color:#ef4444;padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Outfit',sans-serif;transition:background .2s;}
+.btn-logout:hover{background:rgba(239,68,68,0.2);}
+
+/* ── STATS BAR ── */
+.stats-bar{display:flex;gap:10px;padding:16px 20px 0;overflow-x:auto;scrollbar-width:none;}
+.stats-bar::-webkit-scrollbar{display:none;}
+.stat-card{
+  flex-shrink:0;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:14px 18px;min-width:130px;
+  transition:border-color .3s;
+}
+.stat-card:hover{border-color:rgba(212,255,0,0.3);}
+.stat-val{font-size:26px;font-weight:900;color:var(--ac);line-height:1;}
+.stat-lbl{font-size:10px;color:var(--sub);font-weight:700;text-transform:uppercase;margin-top:4px;}
+.stat-card.g .stat-val{color:var(--green);}
+.stat-card.b .stat-val{color:var(--blue);}
+.stat-card.p .stat-val{color:var(--purple);}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;padding:16px 20px;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{
+  flex-shrink:0;padding:10px 20px;border-radius:12px;border:1px solid var(--border);
+  background:var(--card);color:var(--sub);font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .2s;display:flex;align-items:center;gap:7px;
+}
+.tab-btn.active{background:linear-gradient(135deg,#d4ff00,#a2c100);color:#000;border-color:transparent;box-shadow:0 4px 16px rgba(212,255,0,0.2);}
+.tab-btn i{font-size:14px;}
+
+/* ── PANEL CONTAINER ── */
+.panel{display:none;padding:16px 20px;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.search-box{
+  flex:1;min-width:180px;background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:10px 14px;color:#fff;font-size:13px;
+  font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;
+}
+.search-box:focus{border-color:var(--ac);}
+.filter-sel{
+  background:var(--card);border:1px solid var(--border);color:#fff;
+  padding:10px 14px;border-radius:12px;font-size:12px;font-family:'Outfit',sans-serif;
+  outline:none;cursor:pointer;
+}
+.btn-refresh{
+  background:rgba(212,255,0,0.08);border:1px solid rgba(212,255,0,0.25);
+  color:var(--ac);padding:10px 16px;border-radius:12px;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:6px;
+  transition:background .2s;
+}
+.btn-refresh:hover{background:rgba(212,255,0,0.15);}
+.count-badge{background:var(--card);border:1px solid var(--border);color:var(--sub);
+  padding:10px 14px;border-radius:12px;font-size:12px;font-weight:700;white-space:nowrap;}
+
+/* ── DATA CARDS ── */
+.data-list{display:flex;flex-direction:column;gap:10px;}
+.d-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:16px;transition:border-color .2s,transform .15s;
+  animation:fadeIn .3s ease;
+}
+.d-card:hover{border-color:rgba(212,255,0,0.25);transform:translateY(-1px);}
+.d-card.approved{border-color:rgba(34,197,94,0.4);background:linear-gradient(145deg,var(--card),rgba(34,197,94,0.03));}
+.d-card.rejected{border-color:rgba(239,68,68,0.3);opacity:.65;}
+
+.dc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.dc-id{font-size:15px;font-weight:800;color:var(--ac);}
+.dc-status{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;}
+.dc-status.pending{background:rgba(251,191,36,0.12);color:var(--gold);border:1px solid rgba(251,191,36,0.3);}
+.dc-status.approved{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+.dc-status.rejected{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+
+.dc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.dc-field{background:#080f1e;border-radius:10px;padding:10px 12px;}
+.dc-field.full{grid-column:1/-1;}
+.dc-label{font-size:10px;color:var(--sub);font-weight:700;text-transform:uppercase;margin-bottom:3px;}
+.dc-val{font-size:13px;color:#fff;font-weight:600;word-break:break-all;}
+.dc-val.mono{font-family:monospace;font-size:12px;color:#86efac;}
+.dc-val.highlight{color:var(--gold);font-size:14px;font-weight:800;}
+
+.dc-actions{display:flex;gap:8px;}
+.btn-approve{
+  flex:1;padding:11px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;
+  font-weight:800;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;
+  transition:opacity .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-reject{
+  flex:1;padding:11px;border:none;border-radius:11px;
+  background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;
+  font-weight:800;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;
+  transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-approve:hover{opacity:.85;}
+.btn-reject:hover{background:rgba(239,68,68,0.2);}
+.btn-approve:active,.btn-reject:active{transform:scale(.97);}
+.btn-approve:disabled,.btn-reject:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ── USERS — no action buttons, just view ── */
+.user-card-row{display:flex;align-items:center;gap:12px;padding:14px 16px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  transition:border-color .2s;}
+.user-card-row:hover{border-color:rgba(212,255,0,0.25);}
+.uc-avatar{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#1e293b,#0f172a);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;color:var(--ac);flex-shrink:0;}
+.uc-info{flex:1;min-width:0;}
+.uc-name{font-size:14px;font-weight:700;color:#fff;}
+.uc-meta{display:flex;gap:12px;margin-top:5px;flex-wrap:wrap;}
+.uc-meta-item{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:4px;}
+.uc-meta-item i{font-size:10px;}
+.uc-pass{background:#0a1220;border:1px solid var(--border);border-radius:8px;
+  padding:4px 10px;font-size:11px;font-family:monospace;color:#86efac;white-space:nowrap;flex-shrink:0;}
+
+/* ── EMPTY / LOADING ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--sub);}
+.empty-state .es-icon{font-size:44px;margin-bottom:12px;opacity:.4;}
+.empty-state p{font-size:13px;}
+.loader{display:flex;align-items:center;justify-content:center;padding:40px;gap:10px;color:var(--sub);}
+.loader i{font-size:20px;animation:spin 1s linear infinite;color:var(--ac);}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:#1a1f35;border:1px solid var(--border);border-radius:14px;
+  padding:12px 20px;font-size:13px;font-weight:700;color:#fff;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:200;
+  white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:rgba(34,197,94,0.4);}
+.toast.error{border-color:rgba(239,68,68,0.4);}
+
+/* ── EXTRAS TOGGLE ── */
+.extras-toggle{font-size:11px;color:var(--blue);cursor:pointer;margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-weight:600;}
+.extras-body{display:none;margin-top:8px;}
+.extras-body.open{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1e2d4a;border-radius:10px;}
+</style>
+</head>
+<body>
+
+<!-- ════ LOGIN ════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="star">⭐</span>
+      <h1>Power <span>Star</span></h1>
+      <p>Admin Control Panel</p>
+    </div>
+    <div style="text-align:center;margin-bottom:20px">
+      <span class="login-badge"><i class="fas fa-shield-alt"></i> Restricted Access</span>
+    </div>
+    <div class="inp-group">
+      <label>Admin ID</label>
+      <input type="text" id="inp-uid" placeholder="PS0000" autocomplete="off">
+    </div>
+    <div class="inp-group">
+      <label>Password</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="off">
+    </div>
+    <button class="btn-login" onclick="doLogin()">
+      <i class="fas fa-unlock-alt"></i> Login Karein
+    </button>
+    <div class="login-err" id="login-err">❌ Galat ID ya Password</div>
+  </div>
+</div>
+
+<!-- ════ MAIN APP ════ -->
+<div id="main-app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="hdr-left">
+      <div class="hdr-logo">⭐ Power <span>Star</span></div>
+      <span class="hdr-badge"><i class="fas fa-user-shield"></i> Admin</span>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-uid" id="hdr-uid"></span>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-users">—</div>
+      <div class="stat-lbl">👥 Total Users</div>
+    </div>
+    <div class="stat-card g">
+      <div class="stat-val" id="stat-gmails">—</div>
+      <div class="stat-lbl">📧 Gmail Entries</div>
+    </div>
+    <div class="stat-card b">
+      <div class="stat-val" id="stat-coins">—</div>
+      <div class="stat-lbl">🪙 Coin Requests</div>
+    </div>
+    <div class="stat-card p">
+      <div class="stat-val" id="stat-pending">—</div>
+      <div class="stat-lbl">⏳ Pending</div>
+    </div>
+    <div class="stat-card" style="--val-color:#3b82f6;">
+      <div class="stat-val" id="stat-msgs" style="color:#3b82f6;">—</div>
+      <div class="stat-lbl">💬 Messages</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('users')" id="tab-users">
+      <i class="fas fa-users"></i> Users
+    </button>
+    <button class="tab-btn" onclick="switchTab('gmail')" id="tab-gmail">
+      <i class="fas fa-envelope"></i> Gmail
+    </button>
+    <button class="tab-btn" onclick="switchTab('coins')" id="tab-coins">
+      <i class="fas fa-coins"></i> Coins
+    </button>
+    <button class="tab-btn" onclick="switchTab('messages')" id="tab-messages">
+      <i class="fas fa-comments"></i> Messages <span id="msg-unread-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:2px;">0</span>
+    </button>
+  </div>
+
+  <!-- ── USERS PANEL ── -->
+  <div class="panel active" id="panel-users">
+    <div class="toolbar">
+      <input class="search-box" id="search-users" placeholder="🔍 ID, Name ya Number dhundein..." oninput="filterUsers()">
+      <button class="btn-refresh" onclick="loadUsers(true)"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <span class="count-badge" id="cnt-users">0 users</span>
+    </div>
+    <div class="data-list" id="list-users">
+      <div class="loader"><i class="fas fa-spinner"></i> Users load ho rahe hain...</div>
+    </div>
+  </div>
+
+  <!-- ── GMAIL PANEL ── -->
+  <div class="panel" id="panel-gmail">
+    <div class="toolbar">
+      <input class="search-box" id="search-gmail" placeholder="🔍 ID ya Gmail dhundein..." oninput="filterGmail()">
+      <select class="filter-sel" id="filter-gmail" onchange="filterGmail()">
+        <option value="">Sab</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <button class="btn-refresh" onclick="loadGmails(true)"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <span class="count-badge" id="cnt-gmail">0 entries</span>
+    </div>
+    <div class="data-list" id="list-gmail">
+      <div class="loader"><i class="fas fa-spinner"></i> Gmail data load ho raha hai...</div>
+    </div>
+  </div>
+
+  <!-- ── COINS PANEL ── -->
+  <div class="panel" id="panel-coins">
+    <div class="toolbar">
+      <input class="search-box" id="search-coins" placeholder="🔍 ID ya Name dhundein..." oninput="filterCoins()">
+      <select class="filter-sel" id="filter-coins" onchange="filterCoins()">
+        <option value="">Sab</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <button class="btn-refresh" onclick="loadCoins(true)"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <span class="count-badge" id="cnt-coins">0 entries</span>
+    </div>
+    <div class="data-list" id="list-coins">
+      <div class="loader"><i class="fas fa-spinner"></i> Coins data load ho raha hai...</div>
+    </div>
+  </div>
+
+  <!-- ── MESSAGES PANEL ── -->
+  <div class="panel" id="panel-messages">
+    <div class="toolbar">
+      <input class="search-box" id="search-msgs" placeholder="🔍 User ID ya message dhundein..." oninput="filterMessages()">
+      <select class="filter-sel" id="filter-msgs" onchange="filterMessages()">
+        <option value="">Sab</option>
+        <option value="unread">Unread</option>
+        <option value="read">Read</option>
+      </select>
+      <button class="btn-refresh" onclick="loadMessages(true)"><i class="fas fa-sync-alt"></i> Refresh</button>
+      <span class="count-badge" id="cnt-msgs">0 messages</span>
+    </div>
+
+    <!-- Send to specific user -->
+    <div style="background:var(--card);border:1px solid rgba(212,255,0,0.25);border-radius:16px;padding:16px;margin-bottom:14px;">
+      <div style="font-size:12px;font-weight:800;color:var(--ac);margin-bottom:10px;"><i class="fas fa-paper-plane"></i> User Ko Message Bhejein</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input class="search-box" id="reply-uid" placeholder="User ID (e.g. PS0010)" style="flex:1;min-width:120px;">
+        <input class="search-box" id="reply-msg" placeholder="Message likhein..." style="flex:2;min-width:180px;">
+        <button onclick="adminSendMsg()" style="background:linear-gradient(135deg,#d4ff00,#a2c100);color:#000;border:none;padding:10px 18px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;"><i class="fas fa-paper-plane"></i> Bhejen</button>
+      </div>
+    </div>
+
+    <div class="data-list" id="list-messages">
+      <div class="loader"><i class="fas fa-spinner"></i> Messages load ho rahe hain...</div>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg"></span></div>
+
+<script>
+// ════ CONFIG ════
+// ⬇️ Yahan apna GAS URL paste karein (AdminCode.gs deploy karne ke baad)
+var GAS = "https://script.google.com/macros/s/AKfycbxqcPpaUpBIopBYvqhcayqBDxhvt0tXxhwr3de7Kbt7-DZC7hbzmx-hCs6MQSQXa-5Lww/exec";
+
+var ADMIN_ID   = "PS0003";
+var ADMIN_PASS = "allah654";
+
+// ════ STATE ════
+var allUsers  = [];
+var allGmails = [];
+var allCoins  = [];
+var curTab    = "users";
+
+// ════ LOGIN ════
+function doLogin() {
+  var uid  = document.getElementById("inp-uid").value.trim();
+  var pass = document.getElementById("inp-pass").value.trim();
+  var err  = document.getElementById("login-err");
+  err.style.display = "none";
+
+  if (uid === ADMIN_ID && pass === ADMIN_PASS) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("main-app").style.display     = "block";
+    document.getElementById("hdr-uid").innerText = uid;
+    loadUsers();
+    loadGmails();
+    loadCoins();
+    loadMessages();
+  } else {
+    err.style.display = "block";
+    document.getElementById("inp-pass").value = "";
+  }
+}
+
+// Enter key on login
+document.addEventListener("keydown", function(e){
+  if (e.key === "Enter" && document.getElementById("login-screen").style.display !== "none") doLogin();
+});
+
+function logout() {
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("main-app").style.display     = "none";
+  document.getElementById("inp-pass").value = "";
+  document.getElementById("inp-uid").value  = "";
+}
+
+// ════ TABS ════
+function switchTab(name) {
+  curTab = name;
+  ["users","gmail","coins","messages"].forEach(function(t){
+    document.getElementById("panel-"+t).classList.toggle("active", t===name);
+    document.getElementById("tab-"+t).classList.toggle("active",   t===name);
+  });
+  if (name === "messages") loadMessages();
+}
+
+// ════ LOAD DATA ════
+function loadUsers(force) {
+  setList("list-users", '<div class="loader"><i class="fas fa-spinner"></i> Loading...</div>');
+  fetch(GAS + "?type=get_users")
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status !== "success") { showErr("list-users", d.message); return; }
+      allUsers = d.users || [];
+      document.getElementById("stat-users").innerText = allUsers.length;
+      renderUsers(allUsers);
+    })
+    .catch(function(e){ showErr("list-users", "Connection failed: " + e.message); });
+}
+
+function loadGmails(force) {
+  setList("list-gmail", '<div class="loader"><i class="fas fa-spinner"></i> Loading...</div>');
+  fetch(GAS + "?type=get_gmails")
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status !== "success") { showErr("list-gmail", d.message); return; }
+      allGmails = d.gmails || [];
+      document.getElementById("stat-gmails").innerText = allGmails.length;
+      updateStats();
+      renderGmails(allGmails);
+    })
+    .catch(function(e){ showErr("list-gmail", "Connection failed: " + e.message); });
+}
+
+function loadCoins(force) {
+  setList("list-coins", '<div class="loader"><i class="fas fa-spinner"></i> Loading...</div>');
+  fetch(GAS + "?type=get_coins")
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status !== "success") { showErr("list-coins", d.message); return; }
+      allCoins = d.coins || [];
+      document.getElementById("stat-coins").innerText = allCoins.length;
+      updateStats();
+      renderCoins(allCoins);
+    })
+    .catch(function(e){ showErr("list-coins", "Connection failed: " + e.message); });
+}
+
+function updateStats() {
+  var pending = 0;
+  allGmails.forEach(function(g){ if (!String(g.status).toLowerCase().includes("approved") && !String(g.status).toLowerCase().includes("rejected")) pending++; });
+  allCoins.forEach(function(c){  if (!String(c.status).toLowerCase().includes("approved") && !String(c.status).toLowerCase().includes("rejected")) pending++; });
+  document.getElementById("stat-pending").innerText = pending;
+}
+
+// ════ MESSAGES ════
+var allMessages = [];
+var msgLoaded   = false;
+
+function loadMessages(force) {
+  if (msgLoaded && !force) return;
+  setList("list-messages", '<div class="loader"><i class="fas fa-spinner"></i> Loading...</div>');
+  fetch(GAS + "?type=get_messages")
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      msgLoaded = true;
+      if (d.status !== "success") { showErr("list-messages", d.message||"Error"); return; }
+      allMessages = d.messages || [];
+      document.getElementById("stat-msgs").innerText = allMessages.length;
+      var unread = allMessages.filter(function(m){ return !m.read_by_admin; }).length;
+      var badge = document.getElementById("msg-unread-badge");
+      if (unread > 0) { badge.style.display="inline"; badge.innerText=unread; } else { badge.style.display="none"; }
+      document.getElementById("cnt-msgs").innerText = allMessages.length + " messages";
+      renderMessages(allMessages);
+    })
+    .catch(function(e){ showErr("list-messages","Connection failed: "+e.message); });
+}
+
+function renderMessages(list) {
+  document.getElementById("cnt-msgs").innerText = list.length + " messages";
+  if (!list.length) { setList("list-messages", emptyHtml("💬","Koi message nahi mila")); return; }
+  var html = list.map(function(m, idx){
+    var isRead   = m.read_by_admin;
+    var hasReply = m.admin_reply;
+    return '<div class="d-card" id="mcard-'+idx+'" style="border-color:'+(isRead?"var(--border)":"rgba(59,130,246,0.5)")+';background:'+(isRead?"var(--card)":"linear-gradient(145deg,var(--card),rgba(59,130,246,0.04))")+'">'
+      + '<div class="dc-top">'
+        + '<span class="dc-id"><i class="fas fa-id-badge"></i> '+esc(m.user_id)+'</span>'
+        + (isRead ? '' : '<span class="dc-status pending" style="background:rgba(59,130,246,0.12);color:#3b82f6;border-color:rgba(59,130,246,0.3);">🔵 New</span>')
+      + '</div>'
+      + '<div class="dc-grid">'
+        + (m.name  ? '<div class="dc-field"><div class="dc-label">👤 Name</div><div class="dc-val">'+esc(m.name)+'</div></div>' : '')
+        + (m.date  ? '<div class="dc-field"><div class="dc-label">📅 Date</div><div class="dc-val">'+esc(m.date)+'</div></div>' : '')
+        + '<div class="dc-field full"><div class="dc-label">💬 Message</div><div class="dc-val" style="color:#e2e8f0;white-space:pre-wrap;">'+esc(m.message)+'</div></div>'
+        + (hasReply ? '<div class="dc-field full"><div class="dc-label" style="color:var(--ac);">✅ Admin Reply</div><div class="dc-val" style="color:var(--ac);white-space:pre-wrap;">'+esc(m.admin_reply)+'</div></div>' : '')
+      + '</div>'
+      + '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">'
+        + '<input class="search-box" id="ri-'+idx+'" placeholder="Reply likhein..." style="flex:1;min-width:150px;">'
+        + '<button onclick="replyToUser(\''+esc(m.user_id)+'\',\''+m.row+'\','+idx+')" style="background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border:none;padding:10px 16px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;font-family:\'Outfit\',sans-serif;display:flex;align-items:center;gap:5px;"><i class="fas fa-reply"></i> Reply</button>'
+        + (!isRead ? '<button onclick="markRead(\''+m.row+'\','+idx+')" style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#22c55e;padding:10px 14px;border-radius:11px;font-weight:700;font-size:12px;cursor:pointer;font-family:\'Outfit\',sans-serif;"><i class="fas fa-check"></i> Read</button>' : '')
+      + '</div>'
+    + '</div>';
+  }).join("");
+  setList("list-messages", html);
+}
+
+function filterMessages() {
+  var q  = document.getElementById("search-msgs").value.toLowerCase();
+  var st = document.getElementById("filter-msgs").value;
+  var f  = allMessages.filter(function(m){
+    var matchQ = !q || (m.user_id+m.name+m.message).toLowerCase().includes(q);
+    var matchS = !st
+      || (st==="unread" && !m.read_by_admin)
+      || (st==="read"   && m.read_by_admin);
+    return matchQ && matchS;
+  });
+  renderMessages(f);
+}
+
+function replyToUser(userId, row, idx) {
+  var inp = document.getElementById("ri-"+idx);
+  if (!inp) return;
+  var msg = inp.value.trim();
+  if (!msg) { showToast("⚠️ Reply likhein pehle","error"); return; }
+  inp.disabled = true;
+  fetch(GAS + "?type=admin_reply&user_id="+encodeURIComponent(userId)+"&row="+row+"&reply="+encodeURIComponent(msg))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status === "success") {
+        showToast("✅ Reply bhej di!","success");
+        inp.value = "";
+        inp.disabled = false;
+        loadMessages(true);
+      } else {
+        inp.disabled = false;
+        showToast("⚠️ "+d.message,"error");
+      }
+    })
+    .catch(function(){ inp.disabled=false; showToast("Connection failed","error"); });
+}
+
+function markRead(row, idx) {
+  fetch(GAS + "?type=mark_msg_read&row="+row)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status==="success") {
+        showToast("✅ Read mark kar diya","success");
+        loadMessages(true);
+      }
+    }).catch(function(){});
+}
+
+function adminSendMsg() {
+  var uid = document.getElementById("reply-uid").value.trim();
+  var msg = document.getElementById("reply-msg").value.trim();
+  if (!uid) { showToast("⚠️ User ID dalen","error"); return; }
+  if (!msg) { showToast("⚠️ Message likhein","error"); return; }
+  fetch(GAS + "?type=admin_send&user_id="+encodeURIComponent(uid)+"&message="+encodeURIComponent(msg))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status==="success") {
+        showToast("✅ Message bhej diya: "+uid,"success");
+        document.getElementById("reply-uid").value = "";
+        document.getElementById("reply-msg").value = "";
+        loadMessages(true);
+      } else {
+        showToast("⚠️ "+d.message,"error");
+      }
+    }).catch(function(){ showToast("Connection failed","error"); });
+}
+
+// ════ RENDER USERS ════
+function renderUsers(list) {
+  document.getElementById("cnt-users").innerText = list.length + " users";
+  if (!list.length) { setList("list-users", emptyHtml("👥","Koi user nahi mila")); return; }
+  var html = list.map(function(u, i){
+    var initials = (u.name||"?").charAt(0).toUpperCase();
+    return '<div class="user-card-row">'
+      + '<div class="uc-avatar">' + initials + '</div>'
+      + '<div class="uc-info">'
+        + '<div class="uc-name">' + esc(u.name||"—") + '</div>'
+        + '<div class="uc-meta">'
+          + '<span class="uc-meta-item" style="color:var(--ac)"><i class="fas fa-id-badge"></i> ' + esc(u.user_id) + '</span>'
+          + (u.whatsapp ? '<span class="uc-meta-item"><i class="fab fa-whatsapp"></i> ' + esc(u.whatsapp) + '</span>' : '')
+        + '</div>'
+      + '</div>'
+      + '<div class="uc-pass"><i class="fab fa-whatsapp" style="color:#25d366;margin-right:4px"></i>' + esc(u.whatsapp||"—") + '</div>'
+    + '</div>';
+  }).join("");
+  setList("list-users", html);
+}
+
+function filterUsers() {
+  var q = document.getElementById("search-users").value.toLowerCase();
+  var f = !q ? allUsers : allUsers.filter(function(u){
+    return (u.user_id+u.name+u.whatsapp).toLowerCase().includes(q);
+  });
+  renderUsers(f);
+}
+
+// ════ RENDER GMAIL ════
+function renderGmails(list) {
+  document.getElementById("cnt-gmail").innerText = list.length + " entries";
+  if (!list.length) { setList("list-gmail", emptyHtml("📧","Koi Gmail entry nahi mili")); return; }
+  var html = list.map(function(g){
+    var st    = String(g.status||"Pending");
+    var stCls = st.toLowerCase().includes("approved") ? "approved" : st.toLowerCase().includes("rejected") ? "rejected" : "pending";
+    var isDone = stCls !== "pending";
+
+    var extrasHtml = "";
+    if (g.extras && Object.keys(g.extras).length > 0) {
+      extrasHtml += '<span class="extras-toggle" onclick="toggleExtras(this)"><i class="fas fa-chevron-down"></i> Mazeed info</span>';
+      extrasHtml += '<div class="extras-body">';
+      Object.keys(g.extras).forEach(function(k){
+        if (g.extras[k]) extrasHtml += '<div class="dc-field"><div class="dc-label">'+esc(k)+'</div><div class="dc-val">'+esc(g.extras[k])+'</div></div>';
+      });
+      extrasHtml += '</div>';
+    }
+
+    return '<div class="d-card ' + stCls + '" id="gcard-'+g.row+'">'
+      + '<div class="dc-top">'
+        + '<span class="dc-id"><i class="fas fa-id-badge"></i> ' + esc(g.user_id) + '</span>'
+        + '<span class="dc-status ' + stCls + '">' + esc(st) + '</span>'
+      + '</div>'
+      + '<div class="dc-grid">'
+        + (g.name    ? '<div class="dc-field"><div class="dc-label">👤 Name</div><div class="dc-val">'+esc(g.name)+'</div></div>' : '')
+        + (g.gmail   ? '<div class="dc-field full"><div class="dc-label">📧 Gmail</div><div class="dc-val mono">'+esc(g.gmail)+'</div></div>' : '')
+        + (g.password? '<div class="dc-field"><div class="dc-label">🔑 Password</div><div class="dc-val mono">'+esc(g.password)+'</div></div>' : '')
+        + (g.phone   ? '<div class="dc-field"><div class="dc-label"><i class="fab fa-whatsapp"></i> Phone</div><div class="dc-val">'+esc(g.phone)+'</div></div>' : '')
+        + (g.price   ? '<div class="dc-field"><div class="dc-label">💰 Price</div><div class="dc-val highlight">'+esc(g.price)+'</div></div>' : '')
+        + (g.date    ? '<div class="dc-field"><div class="dc-label">📅 Date</div><div class="dc-val">'+esc(g.date)+'</div></div>' : '')
+      + '</div>'
+      + extrasHtml
+      + (!isDone ? '<div class="dc-actions" style="margin-top:12px">'
+          + '<button class="btn-approve" id="ga-'+g.row+'" onclick="approveGmail('+g.row+',this)"><i class="fas fa-check"></i> Approve</button>'
+          + '<button class="btn-reject"  id="gr-'+g.row+'" onclick="rejectGmail('+g.row+',this)"><i class="fas fa-times"></i> Reject</button>'
+        + '</div>' : '')
+    + '</div>';
+  }).join("");
+  setList("list-gmail", html);
+}
+
+function filterGmail() {
+  var q  = document.getElementById("search-gmail").value.toLowerCase();
+  var st = document.getElementById("filter-gmail").value.toLowerCase();
+  var f  = allGmails.filter(function(g){
+    var matchQ  = !q || (g.user_id+g.gmail+g.name).toLowerCase().includes(q);
+    var matchSt = !st || String(g.status||"pending").toLowerCase().includes(st);
+    return matchQ && matchSt;
+  });
+  renderGmails(f);
+}
+
+function approveGmail(row, btn) { updateGmailStatus(row, "approve", btn); }
+function rejectGmail (row, btn) { updateGmailStatus(row, "reject",  btn); }
+function updateGmailStatus(row, action, btn) {
+  setBtnsDisabled("ga-"+row, "gr-"+row, true);
+  fetch(GAS + "?type="+action+"_gmail&row="+row)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status === "success") {
+        var card = document.getElementById("gcard-"+row);
+        if (card) {
+          var newSt  = action === "approve" ? "Approved ✅" : "Rejected ❌";
+          var newCls = action === "approve" ? "approved" : "rejected";
+          card.querySelector(".dc-status").innerText = newSt;
+          card.querySelector(".dc-status").className = "dc-status " + newCls;
+          card.className = "d-card " + newCls;
+          var acts = card.querySelector(".dc-actions");
+          if (acts) acts.remove();
+          // update allGmails
+          allGmails.forEach(function(g){ if (g.row===row) g.status = newSt; });
+          updateStats();
+        }
+        showToast(action==="approve" ? "✅ Gmail Approved!" : "❌ Gmail Rejected", action==="approve"?"success":"error");
+      } else {
+        setBtnsDisabled("ga-"+row, "gr-"+row, false);
+        showToast("⚠️ Error: " + d.message, "error");
+      }
+    })
+    .catch(function(e){ setBtnsDisabled("ga-"+row,"gr-"+row,false); showToast("Connection failed","error"); });
+}
+
+// ════ RENDER COINS ════
+function renderCoins(list) {
+  document.getElementById("cnt-coins").innerText = list.length + " entries";
+  if (!list.length) { setList("list-coins", emptyHtml("🪙","Koi coin request nahi mila")); return; }
+  var html = list.map(function(c){
+    var st    = String(c.status||"Pending");
+    var stCls = st.toLowerCase().includes("approved") ? "approved" : st.toLowerCase().includes("rejected") ? "rejected" : "pending";
+    var isDone = stCls !== "pending";
+
+    var extrasHtml = "";
+    if (c.extras && Object.keys(c.extras).length > 0) {
+      extrasHtml += '<span class="extras-toggle" onclick="toggleExtras(this)"><i class="fas fa-chevron-down"></i> Mazeed info</span>';
+      extrasHtml += '<div class="extras-body">';
+      Object.keys(c.extras).forEach(function(k){
+        if (c.extras[k]) extrasHtml += '<div class="dc-field"><div class="dc-label">'+esc(k)+'</div><div class="dc-val">'+esc(c.extras[k])+'</div></div>';
+      });
+      extrasHtml += '</div>';
+    }
+
+    return '<div class="d-card ' + stCls + '" id="ccard-'+c.row+'">'
+      + '<div class="dc-top">'
+        + '<span class="dc-id"><i class="fas fa-id-badge"></i> ' + esc(c.user_id) + '</span>'
+        + '<span class="dc-status ' + stCls + '">' + esc(st) + '</span>'
+      + '</div>'
+      + '<div class="dc-grid">'
+        + (c.name  ? '<div class="dc-field"><div class="dc-label">👤 Name</div><div class="dc-val">'+esc(c.name)+'</div></div>' : '')
+        + (c.coins ? '<div class="dc-field"><div class="dc-label">🪙 Coins</div><div class="dc-val highlight">'+esc(c.coins)+'</div></div>' : '')
+        + (c.type  ? '<div class="dc-field"><div class="dc-label">🎮 Type</div><div class="dc-val">'+esc(c.type)+'</div></div>' : '')
+        + (c.phone ? '<div class="dc-field"><div class="dc-label"><i class="fab fa-whatsapp"></i> Phone</div><div class="dc-val">'+esc(c.phone)+'</div></div>' : '')
+        + (c.date  ? '<div class="dc-field"><div class="dc-label">📅 Date</div><div class="dc-val">'+esc(c.date)+'</div></div>' : '')
+      + '</div>'
+      + extrasHtml
+      + (!isDone ? '<div class="dc-actions" style="margin-top:12px">'
+          + '<button class="btn-approve" id="ca-'+c.row+'" onclick="approveCoin('+c.row+',this)"><i class="fas fa-check"></i> Approve</button>'
+          + '<button class="btn-reject"  id="cr-'+c.row+'" onclick="rejectCoin('+c.row+',this)"><i class="fas fa-times"></i> Reject</button>'
+        + '</div>' : '')
+    + '</div>';
+  }).join("");
+  setList("list-coins", html);
+}
+
+function filterCoins() {
+  var q  = document.getElementById("search-coins").value.toLowerCase();
+  var st = document.getElementById("filter-coins").value.toLowerCase();
+  var f  = allCoins.filter(function(c){
+    var matchQ  = !q  || (c.user_id+c.name+c.type).toLowerCase().includes(q);
+    var matchSt = !st || String(c.status||"pending").toLowerCase().includes(st);
+    return matchQ && matchSt;
+  });
+  renderCoins(f);
+}
+
+function approveCoin(row, btn) { updateCoinStatus(row, "approve", btn); }
+function rejectCoin (row, btn) { updateCoinStatus(row, "reject",  btn); }
+function updateCoinStatus(row, action, btn) {
+  setBtnsDisabled("ca-"+row, "cr-"+row, true);
+  fetch(GAS + "?type="+action+"_coin&row="+row)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.status === "success") {
+        var card = document.getElementById("ccard-"+row);
+        if (card) {
+          var newSt  = action === "approve" ? "Approved ✅" : "Rejected ❌";
+          var newCls = action === "approve" ? "approved" : "rejected";
+          card.querySelector(".dc-status").innerText = newSt;
+          card.querySelector(".dc-status").className = "dc-status " + newCls;
+          card.className = "d-card " + newCls;
+          var acts = card.querySelector(".dc-actions");
+          if (acts) acts.remove();
+          allCoins.forEach(function(c){ if (c.row===row) c.status = newSt; });
+          updateStats();
+        }
+        showToast(action==="approve" ? "✅ Coin Approved!" : "❌ Coin Rejected", action==="approve"?"success":"error");
+      } else {
+        setBtnsDisabled("ca-"+row, "cr-"+row, false);
+        showToast("⚠️ Error: " + d.message, "error");
+      }
+    })
+    .catch(function(){ setBtnsDisabled("ca-"+row,"cr-"+row,false); showToast("Connection failed","error"); });
+}
+
+// ════ HELPERS ════
+function setBtnsDisabled(id1, id2, val) {
+  var b1 = document.getElementById(id1);
+  var b2 = document.getElementById(id2);
+  if (b1) { b1.disabled = val; b1.innerHTML = val ? '<i class="fas fa-spinner" style="animation:spin 1s linear infinite"></i>' : '<i class="fas fa-check"></i> Approve'; }
+  if (b2) { b2.disabled = val; }
+}
+function setList(id, html) { document.getElementById(id).innerHTML = html; }
+function emptyHtml(icon, msg) {
+  return '<div class="empty-state"><div class="es-icon">'+icon+'</div><p>'+msg+'</p></div>';
+}
+function showErr(listId, msg) {
+  setList(listId, '<div class="empty-state"><div class="es-icon">⚠️</div><p>Error: '+esc(msg)+'</p></div>');
+}
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/'/g,"&#39;").replace(/"/g,"&quot;"); }
+
+function toggleExtras(el) {
+  var body = el.nextElementSibling;
+  body.classList.toggle("open");
+  el.querySelector("i").style.transform = body.classList.contains("open") ? "rotate(180deg)" : "";
+}
+
+var toastTimer;
+function showToast(msg, type) {
+  var t = document.getElementById("toast");
+  var m = document.getElementById("toast-msg");
+  t.className = "toast show " + (type||"");
+  m.innerText = msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 3000);
+}
+</script>
+</body>
+</html>
